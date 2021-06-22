@@ -1,13 +1,22 @@
 <app-home></app-home>
 
-<div class="center">
 <div class="p-m-4 p-d-block" style="width: max-content">
-  <p-card>
-    <label class="p-d-block p-mb-1" for="email">E-mail</label>
-    <input id="email" class="p-mb-3" pInputText/>
+  <p-card header="Zaloguj się">
+    <div class="p-pr-6 p-pl-6">
+      <div class="p-mb-3">
+        <p-message severity="error" text="Niepoprawne dane logowania" *ngIf="invalidLogin"></p-message>
+      </div>
 
-    <label class="p-d-block p-mb-1">Hasło</label>
-    <p-password [feedback]="false"></p-password>
+
+      <label class="p-d-block p-mb-1" for="email">E-mail</label>
+      <input id="email" class="p-mb-3" [(ngModel)]="email" pInputText/>
+
+      <label class="p-d-block p-mb-1">Hasło</label>
+      <p-password id="password" [feedback]="false" [(ngModel)]="password"></p-password>
+
+      <button pButton pRipple type="button" label="Zaloguj" class="p-button-raised p-d-block p-mt-4" (click)="handleLogin()"></button>
+    </div>
   </p-card>
 </div>
-</div>
+
+

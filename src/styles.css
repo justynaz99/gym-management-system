@@ -2,3 +2,25 @@ body {
   margin: 1%;
 }
 
+/* messages */
+.p-inline-message .p-inline-message-text {
+  font-size: 1rem;
+  padding: 4px;
+  margin-left: -0.3rem !important;
+}
+
+.p-inline-message .p-inline-message-icon {
+  font-size: 1rem;
+  margin-top: 0.2rem;
+  margin-left: 0.2rem;
+  margin-right: 0;
+}
+
+
+/* panels */
+.p-card .p-card-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}

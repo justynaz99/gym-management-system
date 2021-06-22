@@ -16,6 +16,9 @@ import {ButtonModule} from 'primeng/button';
 import {InputTextModule} from "primeng/inputtext";
 import {CardModule} from 'primeng/card';
 import {PasswordModule} from "primeng/password";
+import {MessagesModule} from 'primeng/messages';
+import {MessageModule} from 'primeng/message';
+import {ToastModule} from 'primeng/toast';
 
 
 @NgModule({
@@ -36,7 +39,10 @@ import {PasswordModule} from "primeng/password";
     ButtonModule,
     InputTextModule,
     CardModule,
-    PasswordModule
+    PasswordModule,
+    MessageModule,
+    MessagesModule,
+    ToastModule
 
   ],
   providers: [],

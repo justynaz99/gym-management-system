@@ -1,30 +1,36 @@
 import { Component, OnInit } from '@angular/core';
 import {Router} from "@angular/router";
+import {Message, MessageService} from "primeng/api";
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  styleUrls: ['./login.component.css'],
+  providers: [MessageService]
 })
 export class LoginComponent implements OnInit {
 
-  username : String = 'justynaz99';
+  email : String = 'justynaz@gmail.com';
   password : String = '';
-  errorMessage = 'Invalid credentials';
   invalidLogin = false;
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, private messageService: MessageService) { }
 
   ngOnInit(): void {
   }
 
   handleLogin() {
-    if (this.username === 'justynaz99' && this.password === 'aaa') {
-      this.router.navigate(['welcome'])
+    if (this.email === 'justynaz@gmail.com' && this.password === 'aaa') {
+      this.router.navigate(['home'])
       this.invalidLogin = false;
     } else {
       this.invalidLogin = true;
+      this.messageService.add({key: 'key1', severity:'error', summary: 'Błąd', detail: 'Message Content'});
     }
+  }
+
+  showSuccess() {
+    this.messageService.add({key: 'key1', severity:'success', summary: 'Success', detail: 'Message Content'});
   }
 
 }
