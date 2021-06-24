@@ -19,6 +19,15 @@ import {PasswordModule} from "primeng/password";
 import {MessagesModule} from 'primeng/messages';
 import {MessageModule} from 'primeng/message';
 import {ToastModule} from 'primeng/toast';
+import { RegistrationComponent } from './registration/registration.component';
+import {InputMaskModule} from "primeng/inputmask";
+import { ScheduleComponent } from './schedule/schedule.component';
+import { ClassesListComponent } from './classes-list/classes-list.component';
+import { MembersListComponent } from './members-list/members-list.component';
+import { WorkoutPlannerComponent } from './workout-planner/workout-planner.component';
+import {ToolbarModule} from "primeng/toolbar";
+import {FileUploadModule} from "primeng/fileupload";
+import {SortIcon, TableHeaderCheckbox, TableModule} from "primeng/table";
 
 
 @NgModule({
@@ -26,7 +35,12 @@ import {ToastModule} from 'primeng/toast';
     AppComponent,
     LoginComponent,
     ErrorComponent,
-    HomeComponent
+    HomeComponent,
+    RegistrationComponent,
+    ScheduleComponent,
+    ClassesListComponent,
+    MembersListComponent,
+    WorkoutPlannerComponent
   ],
   imports: [
     BrowserModule,
@@ -42,7 +56,13 @@ import {ToastModule} from 'primeng/toast';
     PasswordModule,
     MessageModule,
     MessagesModule,
-    ToastModule
+    ToastModule,
+    InputMaskModule,
+    ToolbarModule,
+    FileUploadModule,
+    TableModule,
+
+
 
   ],
   providers: [],

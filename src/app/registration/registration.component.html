@@ -1,0 +1,30 @@
+<div class="p-m-4 p-d-block" style="width: max-content">
+  <p-card header="Zarejestruj się">
+    <div class="p-pr-6 p-pl-6">
+      <div class="p-mb-3">
+<!-- TO DO komunikaty -->
+      </div>
+
+
+      <label class="p-d-block p-mb-1" for="name">Imię</label>
+      <input id="name" class="p-mb-3"  pInputText/>
+
+      <label class="p-d-block p-mb-1" for="surname">Nazwisko</label>
+      <input id="surname" class="p-mb-3"  pInputText/>
+
+      <label class="p-d-block p-mb-1" for="email">E-mail</label>
+      <input id="email" class="p-mb-3"  pInputText/>
+
+      <label class="p-d-block p-mb-1">Numer telefonu</label>
+      <p-inputMask id="phone" mask="999-999-999" placeholder="999-999-999" class="p-mb-3"></p-inputMask>
+
+      <label class="p-d-block p-mb-1 p-mt-3">Hasło</label>
+      <p-password id="password" [feedback]="false" ></p-password>
+
+      <label class="p-d-block p-mb-1 p-mt-3">Powtórz hasło</label>
+      <p-password id="password2" [feedback]="false"></p-password>
+
+      <button pButton pRipple type="button" label="Zarejestruj" class="p-button-raised p-d-block p-mt-4" ></button>
+    </div>
+  </p-card>
+</div>
