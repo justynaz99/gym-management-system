@@ -16,12 +16,13 @@ export class AppComponent implements OnInit{
 
   ngOnInit(): void {
     this.items = [
-      {label: 'Strona główna', icon: 'pi pi-fw pi-home'},
-      {label: 'Grafik', icon: 'pi pi-fw pi-calendar'},
-      {label: 'Karnety', icon: 'pi pi-fw pi-wallet'},
-      {label: 'Zajęcia', icon: 'pi pi-fw pi-list'},
-      {label: 'Klubowicze', icon: 'pi pi-fw pi-users'},
-      {label: 'Plan zajęć', icon: 'pi pi-fw pi-book'}
+      {label: 'Strona główna', icon: 'pi pi-fw pi-home', routerLink: ['/home']},
+      {label: 'Grafik', icon: 'pi pi-fw pi-calendar', routerLink: ['/schedule']},
+      {label: 'Karnety', icon: 'pi pi-fw pi-wallet', routerLink: ['/tickets-list']},
+      {label: 'Zajęcia', icon: 'pi pi-fw pi-list', routerLink: ['/classes-list']},
+      {label: 'Klubowicze', icon: 'pi pi-fw pi-users', routerLink: ['/members-list']},
+      {label: 'Plan zajęć', icon: 'pi pi-fw pi-book', routerLink: ['/workout-planner']},
+      {label: 'Moje konto', icon: 'pi pi-fw pi-user', routerLink: ['/my-account']},
     ];
   }
 }

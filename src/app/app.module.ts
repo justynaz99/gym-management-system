@@ -22,12 +22,16 @@ import {ToastModule} from 'primeng/toast';
 import { RegistrationComponent } from './registration/registration.component';
 import {InputMaskModule} from "primeng/inputmask";
 import { ScheduleComponent } from './schedule/schedule.component';
-import { ClassesListComponent } from './classes-list/classes-list.component';
+import {ClassesListComponent, Member} from './classes-list/classes-list.component';
 import { MembersListComponent } from './members-list/members-list.component';
 import { WorkoutPlannerComponent } from './workout-planner/workout-planner.component';
 import {ToolbarModule} from "primeng/toolbar";
 import {FileUploadModule} from "primeng/fileupload";
 import {SortIcon, TableHeaderCheckbox, TableModule} from "primeng/table";
+import {DividerModule} from "primeng/divider";
+import { TicketsListComponent } from './tickets-list/tickets-list.component';
+import {OrderListModule} from 'primeng/orderlist';
+import { MyAccountComponent } from './my-account/my-account.component';
 
 
 @NgModule({
@@ -40,7 +44,9 @@ import {SortIcon, TableHeaderCheckbox, TableModule} from "primeng/table";
     ScheduleComponent,
     ClassesListComponent,
     MembersListComponent,
-    WorkoutPlannerComponent
+    WorkoutPlannerComponent,
+    TicketsListComponent,
+    MyAccountComponent,
   ],
   imports: [
     BrowserModule,
@@ -61,6 +67,8 @@ import {SortIcon, TableHeaderCheckbox, TableModule} from "primeng/table";
     ToolbarModule,
     FileUploadModule,
     TableModule,
+    DividerModule,
+    OrderListModule
 
 
 
