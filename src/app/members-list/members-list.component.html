@@ -1,0 +1,22 @@
+<div class="p-m-4 p-d-block" style="max-width: 60%">
+  <p-card>
+    <p-table [value]="members" [paginator]="true" [rows]="10">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Lista klubowiczów</th>
+          <th></th>
+          <th>Karnet</th>
+          <th>Data wygaśnięcia</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-member>
+        <tr>
+          <td>{{member.name}}</td>
+          <td>{{member.surname}}</td>
+          <td>{{member.ticket}}</td>
+          <td>{{member.expirationDate}}</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </p-card>
+</div>

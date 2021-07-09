@@ -1,0 +1,87 @@
+<div class="p-grid">
+
+  <div class="p-col">
+    <div class="p-m-4">
+      <p-card header="Moje dane">
+
+          <div class="p-grid">
+            <div class="p-col">
+              <label class="p-d-block p-mb-1" for="name">Imię</label>
+              <input id="name" class="p-mb-3" pInputText/>
+            </div>
+            <div class="p-col">
+              <label class="p-d-block p-mb-1" for="surname">Nazwisko</label>
+              <input id="surname" class="p-mb-3" pInputText/>
+            </div>
+          </div>
+
+          <div class="p-grid">
+            <div class="p-col">
+              <label class="p-d-block p-mb-1" for="email">E-mail</label>
+              <input id="email" class="p-mb-3" pInputText/>
+            </div>
+            <div class="p-col">
+              <label class="p-d-block p-mb-1">Numer telefonu</label>
+              <p-inputMask id="phone" mask="999-999-999" placeholder="999-999-999" class="p-mb-3"></p-inputMask>
+            </div>
+          </div>
+
+          <button pButton pRipple type="button" label="Edytuj"
+                  class="p-button-raised p-button-success p-d-block p-mt-5"
+                  style="width: 220px"></button>
+      </p-card>
+    </div>
+  </div>
+
+  <div class="p-col">
+    <div class="p-m-4 p-d-inline-block">
+      <p-card header="Moje karnety">
+        <p-table [value]="ticketsUser" [paginator]="true" [rows]="10">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Karnet</th>
+              <th>Data zakupu</th>
+              <th>Data wygaśnięcia</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-ticket>
+            <tr>
+              <td>{{ticket.name}}</td>
+              <td>{{ticket.purchaseDay}}</td>
+              <td>{{ticket.expirationDay}}</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </p-card>
+    </div>
+  </div>
+
+</div>
+
+
+<div class="p-grid">
+
+  <div class="p-col">
+    <div class="p-m-4 p-d-inline-block">
+      <p-card header="Zmień hasło">
+
+          <div class="p-grid">
+            <div class="p-col">
+              <label class="p-d-block p-mb-1 p-mt-3">Hasło</label>
+              <p-password id="password" [feedback]="false"></p-password>
+            </div>
+            <div class="p-col">
+              <label class="p-d-block p-mb-1 p-mt-3">Powtórz hasło</label>
+              <p-password id="password2" [feedback]="false"></p-password>
+            </div>
+          </div>
+
+          <button pButton pRipple type="button" label="Zarejestruj"
+                  class="p-button-raised p-button-success p-d-block p-mt-5"
+                  style="width: 220px"></button>
+      </p-card>
+    </div>
+  </div>
+
+</div>
+

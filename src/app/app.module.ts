@@ -32,6 +32,7 @@ import {DividerModule} from "primeng/divider";
 import { TicketsListComponent } from './tickets-list/tickets-list.component';
 import {OrderListModule} from 'primeng/orderlist';
 import { MyAccountComponent } from './my-account/my-account.component';
+import { LogoutComponent } from './logout/logout.component';
 
 
 @NgModule({
@@ -47,6 +48,7 @@ import { MyAccountComponent } from './my-account/my-account.component';
     WorkoutPlannerComponent,
     TicketsListComponent,
     MyAccountComponent,
+    LogoutComponent,
   ],
   imports: [
     BrowserModule,
