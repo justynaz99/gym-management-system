@@ -33,6 +33,8 @@ import { TicketsListComponent } from './tickets-list/tickets-list.component';
 import {OrderListModule} from 'primeng/orderlist';
 import { MyAccountComponent } from './my-account/my-account.component';
 import { LogoutComponent } from './logout/logout.component';
+import {HttpClientModule} from "@angular/common/http";
+import { MemberComponent } from './member/member.component';
 
 
 @NgModule({
@@ -49,6 +51,7 @@ import { LogoutComponent } from './logout/logout.component';
     TicketsListComponent,
     MyAccountComponent,
     LogoutComponent,
+    MemberComponent,
   ],
   imports: [
     BrowserModule,
@@ -70,7 +73,8 @@ import { LogoutComponent } from './logout/logout.component';
     FileUploadModule,
     TableModule,
     DividerModule,
-    OrderListModule
+    OrderListModule,
+    HttpClientModule
 
 
 

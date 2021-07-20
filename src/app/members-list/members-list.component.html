@@ -1,4 +1,5 @@
 <div class="p-m-4 p-d-block" style="max-width: 60%">
+  <p-message severity="success" text="Usunięto klubowicza z listy" *ngIf="message"></p-message>
   <p-card>
     <p-table [value]="members" [paginator]="true" [rows]="10">
       <ng-template pTemplate="header">
@@ -7,14 +8,19 @@
           <th></th>
           <th>Karnet</th>
           <th>Data wygaśnięcia</th>
+          <th></th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-member>
         <tr>
           <td>{{member.name}}</td>
-          <td>{{member.surname}}</td>
+          <td></td>
           <td>{{member.ticket}}</td>
-          <td>{{member.expirationDate}}</td>
+          <td>{{member.expirationDate | date}}</td>
+          <td><button pButton pRipple type="button" icon="pi pi-times" class="p-button-rounded p-button-danger"
+                      style="margin-right: 5px;" (click)="deleteMember(member.id)"></button>
+            <button pButton pRipple type="button" icon="pi pi-pencil" class="p-button-rounded p-button-info"
+                    (click)="updateMember(member.id)"></button></td>
         </tr>
       </ng-template>
     </p-table>

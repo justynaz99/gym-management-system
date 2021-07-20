@@ -21,4 +21,14 @@
       </div>
     </div>
   </p-card>
+
+  <button pButton pRipple type="button" label="Get welcome message" class="p-button-raised p-button-success p-d-block p-mt-5"
+          style="width: 220px" (click)="getWelcomeMessageWithParameter()"></button>
+
+  <h2>Your customized welcome message</h2>
+
+  <div *ngIf="welcomeMessageFromService">
+    {{ welcomeMessageFromService }}
+  </div>
+
 </div>
