@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import {Member} from "../member/member.component";
+
 
 @Component({
   selector: 'app-classes-list',
@@ -6,13 +8,14 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./classes-list.component.css'],
 })
 
-
-
 export class ClassesListComponent implements OnInit {
 
   member1: Member = {
+    id: 1,
     name: 'Justyna',
-    surname: 'Zadora'
+    surname: 'Zadora',
+    ticket: 'student',
+    expirationDate: new Date()
   }
   members : Member[] = [this.member1];
 
@@ -23,7 +26,3 @@ export class ClassesListComponent implements OnInit {
 
 }
 
-export interface Member {
-  name: String;
-  surname: String;
-}

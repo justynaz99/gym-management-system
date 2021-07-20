@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import {HelloWorldBean} from "./welcome-data.service";
 import {HttpClient} from "@angular/common/http";
-import {Member} from "../../members-list/members-list.component";
+import {Member} from "../../member/member.component";
+
 
 
 @Injectable({
@@ -19,5 +20,9 @@ export class MemberDataService {
 
   deleteMember(id: number) {
     return this.http.delete(`http://localhost:8080/members/${id}`)
+  }
+
+  retrieveMember(id: number) {
+    return this.http.get<Member>(`http://localhost:8080/members/${id}`)
   }
 }

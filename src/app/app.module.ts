@@ -22,7 +22,6 @@ import {ToastModule} from 'primeng/toast';
 import { RegistrationComponent } from './registration/registration.component';
 import {InputMaskModule} from "primeng/inputmask";
 import { ScheduleComponent } from './schedule/schedule.component';
-import {ClassesListComponent, Member} from './classes-list/classes-list.component';
 import { MembersListComponent } from './members-list/members-list.component';
 import { WorkoutPlannerComponent } from './workout-planner/workout-planner.component';
 import {ToolbarModule} from "primeng/toolbar";
@@ -35,6 +34,7 @@ import { MyAccountComponent } from './my-account/my-account.component';
 import { LogoutComponent } from './logout/logout.component';
 import {HttpClientModule} from "@angular/common/http";
 import { MemberComponent } from './member/member.component';
+import {ClassesListComponent} from "./classes-list/classes-list.component";
 
 
 @NgModule({

@@ -1,18 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {MemberDataService} from "../service/data/member-data.service";
 import {Router} from "@angular/router";
-
-
-export class Member {
-  constructor(
-    id: number,
-    name: string,
-    surname: string,
-    ticket: string,
-    expirationDate: Date
-  ) {
-  }
-}
+import {Member} from "../member/member.component";
 
 @Component({
   selector: 'app-members-list',
@@ -25,7 +14,8 @@ export class MembersListComponent implements OnInit {
   constructor(
     private memberService: MemberDataService,
     private router: Router
-  ) { }
+  ) {
+  }
 
   members: Member[] = [];
 
@@ -67,8 +57,7 @@ export class MembersListComponent implements OnInit {
   }
 
 
-  deleteMember(id: number)
-  {
+  deleteMember(id: number) {
     console.log(`Delete member ${id}`);
     this.memberService.deleteMember(id).subscribe(
       response => {
