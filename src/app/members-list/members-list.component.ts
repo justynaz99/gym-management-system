@@ -72,7 +72,11 @@ export class MembersListComponent implements OnInit {
 
   updateMember(id: number) {
     console.log(`Update ${id} member`)
-    this.router.navigate(['member', id]);
+    this.router.navigate(['members', id]);
+  }
+
+  addMember() {
+    this.router.navigate(['members', -1]);
   }
 
 }

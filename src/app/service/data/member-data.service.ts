@@ -19,10 +19,18 @@ export class MemberDataService {
   }
 
   deleteMember(id: number) {
-    return this.http.delete(`http://localhost:8080/members/${id}`)
+    return this.http.delete(`http://localhost:8080/members/${id}`);
   }
 
   retrieveMember(id: number) {
-    return this.http.get<Member>(`http://localhost:8080/members/${id}`)
+    return this.http.get<Member>(`http://localhost:8080/members/${id}`);
+  }
+
+  updateMember(id: number, member: Member) {
+    return this.http.put(`http://localhost:8080/members/${id}`, member);
+  }
+
+  createMember(member: Member) {
+    return this.http.post(`http://localhost:8080/members`, member);
   }
 }

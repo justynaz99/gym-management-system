@@ -29,7 +29,7 @@ const routes: Routes = [
   { path: 'tickets-list', component: TicketsListComponent },
   { path: 'my-account', component: MyAccountComponent },
   { path: 'logout', component: LogoutComponent, canActivate: [RouteGuardService] },
-  { path: 'member/:id', component: MemberComponent, canActivate: [RouteGuardService] },
+  { path: 'members/:id', component: MemberComponent, canActivate: [RouteGuardService] },
 ]
 
 @NgModule({

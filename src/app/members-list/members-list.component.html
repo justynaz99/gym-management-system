@@ -16,7 +16,7 @@
           <td>{{member.name}}</td>
           <td></td>
           <td>{{member.ticket}}</td>
-          <td>{{member.expirationDate | date}}</td>
+          <td>{{member.expirationDate | date: 'yyyy-MM-dd'}}</td>
           <td><button pButton pRipple type="button" icon="pi pi-times" class="p-button-rounded p-button-danger"
                       style="margin-right: 5px;" (click)="deleteMember(member.id)"></button>
             <button pButton pRipple type="button" icon="pi pi-pencil" class="p-button-rounded p-button-info"
@@ -24,5 +24,7 @@
         </tr>
       </ng-template>
     </p-table>
+    <button pButton pRipple type="button" label="Dodaj klubowicza" class="p-button-raised p-button-success p-d-block p-mt-5"
+            style="width: 220px" (click)="addMember()"></button>
   </p-card>
 </div>
