@@ -24,7 +24,7 @@ export class LoginComponent implements OnInit {
   handleLogin() {
 
     if (this.hardcodedAuthenticationService.authenticate(this.email, this.password)) {
-      window.location.reload();
+      // window.location.reload();
       this.router.navigate(['home', this.name]);
       this.invalidLogin = false;
     } else {

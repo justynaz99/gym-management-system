@@ -22,7 +22,6 @@ export class MembersListComponent implements OnInit {
   first = 0;
   rows = 10;
 
-  message: string = '';
 
   ngOnInit(): void {
     this.refreshMembersList();
@@ -62,13 +61,11 @@ export class MembersListComponent implements OnInit {
     this.memberService.deleteMember(id).subscribe(
       response => {
         console.log(response);
-        this.message = `Delete of member ${id} successful!`;
-        console.log(this.message);
+        console.log(`Delete of member ${id} successful!`);
         this.refreshMembersList();
       }
     );
   }
-
 
   updateMember(id: number) {
     console.log(`Update ${id} member`)

@@ -1,9 +1,6 @@
 import { Injectable } from '@angular/core';
-import {HelloWorldBean} from "./welcome-data.service";
 import {HttpClient} from "@angular/common/http";
 import {Member} from "../../member/member.component";
-
-
 
 @Injectable({
   providedIn: 'root'

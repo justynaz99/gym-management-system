@@ -23,7 +23,7 @@ export class AppComponent implements OnInit{
       {label: 'Strona główna', icon: 'pi pi-fw pi-home', routerLink: ['/home'], },
       {label: 'Grafik', icon: 'pi pi-fw pi-calendar', routerLink: ['/schedule']},
       {label: 'Karnety', icon: 'pi pi-fw pi-wallet', routerLink: ['/tickets-list']},
-      {label: 'Zajęcia', icon: 'pi pi-fw pi-list', routerLink: ['/classes-list']},
+      {label: 'Zajęcia', icon: 'pi pi-fw pi-list', routerLink: ['/activities-list']},
       {label: 'Klubowicze', icon: 'pi pi-fw pi-users', routerLink: ['/members-list']},
       {label: 'Plan zajęć', icon: 'pi pi-fw pi-book', routerLink: ['/workout-planner']},
       {label: 'Zaloguj', icon: 'pi pi-fw pi-sign-in', routerLink: ['/login'], styleClass: 'menu-right', visible: !this.hardcodedAuthenticationService.isUserLoggedIn()},

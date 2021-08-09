@@ -1,0 +1,28 @@
+<div class="p-m-4 p-d-block" style="max-width: 70%">
+  <p-card>
+
+    <p-table [value]="activities">
+      <ng-template pTemplate="header">
+        <tr>
+          <th style="width: 25%">Nazwa zajęć</th>
+          <th style="width: 50%">Opis</th>
+          <th style="width: 25%"></th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-activity>
+        <tr>
+          <td>{{activity.name}}</td>
+          <td>{{activity.description}}</td>
+          <td style="text-align: center">
+            <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" style="margin-right: 10px"
+            (click)="deleteActivity(activity.id)"></button>
+            <button pButton pRipple type="button" icon="pi pi-pencil" class="p-button-rounded p-button-info"
+            (click)="updateActivity(activity.id)"></button>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+    <button pButton pRipple type="button" label="Dodaj zajęcia" class="p-button-raised p-button-success p-d-block p-mt-5"
+            style="width: 220px" (click)="addActivity()"></button>
+  </p-card>
+</div>

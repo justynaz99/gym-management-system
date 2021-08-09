@@ -1,16 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import {Ticket} from "../tickets-list/tickets-list.component";
+import {Activity} from "../activity/activity.component";
 import {ActivityDataService} from "../service/data/activity-data.service";
 import {Router} from "@angular/router";
-import {Activity} from "../activity/activity.component";
+
 
 @Component({
-  selector: 'app-schedule',
-  templateUrl: './schedule.component.html',
-  styleUrls: ['./schedule.component.css']
+  selector: 'app-classes-list',
+  templateUrl: './activities-list.component.html',
+  styleUrls: ['./activities-list.component.css'],
 })
-export class ScheduleComponent implements OnInit {
 
+export class ActivitiesListComponent implements OnInit {
 
   constructor(
     private activityService: ActivityDataService,
@@ -42,4 +42,15 @@ export class ScheduleComponent implements OnInit {
     );
   }
 
+  updateActivity(id: number) {
+    console.log(`Update ${id} activity`)
+    this.router.navigate(['activities', id]);
+  }
+
+  addActivity() {
+    this.router.navigate(['activities', -1]);
+  }
+
+
 }
+

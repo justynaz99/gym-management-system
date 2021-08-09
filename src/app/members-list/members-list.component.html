@@ -1,11 +1,9 @@
-<div class="p-m-4 p-d-block" style="max-width: 60%">
-  <p-message severity="success" text="Usunięto klubowicza z listy" *ngIf="message"></p-message>
+<div class="p-m-4 p-d-block" style="max-width: 70%">
   <p-card>
     <p-table [value]="members" [paginator]="true" [rows]="10">
       <ng-template pTemplate="header">
         <tr>
           <th>Lista klubowiczów</th>
-          <th></th>
           <th>Karnet</th>
           <th>Data wygaśnięcia</th>
           <th></th>
@@ -13,12 +11,11 @@
       </ng-template>
       <ng-template pTemplate="body" let-member>
         <tr>
-          <td>{{member.name}}</td>
-          <td></td>
+          <td>{{member.name}} {{member.surname}}</td>
           <td>{{member.ticket}}</td>
           <td>{{member.expirationDate | date: 'yyyy-MM-dd'}}</td>
           <td><button pButton pRipple type="button" icon="pi pi-times" class="p-button-rounded p-button-danger"
-                      style="margin-right: 5px;" (click)="deleteMember(member.id)"></button>
+                      style="margin-right: 10px;" (click)="deleteMember(member.id)"></button>
             <button pButton pRipple type="button" icon="pi pi-pencil" class="p-button-rounded p-button-info"
                     (click)="updateMember(member.id)"></button></td>
         </tr>

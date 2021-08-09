@@ -32,9 +32,13 @@ import { TicketsListComponent } from './tickets-list/tickets-list.component';
 import {OrderListModule} from 'primeng/orderlist';
 import { MyAccountComponent } from './my-account/my-account.component';
 import { LogoutComponent } from './logout/logout.component';
-import {HttpClientModule} from "@angular/common/http";
+import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import { MemberComponent } from './member/member.component';
-import {ClassesListComponent} from "./classes-list/classes-list.component";
+import {ActivitiesListComponent} from "./activities-list/activities-list.component";
+import { ActivityComponent } from './activity/activity.component';
+import {HttpInterceptorBasicAuthService} from "./service/http/http-interceptor-basic-auth.service";
+import {FullCalendarModule} from 'primeng/fullcalendar';
+import {TabViewModule} from 'primeng/tabview';
 
 
 @NgModule({
@@ -45,13 +49,14 @@ import {ClassesListComponent} from "./classes-list/classes-list.component";
     HomeComponent,
     RegistrationComponent,
     ScheduleComponent,
-    ClassesListComponent,
+    ActivitiesListComponent,
     MembersListComponent,
     WorkoutPlannerComponent,
     TicketsListComponent,
     MyAccountComponent,
     LogoutComponent,
     MemberComponent,
+    ActivityComponent,
   ],
   imports: [
     BrowserModule,
@@ -74,12 +79,16 @@ import {ClassesListComponent} from "./classes-list/classes-list.component";
     TableModule,
     DividerModule,
     OrderListModule,
-    HttpClientModule
+    HttpClientModule,
+    FullCalendarModule,
+    TabViewModule
 
 
 
   ],
-  providers: [],
+  providers: [
+    {provide: HTTP_INTERCEPTORS, useClass: HttpInterceptorBasicAuthService, multi: true }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
