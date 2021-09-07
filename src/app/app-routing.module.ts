@@ -1,37 +1,44 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import {RouterModule, Routes} from "@angular/router";
-import {LoginComponent} from "./login/login.component";
-import {ErrorComponent} from "./error/error.component";
-import {HomeComponent} from "./home/home.component";
-import {RegistrationComponent} from "./registration/registration.component";
-import {ScheduleComponent} from "./schedule/schedule.component";
-import {ActivitiesListComponent} from "./activities-list/activities-list.component";
-import {MembersListComponent} from "./members-list/members-list.component";
-import {WorkoutPlannerComponent} from "./workout-planner/workout-planner.component";
-import {TicketsListComponent} from "./tickets-list/tickets-list.component";
-import {MyAccountComponent} from "./my-account/my-account.component";
-import {AppComponent} from "./app.component";
-import {LogoutComponent} from "./logout/logout.component";
-import {RouteGuardService} from "./service/route-guard.service";
-import {MemberComponent} from "./member/member.component";
-import {ActivityComponent} from "./activity/activity.component";
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {Router, RouterModule, Routes} from "@angular/router";
+import {LoginComponent} from "./components/login/login.component";
+import {HomeComponent} from "./components/home/home.component";
+import {RegisterComponent} from "./components/register/register.component";
+import {ScheduleComponent} from "./components/schedule/schedule.component";
+import {ActivitiesListComponent} from "./components/activities-list/activities-list.component";
+import {UsersListComponent} from "./components/users-list/users-list.component";
+import {WorkoutPlannerComponent} from "./components/workout-planner/workout-planner.component";
+import {TicketTypeListComponent} from "./components/ticket-type-list/ticket-type-list.component";
+import {MyAccountComponent} from "./components/my-account/my-account.component";
+import {LogoutComponent} from "./components/logout/logout.component";
+import {ActivityComponent} from "./components/activity/activity.component";
+import {NotFoundComponent} from "./components/not-found/not-found.component";
+import {UnauthorizedComponent} from "./components/unauthorized/unauthorized.component";
+import {AuthGuard} from "./guards/auth.guard";
+import {Role} from "./model/role";
+import {DetailComponent} from "./components/detail/detail/detail.component";
 
 const routes: Routes = [
-  { path: 'login', component: LoginComponent },
-  { path: 'error', component: ErrorComponent },
-  { path: 'home', component: HomeComponent },
-  { path: 'home/:name', component: HomeComponent },
-  { path: 'registration', component: RegistrationComponent, },
-  { path: 'schedule', component: ScheduleComponent },
-  { path: 'activities-list', component: ActivitiesListComponent },
-  { path: 'members-list', component: MembersListComponent },
-  { path: 'workout-planner', component: WorkoutPlannerComponent },
-  { path: 'tickets-list', component: TicketsListComponent },
-  { path: 'my-account', component: MyAccountComponent },
-  { path: 'logout', component: LogoutComponent, canActivate: [RouteGuardService] },
-  { path: 'members/:id', component: MemberComponent, canActivate: [RouteGuardService] },
-  { path: 'activities/:id', component: ActivityComponent, canActivate: [RouteGuardService] },
+  //public pages
+  {path: '', component: HomeComponent},
+  {path: 'login', component: LoginComponent},
+  {path: 'register', component: RegisterComponent},
+  {path: 'home', component: HomeComponent},
+  {path: 'schedule', component: ScheduleComponent},
+  {path: 'ticket-type-list', component: TicketTypeListComponent},
+  {path: 'activities-list', component: ActivitiesListComponent},
+  {path: 'activities/:id', component: ActivityComponent},
+  //user + admin pages
+  {path: 'home/:name', component: HomeComponent, canActivate: [AuthGuard], data: {roles: [Role.USER, Role.ADMIN]}},
+  {path: 'my-account', component: MyAccountComponent, canActivate: [AuthGuard], data: {roles: [Role.USER, Role.ADMIN]}},
+  {path: 'logout', component: LogoutComponent, canActivate: [AuthGuard], data: {roles: [Role.USER, Role.ADMIN]}},
+  //admin pages
+  {path: 'users-list', component: UsersListComponent, canActivate: [AuthGuard], data: {roles: [Role.ADMIN]}},
+  {path: 'detail/:id', component: DetailComponent, canActivate: [AuthGuard], data: {roles: [Role.ADMIN]}},
+  {path: 'workout-planner', component: WorkoutPlannerComponent, canActivate: [AuthGuard], data: {roles: [Role.ADMIN]}},
+  //public error pages
+  {path: '404', component: NotFoundComponent},
+  {path: '401', component: UnauthorizedComponent},
 ]
 
 @NgModule({
@@ -44,4 +51,10 @@ const routes: Routes = [
     RouterModule
   ]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {
+  constructor(private router: Router) {
+    this.router.errorHandler = (error: any) => {
+      this.router.navigate(['/404']);
+    }
+  }
+}

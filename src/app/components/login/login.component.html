@@ -1,0 +1,23 @@
+
+<div class="p-m-4 p-d-block" style="width: max-content">
+  <p-card header="Zaloguj się">
+    <div class="p-pr-6 p-pl-6">
+      <div class="p-mb-3">
+        <p-message severity="error" text="Niepoprawne dane logowania" *ngIf="errorMessage"></p-message>
+      </div>
+
+
+      <label class="p-d-block p-mb-1" for="email">E-mail</label>
+      <input id="email" class="p-mb-3" [(ngModel)]="user.email" pInputText/>
+
+      <label class="p-d-block p-mb-1">Hasło</label>
+      <p-password id="password" [feedback]="false" [(ngModel)]="user.password"></p-password>
+
+
+      <button pButton pRipple type="button" label="Zaloguj" class="p-button-raised p-button-success p-d-block p-mt-5"
+              style="width: 220px" (click)="login()"></button>
+    </div>
+  </p-card>
+</div>
+
+

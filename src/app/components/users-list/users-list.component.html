@@ -1,0 +1,27 @@
+<div class="p-m-4 p-d-block" style="max-width: 70%">
+  <p-card>
+    <p-table [value]="userList" [paginator]="true" [rows]="10">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Lista klubowiczów</th>
+          <th>Karnet</th>
+          <th>Data wygaśnięcia</th>
+          <th></th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-user>
+        <tr>
+          <td>{{user.firstName}} {{user.lastName}}</td>
+          <td>{{user.email}}</td>
+<!--          <td>{{member.expirationDate | date: 'yyyy-MM-dd'}}</td>-->
+          <td><button pButton pRipple type="button" icon="pi pi-times" class="p-button-rounded p-button-danger"
+                      style="margin-right: 10px;" ></button>
+            <button pButton pRipple type="button" icon="pi pi-pencil" class="p-button-rounded p-button-info"
+                    ></button></td>
+        </tr>
+      </ng-template>
+    </p-table>
+    <button pButton pRipple type="button" label="Dodaj klubowicza" class="p-button-raised p-button-success p-d-block p-mt-5"
+            style="width: 220px" ></button>
+  </p-card>
+</div>
