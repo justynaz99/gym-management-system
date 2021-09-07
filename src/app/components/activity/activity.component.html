@@ -1,0 +1,27 @@
+<div class="p-m-4 p-d-block" style="width: max-content">
+
+
+  <p-card header="Edytuj dane" >
+
+    <div class="p-pr-6 p-pl-6">
+
+<!--      <form (ngSubmit)="saveActivity()">-->
+        <label class="p-d-block p-mb-1">Nazwa zajęć</label>
+        <input id="name" class="p-mb-3" pInputText [(ngModel)]="activity.name"
+               required="required"/>
+
+        <label class="p-d-block p-mb-1">Opis</label>
+        <textarea rows="5" cols="30" pInputTextarea autoResize="autoResize"
+                  [(ngModel)]="activity.description"></textarea>
+
+        <button pButton pRipple type="submit" label="Zapisz" class="p-button-raised p-button-success p-d-block p-mt-5"
+                style="width: 220px" (click)="saveActivity()"></button>
+        <!--      TODO submit on enter-->
+<!--      </form>-->
+    </div>
+
+  </p-card>
+
+</div>
+
+
