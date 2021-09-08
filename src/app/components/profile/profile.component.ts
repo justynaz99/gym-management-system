@@ -5,10 +5,10 @@ import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-my-account',
-  templateUrl: './my-account.component.html',
-  styleUrls: ['./my-account.component.css']
+  templateUrl: './profile.component.html',
+  styleUrls: ['./profile.component.css']
 })
-export class MyAccountComponent implements OnInit {
+export class ProfileComponent implements OnInit {
 
   currentUser!: User;
 
@@ -23,7 +23,7 @@ export class MyAccountComponent implements OnInit {
   }
 
   logout() {
-    this.userService.logout().subscribe(data => {
+    this.userService.logOut().subscribe(data => {
       this.router.navigate(['/login']);
     });
   }

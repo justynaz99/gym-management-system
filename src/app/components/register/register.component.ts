@@ -15,9 +15,9 @@ export class RegisterComponent implements OnInit {
 
   constructor(private userService: UserService, private router: Router) { }
 
-  ngOnInit(): void {
-    if (this.userService.currentUserValue) {
-      this.router.navigate(['/home']);
+  ngOnInit() {
+    if(this.userService.currentUserValue) {
+      this.router.navigate(['/profile']);
       return;
     }
   }
@@ -25,10 +25,10 @@ export class RegisterComponent implements OnInit {
   register() {
     this.userService.register(this.user).subscribe(data => {
       this.router.navigate(['/login']);
-    }, error => {
+    }, err => {
       this.errorMessage = "Użytkownik o takim emailu już istnieje";
-      console.log("register error")
     });
   }
 
 }
+

@@ -10,13 +10,11 @@ import {UserService} from "../service/data/user/user.service";
 export class AuthGuard implements CanActivate {
 
   currentUser!: User;
-
   constructor(private router: Router, private userService: UserService) {
     this.userService.currentUser.subscribe(data => {
       this.currentUser = data;
-    })
+    });
   }
-
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     if(this.currentUser) {
       if(route.data.roles && route.data.roles.indexOf(this.currentUser.role) === -1){
@@ -28,5 +26,4 @@ export class AuthGuard implements CanActivate {
     this.router.navigate(['/login']);
     return false;
   }
-
 }

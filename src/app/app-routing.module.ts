@@ -9,7 +9,7 @@ import {ActivitiesListComponent} from "./components/activities-list/activities-l
 import {UsersListComponent} from "./components/users-list/users-list.component";
 import {WorkoutPlannerComponent} from "./components/workout-planner/workout-planner.component";
 import {TicketTypeListComponent} from "./components/ticket-type-list/ticket-type-list.component";
-import {MyAccountComponent} from "./components/my-account/my-account.component";
+import {ProfileComponent} from "./components/profile/profile.component";
 import {LogoutComponent} from "./components/logout/logout.component";
 import {ActivityComponent} from "./components/activity/activity.component";
 import {NotFoundComponent} from "./components/not-found/not-found.component";
@@ -20,7 +20,7 @@ import {DetailComponent} from "./components/detail/detail/detail.component";
 
 const routes: Routes = [
   //public pages
-  {path: '', component: HomeComponent},
+  // {path: '', component: HomeComponent},
   {path: 'login', component: LoginComponent},
   {path: 'register', component: RegisterComponent},
   {path: 'home', component: HomeComponent},
@@ -30,7 +30,7 @@ const routes: Routes = [
   {path: 'activities/:id', component: ActivityComponent},
   //user + admin pages
   {path: 'home/:name', component: HomeComponent, canActivate: [AuthGuard], data: {roles: [Role.USER, Role.ADMIN]}},
-  {path: 'my-account', component: MyAccountComponent, canActivate: [AuthGuard], data: {roles: [Role.USER, Role.ADMIN]}},
+  {path: 'profile', component: ProfileComponent, canActivate: [AuthGuard], data: {roles: [Role.USER, Role.ADMIN]}},
   {path: 'logout', component: LogoutComponent, canActivate: [AuthGuard], data: {roles: [Role.USER, Role.ADMIN]}},
   //admin pages
   {path: 'users-list', component: UsersListComponent, canActivate: [AuthGuard], data: {roles: [Role.ADMIN]}},

@@ -15,23 +15,21 @@ export class LoginComponent implements OnInit {
   user: User = new User();
   errorMessage!: string;
 
-  constructor(private router: Router, private userService: UserService) { }
+  constructor(private userService: UserService, private router: Router) { }
 
   ngOnInit() {
-    if (this.userService.currentUserValue) {
-      this.router.navigate(['/home']);
+    if(this.userService.currentUserValue) {
+      this.router.navigate(['/profile']);
       return;
     }
   }
 
   login() {
     this.userService.login(this.user).subscribe(data => {
-      this.router.navigate(['/home']);
-    }, error => {
+      this.router.navigate(['/profile']);
+    }, err => {
       this.errorMessage = "Niepoprawny email lub hasło";
-      console.log('login error')
-    })
+    });
   }
-
 
 }

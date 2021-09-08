@@ -27,7 +27,7 @@ export class AppComponent implements OnInit{
       // {label: 'Plan zajęć', icon: 'pi pi-fw pi-book', routerLink: ['/workout-planner']},
       {label: 'Zaloguj', icon: 'pi pi-fw pi-sign-in', routerLink: ['/login']},
       {label: 'Zarejestruj', icon: 'pi pi-fw pi-user-plus', routerLink: ['/register']},
-      {label: 'Moje konto', icon: 'pi pi-fw pi-user', routerLink: ['/my-account']},
+      {label: 'Moje konto', icon: 'pi pi-fw pi-user', routerLink: ['/profile']},
       {label: 'Wyloguj', icon: 'pi pi-fw pi-sign-out', routerLink: ['/logout']},
     ];
   }

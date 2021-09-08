@@ -28,7 +28,7 @@ import {SortIcon, TableHeaderCheckbox, TableModule} from "primeng/table";
 import {DividerModule} from "primeng/divider";
 import { TicketTypeListComponent } from './components/ticket-type-list/ticket-type-list.component';
 import {OrderListModule} from 'primeng/orderlist';
-import { MyAccountComponent } from './components/my-account/my-account.component';
+import { ProfileComponent } from './components/profile/profile.component';
 import { LogoutComponent } from './components/logout/logout.component';
 import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {ActivitiesListComponent} from "./components/activities-list/activities-list.component";
@@ -39,6 +39,7 @@ import { TicketTypeComponent } from './components/ticket-type/ticket-type.compon
 import { NotFoundComponent } from './components/not-found/not-found.component';
 import { UnauthorizedComponent } from './components/unauthorized/unauthorized.component';
 import { DetailComponent } from './components/detail/detail/detail.component';
+import { AdminComponent } from './components/admin/admin/admin.component';
 
 
 @NgModule({
@@ -52,13 +53,14 @@ import { DetailComponent } from './components/detail/detail/detail.component';
     UsersListComponent,
     WorkoutPlannerComponent,
     TicketTypeListComponent,
-    MyAccountComponent,
+    ProfileComponent,
     LogoutComponent,
     ActivityComponent,
     TicketTypeComponent,
     NotFoundComponent,
     UnauthorizedComponent,
     DetailComponent,
+    AdminComponent,
   ],
   imports: [
     BrowserModule,
@@ -85,11 +87,8 @@ import { DetailComponent } from './components/detail/detail/detail.component';
     FullCalendarModule,
     TabViewModule
 
-
-
   ],
-  providers: [
-  ],
+  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
