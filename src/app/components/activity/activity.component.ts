@@ -1,70 +1,57 @@
 import { Component, OnInit } from '@angular/core';
 import {ActivityDataService} from "../../service/data/activity/activity-data.service";
-import {ActivatedRoute, Router} from "@angular/router";
-import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {Router} from "@angular/router";
+import {Activity} from "../../model/activity";
 
-export interface Activity {
-  id: number;
-  name: string;
-  description: string;
-}
 
 @Component({
-  selector: 'app-activity',
+  selector: 'app-classes-list',
   templateUrl: './activity.component.html',
-  styleUrls: ['./activity.component.css']
+  styleUrls: ['./activity.component.css'],
 })
+
 export class ActivityComponent implements OnInit {
-
-  id: number = 1;
-  activity: Activity = {id: this.id, name: '', description: ''};
-
-  activityForm!: FormGroup;
 
   constructor(
     private activityService: ActivityDataService,
-    private route: ActivatedRoute,
-    private router: Router,
+    private router: Router
   ) { }
 
+  activities: Activity[] = [];
+
   ngOnInit(): void {
-    this.id = this.route.snapshot.params['id'];
-    this.activity = {id: this.id, name: '', description: ''};
-
-    if (this.id != -1) {
-      this.activityService.retrieveActivity(this.id)
-        .subscribe(
-          data => this.activity = data
-        )
-    }
-
-    this.activityForm = new FormGroup({
-      name: new FormControl(this.activity.name, [
-        Validators.required,
-        Validators.minLength(4)
-      ])
-    })
+    this.findAllActivities();
   }
 
-  saveActivity() {
-    if(this.id == -1) {
-      this.activityService.createActivity(this.activity)
-        .subscribe(
-          data => {
-            console.log(data);
-            this.router.navigate(['activities-list']);
-          }
-        )
-    } else {
-      this.activityService.updateActivity(this.id, this.activity)
-        .subscribe(
-          data => {
-            console.log(data);
-            this.router.navigate(['activities-list']);
-          }
-        )
-    }
+  findAllActivities() {
+    this.activityService.findAllActivities().subscribe(
+      response => {
+        this.activities = response;
+      }
+    )
   }
+
+
+  // deleteActivity(id: number) {
+  //   console.log(`Delete member ${id}`);
+  //   this.activityService.deleteActivity(id).subscribe(
+  //     response => {
+  //       console.log(response);
+  //       console.log(`Delete of activity ${id} successful!`);
+  //       this.refreshActivitiesList();
+  //     }
+  //   );
+  // }
+  //
+  // updateActivity(id: number) {
+  //   console.log(`Update ${id} activity`)
+  //   this.router.navigate(['activities', id]);
+  // }
+  //
+  // addActivity() {
+  //   this.router.navigate(['activities', -1]);
+  // }
 
 
 }
+

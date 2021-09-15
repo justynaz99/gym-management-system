@@ -54,4 +54,12 @@ export class UserService {
       {headers: {"Content-Type":"application/json; charset=UTF-8"}});
   }
 
+  public isLoggedIn(): boolean {
+    return !!localStorage.getItem('currentUser');
+  }
+
+  updateUser(id: number, user: User) {
+    return this.http.put(API_URL + id + '/edit', user);
+  }
+
 }

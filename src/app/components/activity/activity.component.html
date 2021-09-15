@@ -1,27 +1,47 @@
-<div class="p-m-4 p-d-block" style="width: max-content">
+<div class="p-m-4 p-d-block" style="max-width: 60%">
+  <p-card>
 
-
-  <p-card header="Edytuj dane" >
-
-    <div class="p-pr-6 p-pl-6">
-
-<!--      <form (ngSubmit)="saveActivity()">-->
-        <label class="p-d-block p-mb-1">Nazwa zajęć</label>
-        <input id="name" class="p-mb-3" pInputText [(ngModel)]="activity.name"
-               required="required"/>
-
-        <label class="p-d-block p-mb-1">Opis</label>
-        <textarea rows="5" cols="30" pInputTextarea autoResize="autoResize"
-                  [(ngModel)]="activity.description"></textarea>
-
-        <button pButton pRipple type="submit" label="Zapisz" class="p-button-raised p-button-success p-d-block p-mt-5"
-                style="width: 220px" (click)="saveActivity()"></button>
-        <!--      TODO submit on enter-->
-<!--      </form>-->
-    </div>
-
+    <p-table [value]="activities">
+      <ng-template pTemplate="header">
+        <tr>
+          <th style="width: 30%">Lista zajęć</th>
+          <th style="width: 70%"></th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-activity>
+        <tr>
+          <td>{{activity.name}}</td>
+          <td>{{activity.description}}</td>
+        </tr>
+      </ng-template>
+    </p-table>
   </p-card>
 
+<!--  <p-card>-->
+<!--    <p-table [value]="activities">-->
+<!--      <ng-template pTemplate="header">-->
+<!--        <tr>-->
+<!--          <th style="width: 30%">Lista zajęć</th>-->
+<!--          <th style="width: 40%"></th>-->
+<!--          <th style="width: 30%"></th>-->
+<!--        </tr>-->
+<!--      </ng-template>-->
+<!--      <ng-template pTemplate="body" let-activity>-->
+<!--        <tr>-->
+<!--          <td>{{activity.name}}</td>-->
+<!--          <td>{{activity.description}}</td>-->
+<!--          <td style="text-align: center">-->
+<!--            <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"-->
+<!--                    style="margin-right: 10px"-->
+<!--            ></button>-->
+<!--            <button pButton pRipple type="button" icon="pi pi-pencil" class="p-button-rounded p-button-info"-->
+<!--            ></button>-->
+<!--          </td>-->
+<!--        </tr>-->
+<!--      </ng-template>-->
+<!--    </p-table>-->
+<!--    <button pButton pRipple type="button" label="Dodaj zajęcia"-->
+<!--            class="p-button-raised p-button-success p-d-block p-mt-5"-->
+<!--            style="width: 220px"></button>-->
+<!--  </p-card>-->
 </div>
-
-

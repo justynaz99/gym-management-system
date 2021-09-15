@@ -25,7 +25,14 @@ export class ProfileComponent implements OnInit {
   logout() {
     this.userService.logOut().subscribe(data => {
       this.router.navigate(['/login']);
+      window.location.reload();
     });
+  }
+
+  updateUser() {
+    console.log(this.currentUser.idUser)
+    this.userService.updateUser(this.currentUser.idUser, this.currentUser)
+      .subscribe(data => console.log(data));
   }
 
 }

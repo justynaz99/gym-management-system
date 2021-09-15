@@ -26,7 +26,7 @@ export class AdminComponent implements OnInit {
 
   detail(user: User) {
     localStorage.setItem("detailUser", JSON.stringify(user));
-    this.router.navigate(['/detail', user.id]);
+    this.router.navigate(['/detail', user.idUser]);
   }
 
 }

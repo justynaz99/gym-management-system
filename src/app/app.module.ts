@@ -20,26 +20,25 @@ import {ToastModule} from 'primeng/toast';
 import { RegisterComponent } from './components/register/register.component';
 import {InputMaskModule} from "primeng/inputmask";
 import { ScheduleComponent } from './components/schedule/schedule.component';
-import { UsersListComponent } from './components/users-list/users-list.component';
 import { WorkoutPlannerComponent } from './components/workout-planner/workout-planner.component';
 import {ToolbarModule} from "primeng/toolbar";
 import {FileUploadModule} from "primeng/fileupload";
 import {SortIcon, TableHeaderCheckbox, TableModule} from "primeng/table";
 import {DividerModule} from "primeng/divider";
-import { TicketTypeListComponent } from './components/ticket-type-list/ticket-type-list.component';
+import { TicketTypeComponent } from './components/ticket-type/ticket-type.component';
 import {OrderListModule} from 'primeng/orderlist';
 import { ProfileComponent } from './components/profile/profile.component';
 import { LogoutComponent } from './components/logout/logout.component';
 import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
-import {ActivitiesListComponent} from "./components/activities-list/activities-list.component";
-import { ActivityComponent } from './components/activity/activity.component';
+import {ActivityComponent} from "./components/activity/activity.component";
 import {FullCalendarModule} from 'primeng/fullcalendar';
 import {TabViewModule} from 'primeng/tabview';
-import { TicketTypeComponent } from './components/ticket-type/ticket-type.component';
 import { NotFoundComponent } from './components/not-found/not-found.component';
 import { UnauthorizedComponent } from './components/unauthorized/unauthorized.component';
 import { DetailComponent } from './components/detail/detail/detail.component';
 import { AdminComponent } from './components/admin/admin/admin.component';
+import {CalendarModule} from "primeng/calendar";
+import {KeyFilterModule} from "primeng/keyfilter";
 
 
 @NgModule({
@@ -49,14 +48,11 @@ import { AdminComponent } from './components/admin/admin/admin.component';
     HomeComponent,
     RegisterComponent,
     ScheduleComponent,
-    ActivitiesListComponent,
-    UsersListComponent,
     WorkoutPlannerComponent,
-    TicketTypeListComponent,
+    TicketTypeComponent,
     ProfileComponent,
     LogoutComponent,
     ActivityComponent,
-    TicketTypeComponent,
     NotFoundComponent,
     UnauthorizedComponent,
     DetailComponent,
@@ -85,7 +81,9 @@ import { AdminComponent } from './components/admin/admin/admin.component';
     OrderListModule,
     HttpClientModule,
     FullCalendarModule,
-    TabViewModule
+    TabViewModule,
+    CalendarModule,
+    KeyFilterModule
 
   ],
   providers: [],

@@ -2,18 +2,22 @@
 
   <div class="p-col">
     <div class="p-m-4">
+
+      <button pButton pRipple type="button" label="Wyloguj" class="p-button-raised p-button-success p-d-block p-mt-5" (click)="logout()"
+              style="width: 220px; margin-bottom: 30px"></button>
+
       <p-card header="Moje dane">
 
-<!--          <div class="p-grid">-->
-<!--            <div class="p-col">-->
-<!--              <label class="p-d-block p-mb-1" for="name">Imię</label>-->
-<!--              <input id="name" class="p-mb-3" [(ngModel)]="currentUser.firstName" pInputText/>-->
-<!--            </div>-->
-<!--            <div class="p-col">-->
-<!--              <label class="p-d-block p-mb-1" for="surname">Nazwisko</label>-->
-<!--              <input id="surname" class="p-mb-3" [(ngModel)]="currentUser.lastName" pInputText/>-->
-<!--            </div>-->
-<!--          </div>-->
+          <div class="p-grid">
+            <div class="p-col">
+              <label class="p-d-block p-mb-1" for="name">Imię</label>
+              <input id="name" class="p-mb-3" [(ngModel)]="currentUser.firstName" pInputText/>
+            </div>
+            <div class="p-col">
+              <label class="p-d-block p-mb-1" for="surname">Nazwisko</label>
+              <input id="surname" class="p-mb-3" [(ngModel)]="currentUser.lastName" pInputText/>
+            </div>
+          </div>
 
           <div class="p-grid">
             <div class="p-col">
@@ -22,13 +26,12 @@
             </div>
             <div class="p-col">
               <label class="p-d-block p-mb-1">Numer telefonu</label>
-              <p-inputMask id="phone" mask="999-999-999" placeholder="999-999-999" class="p-mb-3"></p-inputMask>
+              <p-inputMask id="phone" mask="999-999-999" placeholder="999-999-999" class="p-mb-3" [(ngModel)]="currentUser.phoneNumber"></p-inputMask>
             </div>
           </div>
 
-          <button pButton pRipple type="button" label="Edytuj"
-                  class="p-button-raised p-button-success p-d-block p-mt-5"
-                  style="width: 220px"></button>
+          <button pButton pRipple type="button" label="Zapisz" class="p-button-raised p-button-success p-d-block p-mt-5"
+                  (click)="updateUser()" style="width: 220px"></button>
       </p-card>
     </div>
   </div>
@@ -76,7 +79,7 @@
             </div>
           </div>
 
-          <button pButton pRipple type="button" label="Zarejestruj"
+          <button pButton pRipple type="button" label="Zapisz"
                   class="p-button-raised p-button-success p-d-block p-mt-5"
                   style="width: 220px"></button>
       </p-card>

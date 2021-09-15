@@ -1,3 +1,4 @@
+
 <div class="p-m-4 p-d-block" style="width: max-content">
   <p-card header="Zarejestruj się">
     <div class="p-pr-6 p-pl-6">
@@ -5,26 +6,36 @@
 
       </div>
 
-<!--      <label class="p-d-block p-mb-1" for="name">Imię</label>-->
-<!--      <input id="name" class="p-mb-3" [(ngModel)]="user.firstName" pInputText/>-->
+      <label class="p-d-block p-mb-1" for="firstName">Imię</label>
+      <input id="firstName" class="p-mb-3" pKeyFilter="alpha" required [(ngModel)]="user.firstName" pInputText/>
 
-      <label class="p-d-block p-mb-1" for="surname">Nazwisko</label>
-      <input id="surname" class="p-mb-3" [(ngModel)]="user.name" pInputText/>
+      <label class="p-d-block p-mb-1" for="lastName">Nazwisko</label>
+      <input id="lastName" class="p-mb-3" pKeyFilter="alpha" [(ngModel)]="user.lastName" pInputText/>
 
       <label class="p-d-block p-mb-1" for="email">E-mail</label>
       <input id="email" class="p-mb-3" [(ngModel)]="user.username" pInputText/>
+      <p-message *ngIf="message != ''" severity="error" text="Użytkownik o takim emailu już istnieje"
+      style="margin-left: 10px; height: 20px"></p-message>
 
-<!--      <label class="p-d-block p-mb-1">Numer telefonu</label>-->
-<!--      <p-inputMask id="phone" mask="999-999-999" placeholder="999-999-999" class="p-mb-3"></p-inputMask>-->
+
+      <label class="p-d-block p-mb-1">Data urodzenia</label>
+      <p-inputMask class="p-mb-3" mask="9999-99-99" [(ngModel)]="user.birthDate" placeholder="2021-09-13"
+                   slotChar="yyyy-mm-dd"></p-inputMask>
+
+      <label class="p-d-block p-mb-1" style="margin-top: 20px">Numer telefonu</label>
+      <p-inputMask id="phone" mask="999-999-999" placeholder="999-999-999"
+                   [(ngModel)]="user.phoneNumber" class="p-mb-3"></p-inputMask>
 
       <label class="p-d-block p-mb-1 p-mt-3">Hasło</label>
-      <p-password id="password" [feedback]="false" [(ngModel)]="user.password"></p-password>
+      <p-password class="p-mb-3" id="password" [feedback]="false" [(ngModel)]="user.password"></p-password>
 
-<!--      <label class="p-d-block p-mb-1 p-mt-3">Powtórz hasło</label>-->
-<!--      <p-password id="password2" [feedback]="false"></p-password>-->
+      <!--      <label class="p-d-block p-mb-1 p-mt-3">Powtórz hasło</label>-->
+      <!--      <p-password id="password2" [feedback]="false"></p-password>-->
 
-      <button pButton pRipple type="button" label="Zarejestruj" class="p-button-raised p-button-success p-d-block p-mt-5"
+      <button pButton pRipple type="button" label="Zarejestruj"
+              class="p-button-raised p-button-success p-d-block p-mt-5"
               style="width: 220px" (click)="register()"></button>
     </div>
   </p-card>
 </div>
+

@@ -1,40 +1,49 @@
 import { Component, OnInit } from '@angular/core';
-import {TicketTypeDataService} from "../../service/data/ticket-type/ticket-type-data.service";
-import {ActivatedRoute, Router} from "@angular/router";
+import {TicketTypeService} from "../../service/data/ticket-type/ticket-type.service";
+import {Router} from "@angular/router";
+import {TicketType} from "../../model/ticket-type";
+import {UserService} from "../../service/data/user/user.service";
 
-export interface TicketType {
-  id: number;
-  price: number;
-  name: string;
-  description: string;
-}
 
 @Component({
-  selector: 'app-ticket-type',
+  selector: 'app-tickets-list',
   templateUrl: './ticket-type.component.html',
   styleUrls: ['./ticket-type.component.css']
 })
 export class TicketTypeComponent implements OnInit {
 
-  // id: number = 1;
-  // ticketType : TicketType = {id: this.id, name: '', price: 0, description: ''}
 
   constructor(
-    private ticketTypeService: TicketTypeDataService,
-    private route: ActivatedRoute,
-    private router: Router
+    private ticketTypeService: TicketTypeService,
+    private router: Router,
+    private userService: UserService
   ) { }
 
+  ticketTypes!: Array<TicketType>;
+
   ngOnInit(): void {
-  //   this.id = this.route.snapshot.params['id'];
-  //   this.ticketType = {id: this.id, name: '', price: 0, description: ''};
-  //
-  //   if (this.id != -1) {
-  //     this.ticketTypeService.retrieveTicketType(this.id)
-  //       .subscribe(
-  //         data => this.ticketType = data
-  //       )
-  //   }
+    this.findAllTicketTypes();
   }
 
+  findAllTicketTypes() {
+    this.ticketTypeService.findAllTicketTypes().subscribe(
+      response => {
+        this.ticketTypes = response;
+      }
+    )
+  }
+
+  buyTicket() {
+    if (this.userService.isLoggedIn()) {
+      console.log("logged in");
+      // redirect to payment page
+    } else {
+      console.log("not logged in");
+      this.router.navigate(['/login']);
+    }
+  }
+
+
 }
+
+

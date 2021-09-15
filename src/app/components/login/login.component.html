@@ -3,9 +3,8 @@
   <p-card header="Zaloguj się">
     <div class="p-pr-6 p-pl-6">
       <div class="p-mb-3">
-        <p-message severity="error" text="Niepoprawne dane logowania" *ngIf="errorMessage"></p-message>
+        <p-message severity="error" text="Niepoprawny email lub hasło" *ngIf="errorMessage != ''"></p-message>
       </div>
-
 
       <label class="p-d-block p-mb-1" for="email">E-mail</label>
       <input id="email" class="p-mb-3" [(ngModel)]="user.username" pInputText/>

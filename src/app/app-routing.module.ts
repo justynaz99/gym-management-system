@@ -5,10 +5,8 @@ import {LoginComponent} from "./components/login/login.component";
 import {HomeComponent} from "./components/home/home.component";
 import {RegisterComponent} from "./components/register/register.component";
 import {ScheduleComponent} from "./components/schedule/schedule.component";
-import {ActivitiesListComponent} from "./components/activities-list/activities-list.component";
-import {UsersListComponent} from "./components/users-list/users-list.component";
 import {WorkoutPlannerComponent} from "./components/workout-planner/workout-planner.component";
-import {TicketTypeListComponent} from "./components/ticket-type-list/ticket-type-list.component";
+import {TicketTypeComponent} from "./components/ticket-type/ticket-type.component";
 import {ProfileComponent} from "./components/profile/profile.component";
 import {LogoutComponent} from "./components/logout/logout.component";
 import {ActivityComponent} from "./components/activity/activity.component";
@@ -20,20 +18,18 @@ import {DetailComponent} from "./components/detail/detail/detail.component";
 
 const routes: Routes = [
   //public pages
-  // {path: '', component: HomeComponent},
+  {path: '', component: HomeComponent},
   {path: 'login', component: LoginComponent},
   {path: 'register', component: RegisterComponent},
   {path: 'home', component: HomeComponent},
   {path: 'schedule', component: ScheduleComponent},
-  {path: 'ticket-type-list', component: TicketTypeListComponent},
-  {path: 'activities-list', component: ActivitiesListComponent},
-  {path: 'activities/:id', component: ActivityComponent},
+  {path: 'ticket-type', component: TicketTypeComponent},
+  {path: 'activity', component: ActivityComponent},
   //user + admin pages
   {path: 'home/:name', component: HomeComponent, canActivate: [AuthGuard], data: {roles: [Role.USER, Role.ADMIN]}},
   {path: 'profile', component: ProfileComponent, canActivate: [AuthGuard], data: {roles: [Role.USER, Role.ADMIN]}},
   {path: 'logout', component: LogoutComponent, canActivate: [AuthGuard], data: {roles: [Role.USER, Role.ADMIN]}},
   //admin pages
-  {path: 'users-list', component: UsersListComponent, canActivate: [AuthGuard], data: {roles: [Role.ADMIN]}},
   {path: 'detail/:id', component: DetailComponent, canActivate: [AuthGuard], data: {roles: [Role.ADMIN]}},
   {path: 'workout-planner', component: WorkoutPlannerComponent, canActivate: [AuthGuard], data: {roles: [Role.ADMIN]}},
   //public error pages

@@ -89,6 +89,10 @@ img {
   flex-wrap: wrap;
 }
 
+.p-inline-message {
+  height: 40px;
+}
+
 
 
 
