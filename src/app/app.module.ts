@@ -83,7 +83,7 @@ import {KeyFilterModule} from "primeng/keyfilter";
     FullCalendarModule,
     TabViewModule,
     CalendarModule,
-    KeyFilterModule
+    KeyFilterModule,
 
   ],
   providers: [],

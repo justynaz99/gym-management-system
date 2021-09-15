@@ -8,6 +8,8 @@
 
       <p-card header="Moje dane">
 
+        <p-messages [(value)]="messages" [enableService]="false"></p-messages>
+
           <div class="p-grid">
             <div class="p-col">
               <label class="p-d-block p-mb-1" for="name">Imię</label>
@@ -68,23 +70,32 @@
     <div class="p-m-4 p-d-inline-block">
       <p-card header="Zmień hasło">
 
+        <div class="p-grid">
+          <div class="p-col">
+            <label class="p-d-block p-mb-1 p-mt-3">Aktualne hasło</label>
+            <p-password id="password" [feedback]="false" (keyup)="onKeyUp($event)" ></p-password>
+          </div>
+        </div>
+
           <div class="p-grid">
             <div class="p-col">
-              <label class="p-d-block p-mb-1 p-mt-3">Hasło</label>
-              <p-password id="password" [feedback]="false"></p-password>
+              <label class="p-d-block p-mb-1 p-mt-3">Nowe hasło</label>
+              <p-password id="password" [feedback]="false" [(ngModel)]="tempUser.password"></p-password>
             </div>
             <div class="p-col">
-              <label class="p-d-block p-mb-1 p-mt-3">Powtórz hasło</label>
+              <label class="p-d-block p-mb-1 p-mt-3">Powtórz nowe hasło</label>
               <p-password id="password2" [feedback]="false"></p-password>
             </div>
           </div>
 
-          <button pButton pRipple type="button" label="Zapisz"
-                  class="p-button-raised p-button-success p-d-block p-mt-5"
-                  style="width: 220px"></button>
+          <button pButton pRipple type="button" label="Zapisz" class="p-button-raised p-button-success p-d-block p-mt-5"
+                  style="width: 220px" (click)="changePassword()"></button>
       </p-card>
     </div>
   </div>
+
+
+
 
 </div>
 
