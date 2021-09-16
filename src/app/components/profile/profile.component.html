@@ -73,18 +73,18 @@
         <div class="p-grid">
           <div class="p-col">
             <label class="p-d-block p-mb-1 p-mt-3">Aktualne hasło</label>
-            <p-password id="password" [feedback]="false" (keyup)="onKeyUp($event)" ></p-password>
+            <p-password id="password" [feedback]="false" (input)="oldPass($event)" ></p-password>
           </div>
         </div>
 
           <div class="p-grid">
             <div class="p-col">
               <label class="p-d-block p-mb-1 p-mt-3">Nowe hasło</label>
-              <p-password id="password" [feedback]="false" [(ngModel)]="tempUser.password"></p-password>
+              <p-password id="password" [feedback]="false" (input)="newPass($event)"></p-password>
             </div>
             <div class="p-col">
               <label class="p-d-block p-mb-1 p-mt-3">Powtórz nowe hasło</label>
-              <p-password id="password2" [feedback]="false"></p-password>
+              <p-password id="password2" [feedback]="false" (input)="newPass2($event)"></p-password>
             </div>
           </div>
 

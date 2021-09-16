@@ -13,7 +13,8 @@ import {Observable, Subject} from "rxjs";
 export class ProfileComponent implements OnInit {
 
   currentUser!: User;
-  tempUser: User = new User();
+  newPassword!: string;
+  newPasswordControl!: string;
 
   messages!: Message[];
 
@@ -53,28 +54,46 @@ export class ProfileComponent implements OnInit {
     this.userService.login(this.currentUser).subscribe(data => {
       result.next(true);
       result.complete();
-      console.log("true");
+      console.log("correct password");
     }, error => {
       result.next(false);
       result.complete();
-      console.log("not true");
+      console.log("incorrect password");
     })
     return result.asObservable();
   }
 
-  onKeyUp(event: KeyboardEvent) {
+  oldPass(event: any) {
     const target = event.target as HTMLInputElement;
     this.currentUser.password = target.value;
+  }
+
+  newPass(event: any) {
+    const target = event.target as HTMLInputElement;
+    this.newPassword = target.value;
+  }
+
+  newPass2(event: any) {
+    const target = event.target as HTMLInputElement;
+    this.newPasswordControl = target.value;
   }
 
   changePassword() {
     this.checkPassword().subscribe(data => {
       if (data) {
-        console.log("changed")
-        console.log(this.tempUser.password);
+        console.log("old: " + this.currentUser.password);
+        if (this.newPassword === this.newPasswordControl) {
+          console.log("same passwords")
+          this.currentUser.password = this.newPassword;
+        }
+        console.log("new: " + this.currentUser.password)
+        this.userService.changePassword(this.currentUser.idUser, this.currentUser).subscribe(data => {
+          console.log(data);
+          console.log("password changed");
+        })
       }
       else {
-        console.log("not changed")
+        console.log("password not changed")
       }
     })
 

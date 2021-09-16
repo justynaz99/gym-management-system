@@ -62,5 +62,9 @@ export class UserService {
     return this.http.put(API_URL + id + '/edit', user);
   }
 
+  changePassword(id: number, user: User) {
+    return this.http.put(API_URL + id + '/edit-password', user);
+  }
+
 
 }
