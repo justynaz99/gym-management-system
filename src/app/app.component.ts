@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {MenuItem} from "primeng/api";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {UserService} from "./service/data/user/user.service";
 import {User} from "./model/user";
 
@@ -16,8 +16,8 @@ export class AppComponent implements OnInit {
   name = '';
 
 
-
-  constructor(private route: ActivatedRoute, private userService: UserService) { }
+  constructor(private route: ActivatedRoute, private userService: UserService, private router: Router) {
+  }
 
   ngOnInit(): void {
 
@@ -36,16 +36,30 @@ export class AppComponent implements OnInit {
       // {label: 'Klubowicze', icon: 'pi pi-fw pi-users', routerLink: ['/users-list']},
       // {label: 'Plan zajęć', icon: 'pi pi-fw pi-book', routerLink: ['/workout-planner']},
       // logged in
-      {label: 'Moje konto', icon: 'pi pi-fw pi-user', routerLink: ['/profile'], visible: this.isUserLoggedIn()},
+      {
+        label: 'Moje konto', icon: 'pi pi-fw pi-user', visible: this.isUserLoggedIn(),
+        items: [
+          {label: 'Moje dane', icon: 'pi pi-fw pi-user',  routerLink: ['/profile']},
+          {label: 'Wyloguj', icon: 'pi pi-fw pi-power-off', command: (event: Event) => { this.logout() }}
+        ]
+      },
+
     ];
+
 
     console.log(this.isUserLoggedIn());
   }
 
   isUserLoggedIn(): boolean {
     return this.userService.isLoggedIn();
-}
+  }
 
+  logout() {
+    this.userService.logOut().subscribe(data => {
+      this.router.navigate(['/login']);
+      window.location.reload();
+    });
+  }
 
 
 }

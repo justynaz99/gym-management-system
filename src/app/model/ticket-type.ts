@@ -1,5 +1,5 @@
 export class TicketType {
-  id!: number;
+  idType!: number;
   price!: number;
   name!: string;
   description!: string;

@@ -39,6 +39,10 @@ import { DetailComponent } from './components/detail/detail/detail.component';
 import { AdminComponent } from './components/admin/admin/admin.component';
 import {CalendarModule} from "primeng/calendar";
 import {KeyFilterModule} from "primeng/keyfilter";
+import {MenubarModule} from "primeng/menubar";
+import {DialogModule} from "primeng/dialog";
+import {BrowserAnimationsModule, NoopAnimationsModule} from "@angular/platform-browser/animations";
+import {InputTextareaModule} from "primeng/inputtextarea";
 
 
 @NgModule({
@@ -84,6 +88,12 @@ import {KeyFilterModule} from "primeng/keyfilter";
     TabViewModule,
     CalendarModule,
     KeyFilterModule,
+    MenubarModule,
+    DialogModule,
+    BrowserAnimationsModule,
+    NoopAnimationsModule,
+    InputTextareaModule
+
 
   ],
   providers: [],

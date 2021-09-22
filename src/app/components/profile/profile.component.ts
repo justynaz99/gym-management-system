@@ -4,6 +4,8 @@ import {UserService} from "../../service/data/user/user.service";
 import {Router} from "@angular/router";
 import {Message, MessageService, PrimeNGConfig} from "primeng/api";
 import {Observable, Subject} from "rxjs";
+import {TicketService} from "../../service/data/ticket/ticket.service";
+import {Ticket} from "../../model/ticket";
 
 @Component({
   selector: 'app-my-account',
@@ -18,7 +20,9 @@ export class ProfileComponent implements OnInit {
 
   messages!: Message[];
 
-  constructor(private userService: UserService, private router: Router) {
+  usersTickets!: Ticket[];
+
+  constructor(private userService: UserService, private router: Router, private ticketService: TicketService) {
     this.currentUser = JSON.parse(<string>localStorage.getItem('currentUser'));
   }
 
@@ -26,14 +30,10 @@ export class ProfileComponent implements OnInit {
     if (!this.currentUser) {
       this.router.navigate(['/login']);
     }
+    this.findAllUsersTickets();
   }
 
-  logout() {
-    this.userService.logOut().subscribe(data => {
-      this.router.navigate(['/login']);
-      window.location.reload();
-    });
-  }
+
 
   updateUser() {
     this.userService.updateUser(this.currentUser.idUser, this.currentUser)
@@ -96,7 +96,15 @@ export class ProfileComponent implements OnInit {
         console.log("password not changed")
       }
     })
+  }
 
+  findAllUsersTickets() {
+    this.ticketService.findAllUsersTickets(this.currentUser.idUser).subscribe(
+      response => {
+        console.log(response);
+        this.usersTickets = response;
+      }
+    )
   }
 
 
