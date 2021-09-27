@@ -1,41 +1,63 @@
-
 <div class="p-m-4 p-d-block" style="width: max-content">
-  <p-card header="Zarejestruj się">
-    <div class="p-pr-6 p-pl-6">
-      <div class="p-mb-3">
+  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+    <p-card header="Zarejestruj się">
+      <div class="p-pr-6 p-pl-6">
+        <div class="p-mb-3">
+
+        </div>
+
+
+        <label class="p-d-block p-mb-1" for="firstName">Imię</label>
+        <input id="firstName" class="p-mb-3" pKeyFilter="alpha" [(ngModel)]="user.firstName"
+               formControlName="firstName" pInputText/>
+        <p-message severity="error" text="Imię powinno zawierać co najmniej 3 znaki"
+                   *ngIf="f.firstName.errors && submitted"></p-message>
+
+        <label class="p-d-block p-mb-1" for="lastName">Nazwisko</label>
+        <input id="lastName" class="p-mb-3" pKeyFilter="alpha" [(ngModel)]="user.lastName"
+               formControlName="lastName" pInputText/>
+        <p-message severity="error" text="Nazwisko powinno zawierać co najmniej 3 znaki"
+                   *ngIf="f.lastName.errors && submitted"></p-message>
+
+        <label class="p-d-block p-mb-1" for="email">E-mail</label>
+        <input id="email" class="p-mb-3" [(ngModel)]="user.username"
+               formControlName="username" pInputText/>
+        <p-message *ngIf="usernameTaken" severity="error" text="Użytkownik o takim emailu już istnieje"></p-message>
+        <p-message *ngIf="f.username.errors && submitted" severity="error"
+                   text="Niepoprawny format adresu email"></p-message>
+
+        <label class="p-d-block p-mb-1">Data urodzenia</label>
+        <p-calendar [(ngModel)]="user.birthDate" dateFormat="yy-mm-dd"
+                    formControlName="birthDate" [monthNavigator]="true" [yearNavigator]="true"
+                    yearRange="1930:2021"></p-calendar>
+        <!--        <p-inputMask class="p-mb-3" mask="9999-99-99" [(ngModel)]="user.birthDate" placeholder="2021-09-13"-->
+        <!--                     slotChar="yyyy-mm-dd" formControlName="birthDate"></p-inputMask>-->
+        <p-message *ngIf="f.birthDate.errors && submitted" severity="error" text="Data urodzenia wymagana"></p-message>
+
+        <label class="p-d-block p-mb-1" style="margin-top: 20px">Numer telefonu</label>
+        <p-inputMask id="phone" class="p-mb-3" mask="999-999-999" placeholder="999-999-999"
+                     [(ngModel)]="user.phoneNumber" formControlName="phoneNumber"></p-inputMask>
+        <p-message *ngIf="f.phoneNumber.errors && submitted" severity="error"
+                   text="Numer telefonu wymagany"></p-message>
+
+        <label class="p-d-block p-mb-1 p-mt-3">Hasło</label>
+        <p-password class="p-mb-3" id="password" [feedback]="false"
+                    [(ngModel)]="user.password" formControlName="password"></p-password>
+        <p-message *ngIf="f.password.errors && submitted" severity="error"
+                   text="Hasło powinno zawierać co najmniej: 6 znaków, jedną wielką literę oraz jedną cyfrę"></p-message>
+
+        <label class="p-d-block p-mb-1 p-mt-3">Powtórz hasło</label>
+        <p-password id="confirmPassword" [feedback]="false" formControlName="confirmPassword"></p-password>
+        <p-message *ngIf="f.confirmPassword.errors && submitted" severity="error"
+                   text="Hasła nie są takie same"></p-message>
+
+        <button pButton pRipple type="submit" label="Zarejestruj"
+                class="p-button-raised p-button-success p-d-block p-mt-5" style="width: 220px"></button>
+
 
       </div>
-
-      <label class="p-d-block p-mb-1" for="firstName">Imię</label>
-      <input id="firstName" class="p-mb-3" pKeyFilter="alpha" required [(ngModel)]="user.firstName" pInputText/>
-
-      <label class="p-d-block p-mb-1" for="lastName">Nazwisko</label>
-      <input id="lastName" class="p-mb-3" pKeyFilter="alpha" [(ngModel)]="user.lastName" pInputText/>
-
-      <label class="p-d-block p-mb-1" for="email">E-mail</label>
-      <input id="email" class="p-mb-3" [(ngModel)]="user.username" pInputText/>
-      <p-message *ngIf="message != ''" severity="error" text="Użytkownik o takim emailu już istnieje"
-      style="margin-left: 10px; height: 20px"></p-message>
-
-
-      <label class="p-d-block p-mb-1">Data urodzenia</label>
-      <p-inputMask class="p-mb-3" mask="9999-99-99" [(ngModel)]="user.birthDate" placeholder="2021-09-13"
-                   slotChar="yyyy-mm-dd"></p-inputMask>
-
-      <label class="p-d-block p-mb-1" style="margin-top: 20px">Numer telefonu</label>
-      <p-inputMask id="phone" mask="999-999-999" placeholder="999-999-999"
-                   [(ngModel)]="user.phoneNumber" class="p-mb-3"></p-inputMask>
-
-      <label class="p-d-block p-mb-1 p-mt-3">Hasło</label>
-      <p-password class="p-mb-3" id="password" [feedback]="false" [(ngModel)]="user.password"></p-password>
-
-      <!--      <label class="p-d-block p-mb-1 p-mt-3">Powtórz hasło</label>-->
-      <!--      <p-password id="password2" [feedback]="false"></p-password>-->
-
-      <button pButton pRipple type="button" label="Zarejestruj"
-              class="p-button-raised p-button-success p-d-block p-mt-5"
-              style="width: 220px" (click)="register()"></button>
-    </div>
-  </p-card>
+    </p-card>
+  </form>
 </div>
+
 

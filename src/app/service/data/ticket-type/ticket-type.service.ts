@@ -16,6 +16,10 @@ export class TicketTypeService {
     return this.http.get<TicketType[]>(API_URL + 'all');
   }
 
+  findTicketTypeById(id: number) {
+    return this.http.get<TicketType>(API_URL + id);
+  }
+
   addTicketType(ticketType: TicketType): Observable<any> {
     return this.http.post(API_URL + "add", JSON.stringify(ticketType),
       {headers: {"Content-Type":"application/json; charset=UTF-8"}});
@@ -25,29 +29,9 @@ export class TicketTypeService {
     return this.http.put(API_URL + id + '/edit', ticketType);
   }
 
-  findTicketTypeById(id: number) {
-    return this.http.get<TicketType>(API_URL + id);
-  }
-
   deleteTicketTypeById(id: number) {
     return this.http.delete(API_URL + id + '/delete')
   }
-
-  // deleteTicketType(id: number) {
-  //   return this.http.delete(`${API_URL}/ticket-types/${id}`);
-  // }
-  //
-  // retrieveTicketType(id: number) {
-  //   return this.http.get<TicketType>(`${API_URL}/ticket-types/${id}`);
-  // }
-  //
-  // updateTicketType(id: number, ticketType: TicketType) {
-  //   return this.http.put(`${API_URL}/ticket-types/${id}`, ticketType);
-  // }
-  //
-  // createActivity(ticketType: TicketType) {
-  //   return this.http.post(`${API_URL}/ticket-types`, ticketType);
-  // }
 
 
 }

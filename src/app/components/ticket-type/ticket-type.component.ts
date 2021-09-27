@@ -18,9 +18,9 @@ export class TicketTypeComponent implements OnInit {
 
   ticketTypes!: Array<TicketType>;
   currentUser!: User;
-  displayNewTicketDialog: boolean = false;
-  displayEditTicketDialog: boolean = false;
-  displayDeleteTicketDialog: boolean = false;
+  displayNewTicketTypeDialog: boolean = false;
+  displayEditTicketTypeDialog: boolean = false;
+  displayDeleteTicketTypeDialog: boolean = false;
   ticketTypeTemp: TicketType = new TicketType();
 
   constructor(
@@ -34,7 +34,6 @@ export class TicketTypeComponent implements OnInit {
   ngOnInit(): void {
     this.findAllTicketTypes();
     this.currentUser = this.userService.currentUserValue;
-    console.log(this.currentUser.role);
     this.primengConfig.ripple = true;
   }
 
@@ -56,8 +55,27 @@ export class TicketTypeComponent implements OnInit {
     }
   }
 
-  addNewTicketDialog() {
-    this.displayNewTicketDialog = true;
+
+  addNewTicketTypeDialog() {
+    this.displayNewTicketTypeDialog = true;
+  }
+
+  editTicketTypeDialog(id: number) {
+    this.findTicketTypeById(id);
+    this.displayEditTicketTypeDialog = true;
+  }
+
+  deleteTicketTypeDialog(id: number) {
+    this.findTicketTypeById(id);
+    this.displayDeleteTicketTypeDialog = true;
+  }
+
+
+
+  findTicketTypeById(id: number) {
+    this.ticketTypeService.findTicketTypeById(id).subscribe(response => {
+      this.ticketTypeTemp = response;
+    })
   }
 
   addTicketType() {
@@ -77,17 +95,6 @@ export class TicketTypeComponent implements OnInit {
       })
   }
 
-  findTicketTypeById(id: number) {
-    this.ticketTypeService.findTicketTypeById(id).subscribe(response => {
-      this.ticketTypeTemp = response;
-    })
-  }
-
-  editTicketDialog(id: number) {
-    this.findTicketTypeById(id);
-    this.displayEditTicketDialog = true;
-  }
-
   deleteTicketTypeById(id: number) {
     this.ticketTypeService.deleteTicketTypeById(id).subscribe(response => {
       console.log(response);
@@ -95,10 +102,7 @@ export class TicketTypeComponent implements OnInit {
     })
   }
 
-  deleteTicketDialog(id: number) {
-    this.findTicketTypeById(id);
-    this.displayDeleteTicketDialog = true;
-  }
+
 
 
 

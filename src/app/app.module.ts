@@ -43,6 +43,9 @@ import {MenubarModule} from "primeng/menubar";
 import {DialogModule} from "primeng/dialog";
 import {BrowserAnimationsModule, NoopAnimationsModule} from "@angular/platform-browser/animations";
 import {InputTextareaModule} from "primeng/inputtextarea";
+import {AutoCompleteModule} from "primeng/autocomplete";
+import {PanelModule} from "primeng/panel";
+import {DropdownModule} from "primeng/dropdown";
 
 
 @NgModule({
@@ -92,7 +95,10 @@ import {InputTextareaModule} from "primeng/inputtextarea";
     DialogModule,
     BrowserAnimationsModule,
     NoopAnimationsModule,
-    InputTextareaModule
+    InputTextareaModule,
+    AutoCompleteModule,
+    PanelModule,
+    DropdownModule
 
 
   ],

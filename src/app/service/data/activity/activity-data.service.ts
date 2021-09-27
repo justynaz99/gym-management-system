@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Activity} from "../../../model/activity";
+import {Observable} from "rxjs";
 
 let API_URL = "http://localhost:8080/api/activity/";
 
@@ -15,21 +16,24 @@ export class ActivityDataService {
     return this.http.get<Activity[]>(API_URL + 'all');
   }
 
-  // deleteActivity(id: number) {
-  //   return this.http.delete(`${API_URL}/activities/${id}`);
-  // }
-  //
-  // retrieveActivity(id: number) {
-  //   return this.http.get<Activity>(`${API_URL}/activities/${id}`);
-  // }
-  //
-  // updateActivity(id: number, activity: Activity) {
-  //   return this.http.put(`${API_URL}/activities/${id}`, activity);
-  // }
-  //
-  // createActivity(activity: Activity) {
-  //   return this.http.post(`${API_URL}/activities`, activity);
-  // }
+  findActivityById(id: number) {
+    return this.http.get<Activity>(API_URL + id);
+  }
+
+  addActivity(activity: Activity): Observable<any> {
+    return this.http.post(API_URL + "add", JSON.stringify(activity),
+      {headers: {"Content-Type":"application/json; charset=UTF-8"}});
+  }
+
+  updateActivity(id: number, activity: Activity) {
+    return this.http.put(API_URL + id + '/edit', activity);
+  }
+
+  deleteActivityById(id: number) {
+    return this.http.delete(API_URL + id + '/delete')
+  }
+
+
 
 
 

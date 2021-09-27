@@ -1,3 +1,7 @@
+@import '~primeicons/primeicons.css';
+@import '~primeng/resources/themes/saga-green/theme.css';
+@import '~primeng/resources/primeng.min.css';
+
 body {
   margin: 1%;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
@@ -91,7 +95,13 @@ img {
 
 .p-inline-message {
   height: 40px;
+  margin-left: 10px !important;
 }
+
+.p-inputtext.ng-dirty.ng-invalid {
+  border-color: #8f0517 !important;
+}
+
 
 
 
