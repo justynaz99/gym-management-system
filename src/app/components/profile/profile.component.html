@@ -1,98 +1,96 @@
-<div class="p-grid">
+<div class="p-m-4 p-d-block" style="max-width: 75%" xmlns="http://www.w3.org/1999/html">
 
-  <div class="p-col">
-    <div class="p-m-4">
-
-      <p-card header="Moje dane">
+  <div class="p-mb-4">
+    <p-fieldset legend="Moje dane" [toggleable]="true" [collapsed]="true">
+      <form [formGroup]="editForm" (submit)="updateUser()">
 
         <p-messages [(value)]="messages" [enableService]="false"></p-messages>
 
-          <div class="p-grid">
-            <div class="p-col">
-              <label class="p-d-block p-mb-1" for="name">Imię</label>
-              <input id="name" class="p-mb-3" [(ngModel)]="currentUser.firstName" pInputText/>
-            </div>
-            <div class="p-col">
-              <label class="p-d-block p-mb-1" for="surname">Nazwisko</label>
-              <input id="surname" class="p-mb-3" [(ngModel)]="currentUser.lastName" pInputText/>
-            </div>
-          </div>
+        <label class="p-d-block p-mb-1" for="name">Imię</label>
+        <input id="name" class="p-mb-3" [(ngModel)]="currentUser.firstName" formControlName="firstName"
+               pInputText/>
+        <p-message severity="error" text="Imię powinno zawierać co najmniej 3 znaki"
+                   *ngIf="f.firstName.errors && submitted"></p-message>
 
-          <div class="p-grid">
-            <div class="p-col">
-              <label class="p-d-block p-mb-1" for="email">E-mail</label>
-              <input id="email" class="p-mb-3" [(ngModel)]="currentUser.username" pInputText/>
-            </div>
-            <div class="p-col">
-              <label class="p-d-block p-mb-1">Numer telefonu</label>
-              <p-inputMask id="phone" mask="999-999-999" placeholder="999-999-999" class="p-mb-3" [(ngModel)]="currentUser.phoneNumber"></p-inputMask>
-            </div>
-          </div>
+        <label class="p-d-block p-mb-1" for="surname">Nazwisko</label>
+        <input id="surname" class="p-mb-3" [(ngModel)]="currentUser.lastName" formControlName="lastName"
+               pInputText/>
+        <p-message severity="error" text="Nazwisko powinno zawierać co najmniej 3 znaki"
+                   *ngIf="f.lastName.errors && submitted"></p-message>
 
-          <button pButton pRipple type="button" label="Zapisz" class="p-button-raised p-button-success p-d-block p-mt-5"
-                  (click)="updateUser()" style="width: 220px"></button>
-      </p-card>
-    </div>
+        <label class="p-d-block p-mb-1" for="email">E-mail</label>
+        <input id="email" class="p-mb-3" [disabled]="true" value="{{currentUser.username}}" pInputText/>
+
+
+        <label class="p-d-block p-mb-1">Data urodzenia</label>
+        <p-inputMask class="p-mb-3" mask="9999-99-99" [(ngModel)]="currentUser.birthDate" placeholder="2021-09-13"
+                     slotChar="yyyy-mm-dd" formControlName="birthDate"></p-inputMask>
+        <p-message *ngIf="f.birthDate.errors && submitted" severity="error" text="Data urodzenia wymagana"></p-message>
+
+        <label class="p-d-block p-mb-1" style="margin-top: 1rem">Numer telefonu</label>
+        <p-inputMask id="phone" mask="999-999-999" placeholder="999-999-999" class="p-mb-3"
+                     [(ngModel)]="currentUser.phoneNumber" formControlName="phoneNumber"
+        ></p-inputMask>
+        <p-message *ngIf="f.phoneNumber.errors && submitted" severity="error"
+                   text="Numer telefonu wymagany"></p-message>
+
+
+        <button pButton pRipple type="submit" label="Zapisz" class="p-button-raised p-button-success p-d-block p-mt-5"
+                style="width: 220px"></button>
+      </form>
+    </p-fieldset>
   </div>
 
-  <div class="p-col">
-    <div class="p-m-4 p-d-inline-block">
-      <p-card header="Moje karnety">
-        <p-table [value]="usersTickets" [paginator]="true" [rows]="10">
-          <ng-template pTemplate="header">
-            <tr>
-              <th>Karnet</th>
-              <th>Data zakupu</th>
-              <th>Data wygaśnięcia</th>
-            </tr>
-          </ng-template>
-          <ng-template pTemplate="body" let-ticket>
-            <tr>
-              <td>{{ticket.name}}</td>
-              <td>{{ticket.activationDate}}</td>
-              <td>{{ticket.expirationDate}}</td>
-            </tr>
-          </ng-template>
-        </p-table>
-      </p-card>
-    </div>
+  <div class="p-mb-4">
+    <p-fieldset legend="Zmień hasło" [toggleable]="true" [collapsed]="false">
+
+      <p-messages [(value)]="passMessages" [enableService]="false"></p-messages>
+
+      <form [formGroup]="editPasswordFrom" (submit)="changePassword()">
+        <label class="p-d-block p-mb-1 p-mt-3">Aktualne hasło</label>
+        <p-password id="password" [feedback]="false" (input)="oldPass($event)"></p-password>
+        <p-message *ngIf="!correctPassword" severity="error"
+                   text="Niepoprawne hasło"></p-message>
+
+        <label class="p-d-block p-mb-1 p-mt-3">Nowe hasło</label>
+        <p-password id="password" [feedback]="false" (input)="newPass($event)" formControlName="password"></p-password>
+        <p-message *ngIf="p.password.errors && passSubmitted" severity="error"
+                   text="Hasło powinno zawierać co najmniej: 6 znaków, jedną wielką literę oraz jedną cyfrę"></p-message>
+
+        <label class="p-d-block p-mb-1 p-mt-3">Powtórz nowe hasło</label>
+        <p-password id="confirmPassword" [feedback]="false" (input)="newPass2($event)" formControlName="confirmPassword"></p-password>
+        <p-message *ngIf="p.confirmPassword.errors && passSubmitted" severity="error"
+                   text="Hasła nie są takie same"></p-message>
+
+        <button pButton pRipple type="submit" label="Zapisz" class="p-button-raised p-button-success p-d-block p-mt-5"
+                style="width: 220px" ></button>
+      </form>
+    </p-fieldset>
+  </div>
+
+  <div class="p-mb-4">
+    <p-fieldset legend="Moje karnety" [toggleable]="true" [collapsed]="true">
+      <p-table [value]="usersTickets" [paginator]="true" [rows]="10">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Karnet</th>
+            <th>Data zakupu</th>
+            <th>Data wygaśnięcia</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-ticket>
+          <tr>
+            <td>{{ticket.name}}</td>
+            <td>{{ticket.activationDate}}</td>
+            <td>{{ticket.expirationDate}}</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </p-fieldset>
   </div>
 
 </div>
 
 
-<div class="p-grid">
 
-  <div class="p-col">
-    <div class="p-m-4 p-d-inline-block">
-      <p-card header="Zmień hasło">
-
-        <div class="p-grid">
-          <div class="p-col">
-            <label class="p-d-block p-mb-1 p-mt-3">Aktualne hasło</label>
-            <p-password id="password" [feedback]="false" (input)="oldPass($event)" ></p-password>
-          </div>
-        </div>
-
-          <div class="p-grid">
-            <div class="p-col">
-              <label class="p-d-block p-mb-1 p-mt-3">Nowe hasło</label>
-              <p-password id="password" [feedback]="false" (input)="newPass($event)"></p-password>
-            </div>
-            <div class="p-col">
-              <label class="p-d-block p-mb-1 p-mt-3">Powtórz nowe hasło</label>
-              <p-password id="password2" [feedback]="false" (input)="newPass2($event)"></p-password>
-            </div>
-          </div>
-
-          <button pButton pRipple type="button" label="Zapisz" class="p-button-raised p-button-success p-d-block p-mt-5"
-                  style="width: 220px" (click)="changePassword()"></button>
-      </p-card>
-    </div>
-  </div>
-
-
-
-
-</div>
 

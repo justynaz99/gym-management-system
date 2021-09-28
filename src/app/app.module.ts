@@ -46,6 +46,7 @@ import {InputTextareaModule} from "primeng/inputtextarea";
 import {AutoCompleteModule} from "primeng/autocomplete";
 import {PanelModule} from "primeng/panel";
 import {DropdownModule} from "primeng/dropdown";
+import {FieldsetModule} from "primeng/fieldset";
 
 
 @NgModule({
@@ -98,7 +99,8 @@ import {DropdownModule} from "primeng/dropdown";
     InputTextareaModule,
     AutoCompleteModule,
     PanelModule,
-    DropdownModule
+    DropdownModule,
+    FieldsetModule
 
 
   ],

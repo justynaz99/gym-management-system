@@ -82,14 +82,12 @@ export class RegisterComponent implements OnInit {
     this.submitted = true;
 
     if (this.registerForm.invalid) {
-      console.log("if")
       return;
     } else {
       this.userService.register(this.user).subscribe(data => {
         this.router.navigate(['/login']);
       }, err => {
         this.usernameTaken = true;
-        console.log("error");
       });
     }
   }

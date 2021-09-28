@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {User} from "../../model/user";
 import {UserService} from "../../service/data/user/user.service";
 import {Router} from "@angular/router";
@@ -6,6 +6,8 @@ import {Message, MessageService, PrimeNGConfig} from "primeng/api";
 import {Observable, Subject} from "rxjs";
 import {TicketService} from "../../service/data/ticket/ticket.service";
 import {Ticket} from "../../model/ticket";
+import {AbstractControl, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
+import {MustMatch} from "../../helpers/must-match.validator";
 
 @Component({
   selector: 'app-my-account',
@@ -17,12 +19,17 @@ export class ProfileComponent implements OnInit {
   currentUser!: User;
   newPassword!: string;
   newPasswordControl!: string;
+  editForm!: FormGroup;
+  editPasswordFrom!: FormGroup;
+  submitted: boolean = false;
+  correctPassword: boolean = true;
+  passSubmitted: boolean = false;
 
   messages!: Message[];
-
+  passMessages!: Message[];
   usersTickets!: Ticket[];
 
-  constructor(private userService: UserService, private router: Router, private ticketService: TicketService) {
+  constructor(private userService: UserService, private router: Router, private ticketService: TicketService, private formBuilder: FormBuilder, private config: PrimeNGConfig) {
     this.currentUser = JSON.parse(<string>localStorage.getItem('currentUser'));
   }
 
@@ -30,23 +37,77 @@ export class ProfileComponent implements OnInit {
     if (!this.currentUser) {
       this.router.navigate(['/login']);
     }
+
     this.findAllUsersTickets();
+
+    this.editForm = new FormGroup(
+      {
+        firstName: new FormControl('',
+          [
+            Validators.required,
+            Validators.minLength(3),
+            Validators.maxLength(20),
+          ]),
+        lastName: new FormControl('',
+          [
+            Validators.required,
+            Validators.minLength(3),
+            Validators.maxLength(20)
+          ]
+        ),
+        birthDate: new FormControl('', Validators.required),
+        phoneNumber: new FormControl('', Validators.required),
+      });
+
+    this.editPasswordFrom = this.formBuilder.group(
+      {
+        password: ['',
+          [
+            Validators.required,
+            Validators.minLength(6),
+            Validators.maxLength(40),
+            Validators.pattern(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/)
+          ]
+        ],
+        confirmPassword: ['', Validators.required],
+      },
+      {
+        validator: MustMatch('password', 'confirmPassword')
+      }
+    );
   }
 
+  get f(): { [key: string]: AbstractControl } {
+    return this.editForm.controls;
+  }
 
+  get p(): { [key: string]: AbstractControl } {
+    return this.editPasswordFrom.controls;
+  }
 
   updateUser() {
-    this.userService.updateUser(this.currentUser.idUser, this.currentUser)
-      .subscribe(data => {
-        console.log(data)
-        this.messages = [
-          {severity:'success', summary:'Sukces', detail:'Poprawnie zapisano dane'},
-        ];
-      }, error => {
-        this.messages = [
-          {severity:'error', summary:'Błąd', detail:''}
-        ];
-      });
+    this.submitted = true;
+
+    if (this.editForm.invalid) {
+      return
+    } else {
+      this.userService.updateUser(this.currentUser.idUser, this.currentUser)
+        .subscribe(data => {
+          this.userService.findUserByUsername(this.currentUser.username).subscribe(response => {
+            console.log(response);
+            localStorage.setItem('currentUser', JSON.stringify(response));
+          })
+
+          this.messages = [
+            {severity: 'success', summary: 'Sukces', detail: 'Poprawnie zapisano dane'},
+          ];
+        }, error => {
+          this.messages = [
+            {severity: 'error', summary: 'Błąd', detail: ''}
+          ];
+        });
+    }
+
   }
 
   checkPassword(): Observable<boolean> {
@@ -54,11 +115,9 @@ export class ProfileComponent implements OnInit {
     this.userService.login(this.currentUser).subscribe(data => {
       result.next(true);
       result.complete();
-      console.log("correct password");
     }, error => {
       result.next(false);
       result.complete();
-      console.log("incorrect password");
     })
     return result.asObservable();
   }
@@ -79,21 +138,20 @@ export class ProfileComponent implements OnInit {
   }
 
   changePassword() {
+    this.passSubmitted = true;
     this.checkPassword().subscribe(data => {
       if (data) {
-        console.log("old: " + this.currentUser.password);
-        if (this.newPassword === this.newPasswordControl) {
-          console.log("same passwords")
-          this.currentUser.password = this.newPassword;
-        }
-        console.log("new: " + this.currentUser.password)
+        this.correctPassword = true;
+        console.log("correct pass")
+        this.currentUser.password = this.newPassword;
         this.userService.changePassword(this.currentUser.idUser, this.currentUser).subscribe(data => {
-          console.log(data);
-          console.log("password changed");
         })
-      }
-      else {
-        console.log("password not changed")
+        this.passMessages = [
+          {severity: 'success', summary: 'Sukces', detail: 'Poprawnie zapisano dane'},
+        ];
+      } else {
+        this.correctPassword = false;
+
       }
     })
   }
