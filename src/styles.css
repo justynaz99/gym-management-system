@@ -95,11 +95,16 @@ img {
 
 .p-inline-message {
   height: 40px;
-  margin-left: 10px !important;
+  margin-left: 10px;
 }
 
 .p-inputtext.ng-dirty.ng-invalid {
   border-color: #8f0517 !important;
+}
+
+.p-message {
+  margin: -1rem 0 1rem 0 !important;
+  border-radius: 3px;
 }
 
 

@@ -3,6 +3,7 @@ import {Router} from "@angular/router";
 import {Message, MessageService} from "primeng/api";
 import {UserService} from "../../service/data/user/user.service";
 import {User} from "../../model/user";
+import {AppComponent} from "../../app.component";
 
 @Component({
   selector: 'app-login',
@@ -14,8 +15,9 @@ export class LoginComponent implements OnInit {
 
   user: User = new User();
   errorMessage: string = '';
+  currentUser!: User;
 
-  constructor(private userService: UserService, private router: Router) { }
+  constructor(private userService: UserService, private router: Router, private app: AppComponent) { }
 
   ngOnInit() {
     if(this.userService.currentUserValue) {
@@ -27,7 +29,8 @@ export class LoginComponent implements OnInit {
   login() {
     this.userService.login(this.user).subscribe(data => {
       this.router.navigate(['/home']);
-      window.location.reload();
+      this.currentUser = this.userService.currentUserValue;
+      this.app.loadMenuItems();
     }, err => {
       this.errorMessage = "Niepoprawny email lub hasło";
     });

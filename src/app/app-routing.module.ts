@@ -15,6 +15,7 @@ import {UnauthorizedComponent} from "./components/unauthorized/unauthorized.comp
 import {AuthGuard} from "./guards/auth.guard";
 import {Role} from "./model/role";
 import {DetailComponent} from "./components/detail/detail/detail.component";
+import {UserComponent} from "./components/user/user.component";
 
 const routes: Routes = [
   //public pages
@@ -32,6 +33,7 @@ const routes: Routes = [
   //admin pages
   {path: 'detail/:id', component: DetailComponent, canActivate: [AuthGuard], data: {roles: [Role.ADMIN]}},
   {path: 'workout-planner', component: WorkoutPlannerComponent, canActivate: [AuthGuard], data: {roles: [Role.ADMIN]}},
+  {path: 'user', component: UserComponent, canActivate: [AuthGuard], data: {roles: [Role.ADMIN]}},
   //public error pages
   {path: '404', component: NotFoundComponent},
   {path: '401', component: UnauthorizedComponent},

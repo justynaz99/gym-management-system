@@ -1,24 +1,9 @@
 <div class="p-m-4 p-d-block" style="max-width: 100em">
   <p-card>
 
-    <!--    <p-orderList [value]="ticketTypes" [listStyle]="{'max-height':'30rem'}" header="Lista karnetów"  [dragdrop]="true" controlsPosition="right">-->
-    <!--      <ng-template let-ticket pTemplate="item">-->
-    <!--        <div class="product-item">-->
+    <p-messages [(value)]="messages" [enableService]="false"></p-messages>
 
-    <!--          <div class="product-list-detail">-->
-    <!--            <h3 class="p-mb-2">{{ticket.name}}</h3>-->
-    <!--            <i class="pi pi-check product-category-icon"></i>-->
-    <!--            <span class="product-category ">{{ticket.description}}</span>-->
-    <!--          </div>-->
-    <!--          <div class="product-list-action">-->
-    <!--            <h3 class="p-mb-2">{{ticket.price}} zł</h3>-->
-    <!--            <td><button pButton pRipple type="button" label="Kup" class="p-button-raised"></button></td>-->
-    <!--          </div>-->
-    <!--        </div>-->
-    <!--      </ng-template>-->
-    <!--    </p-orderList>-->
-
-    <p-table [value]="ticketTypes">
+    <p-table [value]="ticketTypes" [paginator]="true" [rows]="10" [showCurrentPageReport]="true">
       <ng-template pTemplate="header">
         <tr>
           <th>Lista karnetów</th>
@@ -38,9 +23,11 @@
                     type="button" label="Kup" class="p-button-raised" (click)="buyTicket()"></button>
 
             <!--  Admin buttons -->
-            <button pButton pRipple *ngIf="currentUser.role === 'ADMIN'" (click)="deleteTicketTypeDialog(ticketType.idType)"
+            <button pButton pRipple *ngIf="currentUser.role === 'ADMIN'"
+                    (click)="deleteTicketTypeDialog(ticketType.idType)"
                     icon="pi pi-trash" class="p-button-rounded p-button-warning" style="margin-right: 10px"></button>
-            <button pButton pRipple type="button" *ngIf="currentUser.role === 'ADMIN'" (click)="editTicketTypeDialog(ticketType.idType)"
+            <button pButton pRipple type="button" *ngIf="currentUser.role === 'ADMIN'"
+                    (click)="editTicketTypeDialog(ticketType.idType)"
                     icon="pi pi-pencil" class="p-button-rounded p-button-info"></button>
           </td>
           <!--          -->
@@ -59,37 +46,47 @@
 
 </div>
 
-<p-dialog header="Dodaj nowy karnet" [(visible)]="displayNewTicketTypeDialog" [style]="{width: '50vw'}">
+<p-dialog header="Dodaj nowy karnet" [(visible)]="displayNewTicketTypeDialog" [style]="{width: '55vw'}">
 
-  <label class="p-d-block p-mb-1" for="name">Nazwa</label>
-  <input id="name" class="p-mb-3" [(ngModel)]="ticketTypeTemp.name" pInputText/>
+  <form [formGroup]="form" (submit)="addTicketType()">
+    <label class="p-d-block p-mb-1" for="name">Nazwa</label>
+    <input class="p-mb-3" [(ngModel)]="ticketTypeTemp.name" formControlName="name" pInputText/>
+    <p-message *ngIf="f.name.errors && submitted" severity="error"
+               text="Nazwa zajęć powinna zawierać od 3 do 40 znaków"></p-message>
 
-  <label class="p-d-block p-mb-1" for="price">Cena</label>
-  <input id="price" class="p-mb-3" [(ngModel)]="ticketTypeTemp.price" pInputText/>
+    <label class="p-d-block p-mb-1" for="price">Cena</label>
+    <input class="p-mb-3" [(ngModel)]="ticketTypeTemp.price" formControlName="price" pInputText/>
+    <p-message *ngIf="f.price.errors && submitted" severity="error"
+               text="Nieprawidłowy format. Przykład: 99.00"></p-message>
 
-  <label class="p-d-block p-mb-1">Opis</label>
-  <textarea [rows]="5" [cols]="30" [(ngModel)]="ticketTypeTemp.description" pInputTextarea class="p-mb-3"></textarea>
+    <label class="p-d-block p-mb-1">Opis</label>
+    <textarea [rows]="5" [cols]="30" [(ngModel)]="ticketTypeTemp.description" pInputTextarea class="p-mb-3"></textarea>
 
-  <button pButton pRipple type="button" label="Zapisz" (click)="addTicketType()"
-          class="p-button-raised p-button-success p-d-block p-mt-5" style="width: 220px"></button>
-
+    <button pButton pRipple type="submit" label="Zapisz"
+            class="p-button-raised p-button-success p-d-block p-mt-5" style="width: 220px"></button>
+  </form>
 </p-dialog>
 
 
 <p-dialog header="Edytuj karnet" [(visible)]="displayEditTicketTypeDialog" [style]="{width: '50vw'}">
 
-  <label class="p-d-block p-mb-1" for="name">Nazwa</label>
-  <input id="name" class="p-mb-3" [(ngModel)]="ticketTypeTemp.name" pInputText/>
+  <form [formGroup]="form" (submit)="updateTicketType(ticketTypeTemp.idType)">
+    <label class="p-d-block p-mb-1" for="name">Nazwa</label>
+    <input id="name" class="p-mb-3" [(ngModel)]="ticketTypeTemp.name" formControlName="name" pInputText/>
+    <p-message *ngIf="f.name.errors && submitted" severity="error"
+               text="Nazwa zajęć powinna zawierać od 3 do 40 znaków"></p-message>
 
-  <label class="p-d-block p-mb-1" for="price">Cena</label>
-  <input id="price" class="p-mb-3" [(ngModel)]="ticketTypeTemp.price" pInputText/>
+    <label class="p-d-block p-mb-1" for="price">Cena</label>
+    <input id="price" class="p-mb-3" [(ngModel)]="ticketTypeTemp.price" formControlName="price" pInputText/>
+    <p-message *ngIf="f.price.errors && submitted" severity="error"
+               text="Nieprawidłowy format. Przykład: 99.99"></p-message>
 
-  <label class="p-d-block p-mb-1">Opis</label>
-  <textarea [rows]="5" [cols]="30" [(ngModel)]="ticketTypeTemp.description" pInputTextarea class="p-mb-3"></textarea>
+    <label class="p-d-block p-mb-1">Opis</label>
+    <textarea [rows]="5" [cols]="30" [(ngModel)]="ticketTypeTemp.description" formControlName="description" pInputTextarea class="p-mb-3"></textarea>
 
-  <button pButton pRipple type="button" label="Zapisz" (click)="updateTicketType(ticketTypeTemp.idType)"
-          class="p-button-raised p-button-success p-d-block p-mt-5" style="width: 220px"></button>
-
+    <button pButton pRipple type="submit" label="Zapisz"
+            class="p-button-raised p-button-success p-d-block p-mt-5" style="width: 220px"></button>
+  </form>
 </p-dialog>
 
 <p-dialog header="Usuń karnet" [(visible)]="displayDeleteTicketTypeDialog" [style]="{width: '50vw'}">

@@ -3,6 +3,7 @@ import {BehaviorSubject, Observable} from "rxjs";
 import {User} from "../../../model/user";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {map} from "rxjs/operators";
+import {Activity} from "../../../model/activity";
 
 let API_URL = "http://localhost:8080/api/user/"
 
@@ -62,12 +63,25 @@ export class UserService {
     return this.http.put(API_URL + id + '/edit', user);
   }
 
-  findUserByUsername(username: string) {
-    return this.http.get<User>(API_URL + username);
+  findUserById(id: number) {
+    return this.http.get<User>(API_URL + id);
   }
 
   changePassword(id: number, user: User) {
     return this.http.put(API_URL + id + '/edit-password', user);
+  }
+
+  findAllUsers() {
+    return this.http.get<User[]>(API_URL + 'all');
+  }
+
+  addUser(user: User): Observable<any> {
+    return this.http.post(API_URL + "add", JSON.stringify(user),
+      {headers: {"Content-Type":"application/json; charset=UTF-8"}});
+  }
+
+  deleteUserById(id: number) {
+    return this.http.delete(API_URL + id + '/delete')
   }
 
 

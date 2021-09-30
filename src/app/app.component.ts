@@ -14,15 +14,20 @@ export class AppComponent implements OnInit {
   title = 'gym-management-system';
   items: MenuItem[] = [];
   name = '';
+  currentUser!: User;
 
 
   constructor(private route: ActivatedRoute, private userService: UserService, private router: Router) {
   }
 
   ngOnInit(): void {
-
     this.name = this.route.snapshot.params['name'];
 
+    this.loadMenuItems();
+  }
+
+  loadMenuItems() {
+    this.currentUser = this.userService.currentUserValue;
     this.items = [
       // all
       {label: 'Strona główna', icon: 'pi pi-fw pi-home', routerLink: ['/home'],},
@@ -33,21 +38,27 @@ export class AppComponent implements OnInit {
       {label: 'Zaloguj', icon: 'pi pi-fw pi-sign-in', routerLink: ['/login'], visible: !this.isUserLoggedIn()},
       {label: 'Zarejestruj', icon: 'pi pi-fw pi-user-plus', routerLink: ['/register'], visible: !this.isUserLoggedIn()},
       // staff
-      // {label: 'Klubowicze', icon: 'pi pi-fw pi-users', routerLink: ['/users-list']},
+      {
+        label: 'Użytkownicy',
+        icon: 'pi pi-fw pi-users',
+        routerLink: ['/user'],
+        visible: this.isUserLoggedIn() && this.currentUser.role === 'ADMIN'
+      },
       // {label: 'Plan zajęć', icon: 'pi pi-fw pi-book', routerLink: ['/workout-planner']},
       // logged in
       {
         label: 'Moje konto', icon: 'pi pi-fw pi-user', visible: this.isUserLoggedIn(),
         items: [
-          {label: 'Moje dane', icon: 'pi pi-fw pi-user',  routerLink: ['/profile']},
-          {label: 'Wyloguj', icon: 'pi pi-fw pi-power-off', command: (event: Event) => { this.logout() }}
+          {label: 'Moje dane', icon: 'pi pi-fw pi-user', routerLink: ['/profile']},
+          {
+            label: 'Wyloguj', icon: 'pi pi-fw pi-power-off', command: (event: Event) => {
+              this.logout()
+            }
+          }
         ]
       },
 
     ];
-
-
-    console.log(this.isUserLoggedIn());
   }
 
   isUserLoggedIn(): boolean {
@@ -56,10 +67,12 @@ export class AppComponent implements OnInit {
 
   logout() {
     this.userService.logOut().subscribe(data => {
-      window.location.reload();
+      this.loadMenuItems();
       this.router.navigate(['/login']);
     });
   }
+
+
 
 
 }

@@ -29,7 +29,11 @@ export class ProfileComponent implements OnInit {
   passMessages!: Message[];
   usersTickets!: Ticket[];
 
-  constructor(private userService: UserService, private router: Router, private ticketService: TicketService, private formBuilder: FormBuilder, private config: PrimeNGConfig) {
+  constructor(private userService: UserService,
+              private router: Router,
+              private ticketService: TicketService,
+              private formBuilder: FormBuilder,
+              private config: PrimeNGConfig) {
     this.currentUser = JSON.parse(<string>localStorage.getItem('currentUser'));
   }
 
@@ -93,7 +97,7 @@ export class ProfileComponent implements OnInit {
     } else {
       this.userService.updateUser(this.currentUser.idUser, this.currentUser)
         .subscribe(data => {
-          this.userService.findUserByUsername(this.currentUser.username).subscribe(response => {
+          this.userService.findUserById(this.currentUser.idUser).subscribe(response => {
             console.log(response);
             localStorage.setItem('currentUser', JSON.stringify(response));
           })

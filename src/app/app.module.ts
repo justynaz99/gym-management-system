@@ -47,6 +47,7 @@ import {AutoCompleteModule} from "primeng/autocomplete";
 import {PanelModule} from "primeng/panel";
 import {DropdownModule} from "primeng/dropdown";
 import {FieldsetModule} from "primeng/fieldset";
+import { UserComponent } from './components/user/user.component';
 
 
 @NgModule({
@@ -65,6 +66,7 @@ import {FieldsetModule} from "primeng/fieldset";
     UnauthorizedComponent,
     DetailComponent,
     AdminComponent,
+    UserComponent,
   ],
   imports: [
     BrowserModule,

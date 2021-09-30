@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ActivityDataService} from "../../service/data/activity/activity-data.service";
 import {Router} from "@angular/router";
 import {Activity} from "../../model/activity";
 import {User} from "../../model/user";
 import {UserService} from "../../service/data/user/user.service";
+import {AbstractControl, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
+import {Message} from "primeng/api";
 
 
 @Component({
@@ -20,19 +22,38 @@ export class ActivityComponent implements OnInit {
   displayEditActivityDialog: boolean = false;
   displayDeleteActivityDialog: boolean = false;
   activityTemp: Activity = new Activity();
-
+  form!: FormGroup;
+  submitted: boolean = false;
+  messages: Message[] = [];
 
   constructor(
     private activityService: ActivityDataService,
     private router: Router,
     private userService: UserService
-  ) { }
+  ) {
+  }
 
 
   ngOnInit(): void {
     this.findAllActivities();
     this.currentUser = this.userService.currentUserValue;
+
+    this.form = new FormGroup({
+      name: new FormControl('',
+        [
+          Validators.required,
+          Validators.minLength(3),
+          Validators.maxLength(40),
+        ]),
+      description: new FormControl('')
+    });
+
   }
+
+  get f(): { [key: string]: AbstractControl } {
+    return this.form.controls;
+  }
+
 
   findAllActivities() {
     this.activityService.findAllActivities().subscribe(
@@ -42,10 +63,12 @@ export class ActivityComponent implements OnInit {
     )
   }
 
-
-
   addNewActivityDialog() {
     this.displayNewActivityDialog = true;
+  }
+
+  closeAddNewActivityDialog() {
+    this.displayNewActivityDialog = false;
   }
 
   editActivityDialog(id: number) {
@@ -53,12 +76,18 @@ export class ActivityComponent implements OnInit {
     this.displayEditActivityDialog = true;
   }
 
+  closeEditActivityDialog() {
+    this.displayEditActivityDialog = false;
+  }
+
   deleteActivityDialog(id: number) {
     this.findActivityById(id);
     this.displayDeleteActivityDialog = true;
   }
 
-
+  closeDeleteActivityDialog() {
+    this.displayDeleteActivityDialog = false;
+  }
 
 
   findActivityById(id: number) {
@@ -68,31 +97,43 @@ export class ActivityComponent implements OnInit {
   }
 
   addActivity() {
+    this.submitted = true;
+
+    if (this.form.invalid) {
+      return;
+    }
+
     this.activityService.addActivity(this.activityTemp).subscribe(data => {
-        console.log("Dodano");
-        window.location.reload();
+      this.closeAddNewActivityDialog();
+      this.findAllActivities();
+      this.messages = [{severity: 'success', summary: 'Sukces', detail: 'Poprawnie zapisano dane'}]
       }, error => {
-        console.log("Błąd");
       }
     );
   }
 
   updateActivity(id: number) {
+    this.submitted = true;
+
+    if (this.form.invalid) {
+      return;
+    }
+
     this.activityService.updateActivity(id, this.activityTemp)
       .subscribe(data => {
-        window.location.reload();
+        this.closeEditActivityDialog();
+        this.findAllActivities();
+        this.messages = [{severity: 'success', summary: 'Sukces', detail: 'Poprawnie edytowano dane'}]
       })
   }
 
   deleteActivityById(id: number) {
     this.activityService.deleteActivityById(id).subscribe(response => {
-      console.log(response);
-      window.location.reload();
+      this.closeDeleteActivityDialog();
+      this.findAllActivities();
+      this.messages = [{severity: 'success', summary: 'Sukces', detail: 'Poprawnie usunięto dane'}]
     })
   }
-
-
-
 
 
 }

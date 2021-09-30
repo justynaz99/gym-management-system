@@ -1,11 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {TicketTypeService} from "../../service/data/ticket-type/ticket-type.service";
 import {Router} from "@angular/router";
 import {TicketType} from "../../model/ticket-type";
 import {UserService} from "../../service/data/user/user.service";
 import {User} from "../../model/user";
 import {DialogModule} from 'primeng/dialog';
-import {PrimeNGConfig} from "primeng/api";
+import {Message, PrimeNGConfig} from "primeng/api";
+import {AbstractControl, FormControl, FormGroup, Validators} from "@angular/forms";
 
 
 @Component({
@@ -22,19 +23,42 @@ export class TicketTypeComponent implements OnInit {
   displayEditTicketTypeDialog: boolean = false;
   displayDeleteTicketTypeDialog: boolean = false;
   ticketTypeTemp: TicketType = new TicketType();
+  form!: FormGroup;
+  submitted: boolean = false;
+  messages: Message[] = [];
 
   constructor(
     private ticketTypeService: TicketTypeService,
     private router: Router,
     private userService: UserService,
     private primengConfig: PrimeNGConfig
-  ) { }
+  ) {
+  }
 
 
   ngOnInit(): void {
     this.findAllTicketTypes();
     this.currentUser = this.userService.currentUserValue;
     this.primengConfig.ripple = true;
+
+    this.form = new FormGroup({
+      name: new FormControl('',
+        [
+          Validators.required,
+          Validators.minLength(3),
+          Validators.maxLength(20),
+        ]),
+      description: new FormControl(''),
+      price: new FormControl('',
+        [
+          Validators.required,
+          Validators.pattern(/\d{1,3}(?:[.,]\d{3})*(?:[.,]\d{2})?/)
+        ])
+    });
+  }
+
+  get f(): { [key: string]: AbstractControl } {
+    return this.form.controls;
   }
 
   findAllTicketTypes() {
@@ -60,9 +84,17 @@ export class TicketTypeComponent implements OnInit {
     this.displayNewTicketTypeDialog = true;
   }
 
+  closeNewTicketTypeDialog() {
+    this.displayNewTicketTypeDialog = false;
+  }
+
   editTicketTypeDialog(id: number) {
     this.findTicketTypeById(id);
     this.displayEditTicketTypeDialog = true;
+  }
+
+  closeEditTicketTypeDialog() {
+    this.displayEditTicketTypeDialog = false;
   }
 
   deleteTicketTypeDialog(id: number) {
@@ -70,6 +102,9 @@ export class TicketTypeComponent implements OnInit {
     this.displayDeleteTicketTypeDialog = true;
   }
 
+  closeDeleteTicketTypeDialog() {
+    this.displayDeleteTicketTypeDialog = false;
+  }
 
 
   findTicketTypeById(id: number) {
@@ -79,34 +114,44 @@ export class TicketTypeComponent implements OnInit {
   }
 
   addTicketType() {
+    this.submitted = true;
+
+    if (this.form.invalid) {
+      return;
+    }
+
     this.ticketTypeService.addTicketType(this.ticketTypeTemp).subscribe(data => {
-        console.log("Dodano");
-        window.location.reload();
-    }, error => {
-      console.log("Błąd");
+        this.closeNewTicketTypeDialog();
+        this.findAllTicketTypes();
+        this.messages = [{severity: 'success', summary: 'Sukces', detail: 'Poprawnie zapisano dane'}]
+      }, error => {
       }
     );
   }
 
   updateTicketType(id: number) {
+    this.submitted = true;
+
+    if (this.form.invalid) {
+      return;
+    }
+
     this.ticketTypeService.updateTicketType(id, this.ticketTypeTemp)
       .subscribe(data => {
-        window.location.reload();
-      })
+        this.closeEditTicketTypeDialog();
+        this.findAllTicketTypes();
+        this.messages = [{severity: 'success', summary: 'Sukces', detail: 'Poprawnie edytowano dane'}]
+      }, error => {
+      });
   }
 
   deleteTicketTypeById(id: number) {
     this.ticketTypeService.deleteTicketTypeById(id).subscribe(response => {
-      console.log(response);
-      window.location.reload();
+      this.closeDeleteTicketTypeDialog();
+      this.findAllTicketTypes();
+      this.messages = [{severity: 'success', summary: 'Sukces', detail: 'Poprawnie usunięto dane'}]
     })
   }
-
-
-
-
-
-
 
 
 }
