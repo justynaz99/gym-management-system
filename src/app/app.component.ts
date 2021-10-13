@@ -22,8 +22,8 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.name = this.route.snapshot.params['name'];
-
     this.loadMenuItems();
+
   }
 
   loadMenuItems() {

@@ -37,8 +37,14 @@ export class TicketTypeComponent implements OnInit {
 
 
   ngOnInit(): void {
+
+    if (this.userService.currentUserValue !== null)
+      this.currentUser = this.userService.currentUserValue;
+    else
+      this.currentUser = new User();
+
+
     this.findAllTicketTypes();
-    this.currentUser = this.userService.currentUserValue;
     this.primengConfig.ripple = true;
 
     this.form = new FormGroup({

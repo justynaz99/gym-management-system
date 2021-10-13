@@ -4,6 +4,7 @@ import {Message, MessageService} from "primeng/api";
 import {UserService} from "../../service/data/user/user.service";
 import {User} from "../../model/user";
 import {AppComponent} from "../../app.component";
+import {AbstractControl, FormControl, FormGroup, Validators} from "@angular/forms";
 
 @Component({
   selector: 'app-login',
@@ -16,6 +17,9 @@ export class LoginComponent implements OnInit {
   user: User = new User();
   errorMessage: string = '';
   currentUser!: User;
+  displayResetPasswordDialog: boolean = false;
+  form!: FormGroup;
+  submitted: boolean = false;
 
   constructor(private userService: UserService, private router: Router, private app: AppComponent) { }
 
@@ -24,6 +28,18 @@ export class LoginComponent implements OnInit {
       this.router.navigate(['/home']);
       return;
     }
+
+    this.form = new FormGroup({
+      username: new FormControl('',
+        [
+          Validators.required,
+          Validators.email
+        ])
+    });
+  }
+
+  get f(): { [key: string]: AbstractControl } {
+    return this.form.controls;
   }
 
   login() {
@@ -34,6 +50,14 @@ export class LoginComponent implements OnInit {
     }, err => {
       this.errorMessage = "Niepoprawny email lub hasło";
     });
+  }
+
+  resetPasswordDialog() {
+    this.displayResetPasswordDialog = true;
+  }
+
+  closeResetPasswordDialog() {
+    this.displayResetPasswordDialog = false;
   }
 
 }

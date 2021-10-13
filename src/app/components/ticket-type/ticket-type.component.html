@@ -60,7 +60,7 @@
                text="Nieprawidłowy format. Przykład: 99.00"></p-message>
 
     <label class="p-d-block p-mb-1">Opis</label>
-    <textarea [rows]="5" [cols]="30" [(ngModel)]="ticketTypeTemp.description" pInputTextarea class="p-mb-3"></textarea>
+    <textarea [rows]="5" [cols]="30" [(ngModel)]="ticketTypeTemp.description" formControlName="description" pInputTextarea class="p-mb-3"></textarea>
 
     <button pButton pRipple type="submit" label="Zapisz"
             class="p-button-raised p-button-success p-d-block p-mt-5" style="width: 220px"></button>

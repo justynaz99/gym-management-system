@@ -4,8 +4,9 @@ import {Router} from "@angular/router";
 import {Activity} from "../../model/activity";
 import {User} from "../../model/user";
 import {UserService} from "../../service/data/user/user.service";
-import {AbstractControl, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
+import {AbstractControl, FormControl, FormGroup, Validators} from "@angular/forms";
 import {Message} from "primeng/api";
+import {Role} from "../../model/role";
 
 
 @Component({
@@ -36,7 +37,11 @@ export class ActivityComponent implements OnInit {
 
   ngOnInit(): void {
     this.findAllActivities();
-    this.currentUser = this.userService.currentUserValue;
+
+    if (this.userService.currentUserValue !== null)
+      this.currentUser = this.userService.currentUserValue;
+    else
+      this.currentUser = new User();
 
     this.form = new FormGroup({
       name: new FormControl('',

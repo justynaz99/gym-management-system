@@ -163,8 +163,8 @@ export class ProfileComponent implements OnInit {
   findAllUsersTickets() {
     this.ticketService.findAllUsersTickets(this.currentUser.idUser).subscribe(
       response => {
-        console.log(response);
         this.usersTickets = response;
+        console.log(this.usersTickets);
       }
     )
   }
