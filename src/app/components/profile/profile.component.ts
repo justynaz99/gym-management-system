@@ -34,6 +34,7 @@ export class ProfileComponent implements OnInit {
               private ticketService: TicketService,
               private formBuilder: FormBuilder,
               private config: PrimeNGConfig) {
+
     this.currentUser = JSON.parse(<string>localStorage.getItem('currentUser'));
   }
 
@@ -41,6 +42,8 @@ export class ProfileComponent implements OnInit {
     if (!this.currentUser) {
       this.router.navigate(['/login']);
     }
+
+    console.log("Zalogowany użytkownik: " + this.currentUser);
 
     this.findAllUsersTickets();
 

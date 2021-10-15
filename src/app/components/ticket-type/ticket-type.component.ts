@@ -43,6 +43,8 @@ export class TicketTypeComponent implements OnInit {
     else
       this.currentUser = new User();
 
+    console.log(this.currentUser.roles[0].name)
+
 
     this.findAllTicketTypes();
     this.primengConfig.ripple = true;

@@ -27,13 +27,13 @@ const routes: Routes = [
   {path: 'ticket-type', component: TicketTypeComponent},
   {path: 'activity', component: ActivityComponent},
   //user + admin pages
-  {path: 'home/:name', component: HomeComponent, canActivate: [AuthGuard], data: {roles: [Role.USER, Role.ADMIN]}},
-  {path: 'profile', component: ProfileComponent, canActivate: [AuthGuard], data: {roles: [Role.USER, Role.ADMIN]}},
-  {path: 'logout', component: LogoutComponent, canActivate: [AuthGuard], data: {roles: [Role.USER, Role.ADMIN]}},
+  {path: 'home/:name', component: HomeComponent, canActivate: [AuthGuard]},
+  {path: 'profile', component: ProfileComponent, canActivate: [AuthGuard]},
+  {path: 'logout', component: LogoutComponent, canActivate: [AuthGuard],},
   //admin pages
-  {path: 'detail/:id', component: DetailComponent, canActivate: [AuthGuard], data: {roles: [Role.ADMIN]}},
-  {path: 'workout-planner', component: WorkoutPlannerComponent, canActivate: [AuthGuard], data: {roles: [Role.ADMIN]}},
-  {path: 'user', component: UserComponent, canActivate: [AuthGuard], data: {roles: [Role.ADMIN]}},
+  {path: 'detail/:id', component: DetailComponent, canActivate: [AuthGuard]},
+  {path: 'workout-planner', component: WorkoutPlannerComponent, canActivate: [AuthGuard]},
+  {path: 'user', component: UserComponent, canActivate: [AuthGuard]},
   //public error pages
   {path: '404', component: NotFoundComponent},
   {path: '401', component: UnauthorizedComponent},

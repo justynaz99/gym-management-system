@@ -8,6 +8,6 @@ export class User {
   password: string = "";
   birthDate!: Date;
   phoneNumber: string = "";
-  role!: Role;
   token: string = "";
+  roles!: Role[];
 }

@@ -48,6 +48,7 @@ import {PanelModule} from "primeng/panel";
 import {DropdownModule} from "primeng/dropdown";
 import {FieldsetModule} from "primeng/fieldset";
 import { UserComponent } from './components/user/user.component';
+import { PaymentComponent } from './components/payment/payment.component';
 
 
 @NgModule({
@@ -67,6 +68,7 @@ import { UserComponent } from './components/user/user.component';
     DetailComponent,
     AdminComponent,
     UserComponent,
+    PaymentComponent,
   ],
   imports: [
     BrowserModule,

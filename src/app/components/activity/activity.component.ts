@@ -43,6 +43,8 @@ export class ActivityComponent implements OnInit {
     else
       this.currentUser = new User();
 
+    console.log(this.currentUser)
+
     this.form = new FormGroup({
       name: new FormControl('',
         [

@@ -1,6 +1,6 @@
-<div class="p-m-4 p-d-block" style="max-width: 60%">
+<div class="p-m-4 p-d-block" style="max-width: 60%" *ngIf="currentUser.roles[0].name !== 'ADMIN'">
 
-  <p-card *ngIf="currentUser.role !== 'ADMIN'">
+  <p-card>
 
     <p-messages [(value)]="messages" [enableService]="false"></p-messages>
 
@@ -22,8 +22,8 @@
   </p-card>
 </div>
 
-<div class="p-m-4 p-d-block" style="max-width: 80%">
-  <p-card *ngIf="currentUser.role === 'ADMIN'">
+<div class="p-m-4 p-d-block" style="max-width: 80%" *ngIf="currentUser.roles[0].name === 'ADMIN'">
+  <p-card>
 
     <p-messages [(value)]="messages" [enableService]="false"></p-messages>
 
@@ -50,7 +50,6 @@
       </ng-template>
     </p-table>
     <button pButton pRipple type="button" label="Dodaj zajęcia" (click)="addNewActivityDialog()"
-            *ngIf="currentUser.role === 'ADMIN'"
             class="p-button-raised p-button-success p-d-block p-mt-5" style="width: 220px"></button>
   </p-card>
 </div>

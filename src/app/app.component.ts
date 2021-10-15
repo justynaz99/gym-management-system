@@ -42,7 +42,7 @@ export class AppComponent implements OnInit {
         label: 'Użytkownicy',
         icon: 'pi pi-fw pi-users',
         routerLink: ['/user'],
-        visible: this.isUserLoggedIn() && this.currentUser.role === 'ADMIN'
+        visible: this.isUserLoggedIn()
       },
       // {label: 'Plan zajęć', icon: 'pi pi-fw pi-book', routerLink: ['/workout-planner']},
       // logged in

@@ -1,5 +1,5 @@
-export enum Role {
-  USER = "USER",
-  ADMIN = "ADMIN",
-  GUEST = "GUEST"
+export class Role {
+  idRole!: number;
+  name!: String;
+  description!: String;
 }
