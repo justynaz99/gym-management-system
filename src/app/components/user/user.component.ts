@@ -17,9 +17,9 @@ export class UserComponent implements OnInit {
 
   currentUser!: User;
   users!: Array<User>;
-  displayNewUserDialog: boolean = false;
-  displayEditUserDialog: boolean = false;
-  displayDeleteUserDialog: boolean = false;
+  newUserDialog: boolean = false;
+  editUserDialog: boolean = false;
+  deleteUserDialog: boolean = false;
   userTemp: User = new User();
   form!: FormGroup;
   submitted: boolean = false;
@@ -97,36 +97,30 @@ export class UserComponent implements OnInit {
     )
   }
 
-  addNewUserDialog() {
-    this.displayNewUserDialog = true;
+  displayAddNewUserDialog() {
+    this.newUserDialog = true;
   }
 
   closeAddNewUserDialog() {
-    this.displayNewUserDialog = false;
+    this.newUserDialog = false;
   }
 
-  editUserDialog(id: number) {
+
+
+  displayDeleteUserDialog(id: number) {
     this.findUserById(id);
-    this.displayEditUserDialog = true;
-  }
-
-  closeEditUserDialog() {
-    this.displayEditUserDialog = false;
-  }
-
-  deleteUserDialog(id: number) {
-    this.findUserById(id);
-    this.displayDeleteUserDialog = true;
+    this.deleteUserDialog = true;
   }
 
   closeDeleteUserDialog() {
-    this.displayDeleteUserDialog = false;
+    this.deleteUserDialog = false;
   }
 
 
   findUserById(id: number) {
     this.userService.findUserById(id).subscribe(response => {
       this.userTemp = response;
+      console.log(response);
     })
   }
 
@@ -156,7 +150,6 @@ export class UserComponent implements OnInit {
 
     this.userService.updateUser(id, this.userTemp)
       .subscribe(data => {
-        this.closeEditUserDialog();
         this.findAllUsers();
         this.messages = [{severity: 'success', summary: 'Sukces', detail: 'Poprawnie edytowano dane'}]
       })
@@ -168,5 +161,10 @@ export class UserComponent implements OnInit {
       this.findAllUsers();
       this.messages = [{severity: 'success', summary: 'Sukces', detail: 'Poprawnie usunięto dane'}]
     })
+  }
+
+  navigateToEditUserPage(id: number) {
+    this.findUserById(id);
+    this.router.navigate(['/edit-user/' + id]);
   }
 }

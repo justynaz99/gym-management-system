@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {TicketType} from "../../../model/ticket-type";
 import {Observable} from "rxjs";
+import {Ticket} from "../../../model/ticket";
 
 let API_URL = "http://localhost:8080/api/ticket-type/";
 
@@ -31,6 +32,11 @@ export class TicketTypeService {
 
   deleteTicketTypeById(id: number) {
     return this.http.delete(API_URL + id + '/delete')
+  }
+
+  buyTicket(ticket: Ticket, id: number) {
+    return this.http.post("http://localhost:8080/api/ticket/buy", JSON.stringify(ticket),
+      {headers: {"Content-Type":"application/json; charset=UTF-8"}});
   }
 
 

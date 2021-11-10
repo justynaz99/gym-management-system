@@ -22,20 +22,20 @@
           <td>{{user.birthDate | date : 'longDate'}}</td>
           <td>{{user.phoneNumber}}</td>
           <td>
-            <button pButton pRipple icon="pi pi-trash" (click)="deleteUserDialog(user.idUser)"
+            <button pButton pRipple icon="pi pi-trash" (click)="displayDeleteUserDialog(user.idUser)"
                     class="p-button-rounded p-button-warning" style="margin-right: 10px"></button>
-            <button pButton pRipple type="button" icon="pi pi-pencil" (click)="editUserDialog(user.idUser)"
+            <button pButton pRipple type="button" icon="pi pi-pencil" (click)="navigateToEditUserPage(user.idUser)"
                     class="p-button-rounded p-button-info"></button>
           </td>
         </tr>
       </ng-template>
     </p-table>
-    <button pButton pRipple type="button" label="Dodaj użytkownika" (click)="addNewUserDialog()"
+    <button pButton pRipple type="button" label="Dodaj użytkownika" (click)="displayAddNewUserDialog()"
             class="p-button-raised p-button-success p-d-block p-mt-5" style="width: 220px"></button>
   </p-card>
 </div>
 
-<p-dialog header="Dodaj użytkownika" [(visible)]="displayNewUserDialog" [style]="{width: '55vw'}">
+<p-dialog header="Dodaj użytkownika" [(visible)]="newUserDialog" [style]="{width: '55vw'}">
 
   <form [formGroup]="form" (submit)="addUser()">
     <label class="p-d-block p-mb-1" for="firstName">Imię</label>
@@ -87,7 +87,7 @@
   </form>
 </p-dialog>
 
-<p-dialog header="Edytuj użytkownika" [(visible)]="displayEditUserDialog" [style]="{width: '55vw'}">
+<p-dialog header="Edytuj użytkownika" [(visible)]="editUserDialog" [style]="{width: '55vw'}">
 
   <form [formGroup]="form" (submit)="updateUser(userTemp.idUser)">
     <label class="p-d-block p-mb-1" for="name">Imię</label>
@@ -122,7 +122,7 @@
   </form>
 </p-dialog>
 
-<p-dialog header="Usuń zajęcia" [(visible)]="displayDeleteUserDialog" [style]="{width: '50vw'}">
+<p-dialog header="Usuń użytkownika" [(visible)]="deleteUserDialog" [style]="{width: '50vw'}">
 
   <label class="p-d-block p-mb-1">Czy na pewno chcesz usunąć użytkownika {{userTemp.firstName}} {{userTemp.lastName}}?</label>
 

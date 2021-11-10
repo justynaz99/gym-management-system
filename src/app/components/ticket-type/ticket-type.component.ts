@@ -7,6 +7,8 @@ import {User} from "../../model/user";
 import {DialogModule} from 'primeng/dialog';
 import {Message, PrimeNGConfig} from "primeng/api";
 import {AbstractControl, FormControl, FormGroup, Validators} from "@angular/forms";
+import {Ticket} from "../../model/ticket";
+import {Observable} from "rxjs";
 
 
 @Component({
@@ -22,10 +24,13 @@ export class TicketTypeComponent implements OnInit {
   displayNewTicketTypeDialog: boolean = false;
   displayEditTicketTypeDialog: boolean = false;
   displayDeleteTicketTypeDialog: boolean = false;
+  displayBuyTicketDialog: boolean = false;
   ticketTypeTemp: TicketType = new TicketType();
   form!: FormGroup;
   submitted: boolean = false;
   messages: Message[] = [];
+  ticket: Ticket = new Ticket();
+  date!: Date;
 
   constructor(
     private ticketTypeService: TicketTypeService,
@@ -77,15 +82,7 @@ export class TicketTypeComponent implements OnInit {
     )
   }
 
-  buyTicket() {
-    if (this.userService.isLoggedIn()) {
-      console.log("logged in");
-      // redirect to payment page
-    } else {
-      console.log("not logged in");
-      this.router.navigate(['/login']);
-    }
-  }
+
 
 
   addNewTicketTypeDialog() {
@@ -112,6 +109,15 @@ export class TicketTypeComponent implements OnInit {
 
   closeDeleteTicketTypeDialog() {
     this.displayDeleteTicketTypeDialog = false;
+  }
+
+  buyTicketDialog(id: number) {
+    this.findTicketTypeById(id);
+    this.displayBuyTicketDialog = true;
+  }
+
+  closeBuyTicketDialog() {
+    this.displayBuyTicketDialog = false;
   }
 
 
@@ -159,6 +165,29 @@ export class TicketTypeComponent implements OnInit {
       this.findAllTicketTypes();
       this.messages = [{severity: 'success', summary: 'Sukces', detail: 'Poprawnie usunięto dane'}]
     })
+  }
+
+  buyTicket(id: number) {
+    if (this.userService.isLoggedIn()) {
+      this.date = new Date();
+      this.ticket.activationDate = this.date;
+      // this.ticket.expirationDate = this.date.setDate(this.date.getDate() + 30);
+      this.ticket.idUser = this.currentUser.idUser;
+      this.ticket.idClub = 1;
+      this.ticket.idNetwork = 1;
+      this.ticketTypeService.findTicketTypeById(id).subscribe(response => {
+        this.ticketTypeTemp = response;
+      })
+      console.log(this.ticketTypeTemp);
+      this.ticket.membershipTicketType = this.ticketTypeTemp;
+      console.log(this.ticket);
+      this.ticketTypeService.buyTicket(this.ticket, id).subscribe(response => {
+        this.closeBuyTicketDialog();
+      })
+    } else {
+      console.log("not logged in");
+      this.router.navigate(['/login']);
+    }
   }
 
 

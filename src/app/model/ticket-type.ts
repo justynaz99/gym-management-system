@@ -3,5 +3,7 @@ export class TicketType {
   price!: number;
   name!: string;
   description!: string;
+  idClub!: number;
+  clubIdNetwork!: number;
 
 }

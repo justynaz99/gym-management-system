@@ -16,6 +16,8 @@ import {AuthGuard} from "./guards/auth.guard";
 import {Role} from "./model/role";
 import {DetailComponent} from "./components/detail/detail/detail.component";
 import {UserComponent} from "./components/user/user.component";
+import {PaymentComponent} from "./components/payment/payment.component";
+import {EditUserComponent} from "./components/edit-user/edit-user.component";
 
 const routes: Routes = [
   //public pages
@@ -29,11 +31,13 @@ const routes: Routes = [
   //user + admin pages
   {path: 'home/:name', component: HomeComponent, canActivate: [AuthGuard]},
   {path: 'profile', component: ProfileComponent, canActivate: [AuthGuard]},
-  {path: 'logout', component: LogoutComponent, canActivate: [AuthGuard],},
+  {path: 'logout', component: LogoutComponent, canActivate: [AuthGuard]},
+  {path: 'payment', component: PaymentComponent, canActivate: [AuthGuard]},
   //admin pages
   {path: 'detail/:id', component: DetailComponent, canActivate: [AuthGuard]},
   {path: 'workout-planner', component: WorkoutPlannerComponent, canActivate: [AuthGuard]},
   {path: 'user', component: UserComponent, canActivate: [AuthGuard]},
+  {path: 'edit-user/:id', component: EditUserComponent, canActivate: [AuthGuard]},
   //public error pages
   {path: '404', component: NotFoundComponent},
   {path: '401', component: UnauthorizedComponent},
