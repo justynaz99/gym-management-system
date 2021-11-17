@@ -1,0 +1,91 @@
+<div class="p-m-4 p-d-block" style="max-width: 75%" xmlns="http://www.w3.org/1999/html">
+
+  <div class="p-mb-4">
+    <p-fieldset legend="Dane użytkownika" [toggleable]="true" [collapsed]="true">
+      <form [formGroup]="editForm" (submit)="updateUser()">
+
+        <p-messages [(value)]="messages" [enableService]="false"></p-messages>
+
+        <label class="p-d-block p-mb-1" for="name">Imię</label>
+        <input id="name" class="p-mb-3" [(ngModel)]="userTemp.firstName" formControlName="firstName"
+               pInputText/>
+        <p-message severity="error" text="Imię powinno zawierać co najmniej 3 znaki"
+                   *ngIf="f.firstName.errors && submitted"></p-message>
+
+        <label class="p-d-block p-mb-1" for="surname">Nazwisko</label>
+        <input id="surname" class="p-mb-3" [(ngModel)]="userTemp.lastName" formControlName="lastName"
+               pInputText/>
+        <p-message severity="error" text="Nazwisko powinno zawierać co najmniej 3 znaki"
+                   *ngIf="f.lastName.errors && submitted"></p-message>
+
+        <label class="p-d-block p-mb-1" for="email">E-mail</label>
+        <input id="email" class="p-mb-3" [disabled]="true" value="{{userTemp.username}}" pInputText/>
+
+
+        <label class="p-d-block p-mb-1">Data urodzenia</label>
+        <p-inputMask class="p-mb-3" mask="9999-99-99" [(ngModel)]="userTemp.birthDate" placeholder="2021-09-13"
+                     slotChar="yyyy-mm-dd" formControlName="birthDate"></p-inputMask>
+        <p-message *ngIf="f.birthDate.errors && submitted" severity="error" text="Data urodzenia wymagana"></p-message>
+
+        <label class="p-d-block p-mb-1" style="margin-top: 1rem">Numer telefonu</label>
+        <p-inputMask id="phone" mask="999-999-999" placeholder="999-999-999" class="p-mb-3"
+                     [(ngModel)]="userTemp.phoneNumber" formControlName="phoneNumber"
+        ></p-inputMask>
+        <p-message *ngIf="f.phoneNumber.errors && submitted" severity="error"
+                   text="Numer telefonu wymagany"></p-message>
+
+
+        <button pButton pRipple type="submit" label="Zapisz" class="p-button-raised p-button-success p-d-block p-mt-5"
+                style="width: 220px"></button>
+      </form>
+    </p-fieldset>
+  </div>
+
+  <div class="p-mb-4">
+    <p-fieldset legend="Karnety użytkownika" [toggleable]="true" [collapsed]="true">
+      <button pButton pRipple type="button" label="Dodaj karnet" (click)="displayAddTicketDialog()"
+              class="p-button-raised p-button-success p-d-block p-mt-1 p-mb-4" style="width: 220px"></button>
+      <p-table [value]="usersTickets" [paginator]="true" [rows]="10">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Karnet</th>
+            <th>Data zakupu</th>
+            <th>Data wygaśnięcia</th>
+            <th>Status</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-ticket>
+          <tr>
+            <td>{{ticket.membershipTicketType.name}}</td>
+            <td>{{ticket.activationDate}}</td>
+            <td>{{ticket.expirationDate}}</td>
+            <td *ngIf="ticket.status === true" style="color: #689F38">aktywny</td>
+            <td *ngIf="ticket.status === false" style="color: #73000c">nieaktywny</td>
+            <td></td>
+          </tr>
+
+        </ng-template>
+      </p-table>
+    </p-fieldset>
+  </div>
+
+</div>
+
+
+<p-dialog header="Dodaj nowy karnet" [(visible)]="addTicketDialog" [style]="{width: '55vw'}">
+
+  <label class="p-d-block p-mb-2">Typ karnetu</label>
+  <p-dropdown class="p-d-block p-mb-4" [style]="{width: '15vw'}" [options]="ticketTypes" [(ngModel)]="selectedTicketType" optionLabel="name"></p-dropdown>
+
+  <label class="p-d-block p-mb-2">Data aktywacji</label>
+  <p-calendar class="p-d-block p-mb-4" [(ngModel)]="ticket.activationDate" [inline]="true"></p-calendar>
+
+  <button pButton pRipple type="button" label="Dodaj" (click)="addTicket()"
+          class="p-button-raised p-button-success p-d-block p-mt-1 p-mb-4" style="width: 220px"></button>
+
+
+</p-dialog>
+
+
+
+
