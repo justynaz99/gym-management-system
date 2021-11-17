@@ -48,8 +48,6 @@ export class TicketTypeComponent implements OnInit {
     else
       this.currentUser = new User();
 
-    console.log(this.currentUser.roles[0].name)
-
 
     this.findAllTicketTypes();
     this.primengConfig.ripple = true;
@@ -181,7 +179,7 @@ export class TicketTypeComponent implements OnInit {
       console.log(this.ticketTypeTemp);
       this.ticket.membershipTicketType = this.ticketTypeTemp;
       console.log(this.ticket);
-      this.ticketTypeService.buyTicket(this.ticket, id).subscribe(response => {
+      this.ticketTypeService.buyTicket(this.ticket).subscribe(response => {
         this.closeBuyTicketDialog();
       })
     } else {

@@ -51,6 +51,11 @@ import { UserComponent } from './components/user/user.component';
 import { PaymentComponent } from './components/payment/payment.component';
 import { EditUserComponent } from './components/edit-user/edit-user.component';
 
+import localePl from '@angular/common/locales/pl'
+import {registerLocaleData} from "@angular/common";
+
+registerLocaleData(localePl);
+
 
 @NgModule({
   declarations: [
@@ -106,11 +111,14 @@ import { EditUserComponent } from './components/edit-user/edit-user.component';
     AutoCompleteModule,
     PanelModule,
     DropdownModule,
-    FieldsetModule
+    FieldsetModule,
 
 
   ],
   providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+
+export class AppModule {
+
+}

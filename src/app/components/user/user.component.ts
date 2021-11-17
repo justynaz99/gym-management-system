@@ -164,7 +164,6 @@ export class UserComponent implements OnInit {
   }
 
   navigateToEditUserPage(id: number) {
-    this.findUserById(id);
     this.router.navigate(['/edit-user/' + id]);
   }
 }
