@@ -3,6 +3,7 @@ import {MenuItem} from "primeng/api";
 import {ActivatedRoute, Router} from "@angular/router";
 import {UserService} from "./service/data/user/user.service";
 import {User} from "./model/user";
+import {Role} from "./model/role";
 
 @Component({
   selector: 'app-root',
@@ -30,7 +31,7 @@ export class AppComponent implements OnInit {
     this.currentUser = this.userService.currentUserValue;
     this.items = [
       // all
-      {label: 'Strona główna', icon: 'pi pi-fw pi-home', routerLink: ['/home'],},
+      {label: 'Strona główna', icon: 'pi pi-fw pi-home', routerLink: ['/home']},
       {label: 'Grafik', icon: 'pi pi-fw pi-calendar', routerLink: ['/schedule']},
       {label: 'Karnety', icon: 'pi pi-fw pi-wallet', routerLink: ['/ticket-type']},
       {label: 'Zajęcia', icon: 'pi pi-fw pi-list', routerLink: ['/activity']},
@@ -38,12 +39,7 @@ export class AppComponent implements OnInit {
       {label: 'Zaloguj', icon: 'pi pi-fw pi-sign-in', routerLink: ['/login'], visible: !this.isUserLoggedIn()},
       {label: 'Zarejestruj', icon: 'pi pi-fw pi-user-plus', routerLink: ['/register'], visible: !this.isUserLoggedIn()},
       // staff
-      {
-        label: 'Użytkownicy',
-        icon: 'pi pi-fw pi-users',
-        routerLink: ['/user'],
-        visible: this.isUserLoggedIn()
-      },
+      {label: 'Użytkownicy', icon: 'pi pi-fw pi-users', routerLink: ['/user']},
       // {label: 'Plan zajęć', icon: 'pi pi-fw pi-book', routerLink: ['/workout-planner']},
       // logged in
       {

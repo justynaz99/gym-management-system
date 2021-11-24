@@ -11,9 +11,11 @@
         </div>
         <div class="p-mr-3 p-ml-3" >
           <h4
-            style="color: #6c757d; font-weight: 600; text-align: center; text-transform: uppercase">{{date | date : 'EEEE' : '' : 'pl'}}</h4>
+            style="color: #6c757d; font-weight: 600; text-align: center; text-transform: uppercase">{{dayStr}}</h4>
+
           <h4
-            style="color: #6c757d; font-weight: 600; text-align: center; margin-top: -20px">{{date | date : 'longDate' : '' : 'pl'}}</h4>
+            style="color: #6c757d; font-weight: 600; text-align: center; margin-top: -20px">{{dateStr}}</h4>
+
         </div>
         <div>
           <button pButton pRipple type="button" icon="pi pi-angle-right" (click)="nextDay()"
@@ -22,7 +24,7 @@
       </div>
     </div>
 
-    <p-tabView *ngIf="currentUser.roles[0].name === 'USER'">
+    <p-tabView *ngIf="currentUser.roles[0].name !== 'ADMIN'">
       <p-tabPanel header="Zajęcia">
         <p-table [value]="positions"  [paginator]="true" [rows]="10"
                  [showCurrentPageReport]="true" >
@@ -33,6 +35,7 @@
               <th>Start</th>
               <th>Koniec</th>
               <th>Zapisani</th>
+              <th></th>
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-position>
@@ -41,13 +44,38 @@
               <td>{{position.coach}}</td>
               <td>{{position.startTime | date : 'shortTime' : '' : 'pl'}}</td>
               <td>{{position.finishTime | date : 'shortTime' : '' : 'pl'}}</td>
-              <td></td>
+              <td>{{countEnrollmentsByIdPosition(position.idPosition)}}</td>
+              <td><button pButton pRipple type="button" label="Zapisz się" (click)="displaySignUpDialog(position.idPosition)"
+                          class="p-button-outlined p-button-success p-d-block"></button></td>
             </tr>
           </ng-template>
         </p-table>
       </p-tabPanel>
       <p-tabPanel header="Moje zapisy" >
-        Content 2
+        <p-table [value]="enrollments"  [paginator]="true" [rows]="10"
+                 [showCurrentPageReport]="true" >
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Zajęcia</th>
+              <th>Trener</th>
+              <th>Start</th>
+              <th>Koniec</th>
+              <th>Zapisani</th>
+              <th></th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-enrollment>
+            <tr>
+              <td>{{enrollment.position.activity.name}}</td>
+              <td>{{enrollment.position.coach}}</td>
+              <td>{{enrollment.position.startTime | date : 'shortTime' : '' : 'pl'}}</td>
+              <td>{{enrollment.position.finishTime | date : 'shortTime' : '' : 'pl'}}</td>
+              <td>{{enrollmentsNum}}</td>
+              <td><button pButton pRipple type="button" label="Wypisz się"
+                          class="p-button-outlined p-button-danger p-d-block"></button></td>
+            </tr>
+          </ng-template>
+        </p-table>
       </p-tabPanel>
     </p-tabView>
 
@@ -141,8 +169,8 @@
 
     <label class="p-d-block p-mb-1 p-mt-3" for="coach">Trener</label>
     <input id="coach" class="p-mb-3" pKeyFilter="alpha" [(ngModel)]="positionTemp.coach" formControlName="coach" pInputText/>
-<!--    <p-message severity="error" text="Wprowadź imię i nazwisko trenera"-->
-<!--               *ngIf="f.coach.errors && submitted"></p-message>-->
+    <p-message severity="error" text="Wprowadź imię i nazwisko trenera"
+               *ngIf="f.coach.errors && submitted"></p-message>
 
     <button pButton pRipple type="submit" label="Zapisz"
             class="p-button-raised p-button-success p-d-block p-mt-5" style="width: 220px"></button>
@@ -154,6 +182,15 @@
   <label class="p-d-block p-mb-1">Czy na pewno chcesz usunąć pozycję w grafiku?</label>
 
   <button pButton pRipple type="button" label="Usuń" (click)="deletePositionById(positionTemp.idPosition)"
+          class="p-button-raised p-button-success p-d-block p-mt-5" style="width: 220px"></button>
+
+</p-dialog>
+
+<p-dialog header="Zapisz się" [(visible)]="signUpDialog" [style]="{width: '50vw'}">
+
+<!--  <label class="p-d-block p-mb-1">{{positionTemp}}</label>-->
+
+  <button pButton pRipple type="button" label="Zapisz się" (click)="signUpForActivity(positionTemp.idPosition)"
           class="p-button-raised p-button-success p-d-block p-mt-5" style="width: 220px"></button>
 
 </p-dialog>

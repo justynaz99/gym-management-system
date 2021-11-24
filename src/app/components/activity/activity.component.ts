@@ -136,9 +136,15 @@ export class ActivityComponent implements OnInit {
 
   deleteActivityById(id: number) {
     this.activityService.deleteActivityById(id).subscribe(response => {
-      this.closeDeleteActivityDialog();
-      this.findAllActivities();
-      this.messages = [{severity: 'success', summary: 'Sukces', detail: 'Poprawnie usunięto dane'}]
+      if (response === null) {
+        this.closeDeleteActivityDialog();
+        this.findAllActivities();
+        this.messages = [{severity: 'error', summary: 'Błąd', detail: 'Nie możesz usunąć tych zajęć, ponieważ znajdują się one w grafiku'}]
+      } else {
+        this.closeDeleteActivityDialog();
+        this.findAllActivities();
+        this.messages = [{severity: 'success', summary: 'Sukces', detail: 'Poprawnie usunięto dane'}]
+      }
     })
   }
 

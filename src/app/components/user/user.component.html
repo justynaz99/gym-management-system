@@ -1,4 +1,4 @@
-<div class="p-m-4 p-d-block" style="max-width: 90%">
+<div class="p-m-4 p-d-block">
   <p-card>
     <p-messages [(value)]="messages" [enableService]="false"></p-messages>
 
@@ -8,7 +8,7 @@
         <tr>
           <th>Imię</th>
           <th>Nazwisko</th>
-          <th>Email</th>
+          <th style="width: 25%">Email</th>
           <th>Data urodzenia</th>
           <th>Numer telefonu</th>
           <th></th>
@@ -18,7 +18,7 @@
         <tr>
           <td>{{user.firstName}}</td>
           <td>{{user.lastName}}</td>
-          <td>{{user.username}}</td>
+          <td style="width: 25%">{{user.username}}</td>
           <td>{{user.birthDate | date : 'longDate'}}</td>
           <td>{{user.phoneNumber}}</td>
           <td>
@@ -124,7 +124,8 @@
 
 <p-dialog header="Usuń użytkownika" [(visible)]="deleteUserDialog" [style]="{width: '50vw'}">
 
-  <label class="p-d-block p-mb-1">Czy na pewno chcesz usunąć użytkownika {{userTemp.firstName}} {{userTemp.lastName}}?</label>
+  <label class="p-d-block p-mb-1">Czy na pewno chcesz usunąć konto użytkownika {{userTemp.firstName}} {{userTemp.lastName}}?</label>
+  <label class="p-d-block p-mb-1">Spowoduje to automatyczne usunięcie wszystkich karnetów oraz zapisów na zajęcia użytkownika.</label>
 
   <button pButton pRipple type="button" label="Usuń" (click)="deleteUserById(userTemp.idUser)"
           class="p-button-raised p-button-success p-d-block p-mt-5" style="width: 220px"></button>
