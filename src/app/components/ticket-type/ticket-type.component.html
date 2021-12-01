@@ -1,4 +1,4 @@
-<div class="p-m-4 p-d-block" style="max-width: 100em">
+<div class="p-m-4 p-d-block" style="max-width: 100%" *ngIf="roles.includes('ADMIN') || roles.includes('USER')">
   <p-card>
 
     <p-messages [(value)]="messages" [enableService]="false"></p-messages>
@@ -7,10 +7,10 @@
       <ng-template pTemplate="header">
         <tr>
           <th>Lista karnetów</th>
-          <th style="width: 30%"></th>
+          <th style="width: 40%"></th>
           <th></th>
           <th></th>
-          <!--          <th ></th>-->
+          <th *ngIf="roles.includes('ADMIN') && roles.includes('USER')"></th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-ticketType>
@@ -18,35 +18,52 @@
           <td>{{ticketType.name}}</td>
           <td>{{ticketType.description}}</td>
           <td style="text-align: center">{{ticketType.price}} zł</td>
-          <td>
-            <button pButton pRipple *ngIf="currentUser.roles[0].name === 'USER'"
-                    type="button" label="Kup" class="p-button-raised" (click)="buyTicketDialog(ticketType.idType)"></button>
-
-            <!--  Admin buttons -->
+          <td *ngIf="roles.includes('USER')">
             <button pButton pRipple
-                    (click)="deleteTicketTypeDialog(ticketType.idType)" *ngIf="currentUser.roles[0].name === 'ADMIN'"
+                    type="button" label="Kup" class="p-button-raised" (click)="displayBuyTicketDialog(ticketType.idType)"></button>
+          </td>
+          <td *ngIf="roles.includes('ADMIN')">
+            <button pButton pRipple
+                    (click)="displayDeleteTicketTypeDialog(ticketType.idType)"
                     icon="pi pi-trash" class="p-button-rounded p-button-warning" style="margin-right: 10px"></button>
             <button pButton pRipple type="button"
-                    (click)="editTicketTypeDialog(ticketType.idType)" *ngIf="currentUser.roles[0].name === 'ADMIN'"
+                    (click)="displayEditTicketTypeDialog(ticketType.idType)"
                     icon="pi pi-pencil" class="p-button-rounded p-button-info"></button>
           </td>
-          <!--          -->
         </tr>
       </ng-template>
     </p-table>
-    <!--  Admin button  -->
     <button pButton pRipple type="button" label="Dodaj karnet"
-            (click)="addNewTicketTypeDialog()" *ngIf="currentUser.roles[0].name === 'ADMIN'"
+            (click)="displayNewTicketTypeDialog()" *ngIf="roles.includes('ADMIN')"
             class="p-button-raised p-button-success p-d-block p-mt-5" style="width: 220px"></button>
-    <!--         -->
-
-
   </p-card>
-
-
 </div>
 
-<p-dialog header="Dodaj nowy karnet" [(visible)]="displayNewTicketTypeDialog" [style]="{width: '55vw'}">
+<div class="p-m-4 p-d-block" style="max-width: 80%" *ngIf="roles.includes('GUEST')">
+  <p-card>
+
+    <p-messages [(value)]="messages" [enableService]="false"></p-messages>
+
+    <p-table [value]="ticketTypes" [paginator]="true" [rows]="10" [showCurrentPageReport]="true">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Lista karnetów</th>
+          <th style="width: 50%"></th>
+          <th></th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-ticketType>
+        <tr>
+          <td>{{ticketType.name}}</td>
+          <td>{{ticketType.description}}</td>
+          <td style="text-align: center">{{ticketType.price}} zł</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </p-card>
+</div>
+
+<p-dialog header="Dodaj nowy karnet" [(visible)]="newTicketTypeDialog" [style]="{width: '55vw'}">
 
   <form [formGroup]="form" (submit)="addTicketType()">
     <label class="p-d-block p-mb-1" for="name">Nazwa</label>
@@ -68,7 +85,7 @@
 </p-dialog>
 
 
-<p-dialog header="Edytuj karnet" [(visible)]="displayEditTicketTypeDialog" [style]="{width: '50vw'}">
+<p-dialog header="Edytuj karnet" [(visible)]="editTicketTypeDialog" [style]="{width: '50vw'}">
 
   <form [formGroup]="form" (submit)="updateTicketType(ticketTypeTemp.idType)">
     <label class="p-d-block p-mb-1" for="name">Nazwa</label>
@@ -89,7 +106,7 @@
   </form>
 </p-dialog>
 
-<p-dialog header="Usuń karnet" [(visible)]="displayDeleteTicketTypeDialog" [style]="{width: '50vw'}">
+<p-dialog header="Usuń karnet" [(visible)]="deleteTicketTypeDialog" [style]="{width: '50vw'}">
 
   <label class="p-d-block p-mb-1">Czy na pewno chcesz usunąć karnet {{ticketTypeTemp.name}}?</label>
 
@@ -98,7 +115,7 @@
 
 </p-dialog>
 
-<p-dialog header="Kup karnet" [(visible)]="displayBuyTicketDialog" [style]="{width: '50vw'}">
+<p-dialog header="Kup karnet" [(visible)]="buyTicketDialog" [style]="{width: '50vw'}">
 
   <label class="p-d-block p-mb-1 p-text-bold p-mr-2" style="float: left">Typ karnetu - </label>
   <label class="p-d-block p-mb-1 p-mr-2">{{ticketTypeTemp.name}}</label>

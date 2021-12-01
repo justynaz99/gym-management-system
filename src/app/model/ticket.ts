@@ -5,7 +5,7 @@ export class Ticket {
   idTicket!: number;
   activationDate!: Date;
   expirationDate!: Date;
-  status!: Boolean;
+  status!: boolean;
   membershipTicketType!: any;
   idUser!: number;
   idClub!: number;

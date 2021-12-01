@@ -1,4 +1,4 @@
-<div class="p-m-4 p-d-block" style="max-width: 60%" *ngIf="currentUser.roles[0].name !== 'ADMIN'">
+<div class="p-m-4 p-d-block" style="max-width: 80%" *ngIf="roles.includes('GUEST') || roles.includes('USER')">
 
   <p-card>
 
@@ -22,7 +22,7 @@
   </p-card>
 </div>
 
-<div class="p-m-4 p-d-block" style="max-width: 80%" *ngIf="currentUser.roles[0].name === 'ADMIN'">
+<div class="p-m-4 p-d-block" style="max-width: 80%" *ngIf="roles.includes('ADMIN')">
   <p-card>
 
     <p-messages [(value)]="messages" [enableService]="false"></p-messages>
@@ -41,21 +41,21 @@
           <td>{{activity.name}}</td>
           <td>{{activity.description}}</td>
           <td style="text-align: center">
-            <button pButton pRipple icon="pi pi-trash" (click)="deleteActivityDialog(activity.idActivity)"
+            <button pButton pRipple icon="pi pi-trash" (click)="displayDeleteActivityDialog(activity.idActivity)"
                     class="p-button-rounded p-button-warning" style="margin-right: 10px"></button>
-            <button pButton pRipple type="button" icon="pi pi-pencil" (click)="editActivityDialog(activity.idActivity)"
+            <button pButton pRipple type="button" icon="pi pi-pencil" (click)="displayEditActivityDialog(activity.idActivity)"
                     class="p-button-rounded p-button-info"></button>
           </td>
         </tr>
       </ng-template>
     </p-table>
-    <button pButton pRipple type="button" label="Dodaj zajęcia" (click)="addNewActivityDialog()"
+    <button pButton pRipple type="button" label="Dodaj zajęcia" (click)="displayNewActivityDialog()"
             class="p-button-raised p-button-success p-d-block p-mt-5" style="width: 220px"></button>
   </p-card>
 </div>
 
 
-<p-dialog header="Dodaj nowe zajęcia" [(visible)]="displayNewActivityDialog" [style]="{width: '55vw'}">
+<p-dialog header="Dodaj nowe zajęcia" [(visible)]="newActivityDialog" [style]="{width: '55vw'}">
 
   <form [formGroup]="form" (submit)="addActivity()">
     <label class="p-d-block p-mb-1" for="name">Nazwa</label>
@@ -64,7 +64,7 @@
                text="Nazwa zajęć powinna zawierać od 3 do 40 znaków"></p-message>
 
     <label class="p-d-block p-mb-1">Opis</label>
-    <textarea [rows]="5" [cols]="30" [(ngModel)]="activityTemp.description" pInputTextarea class="p-mb-3"></textarea>
+    <textarea [rows]="5" [cols]="30" [(ngModel)]="activityTemp.description" formControlName="description" pInputTextarea class="p-mb-3"></textarea>
 
     <button pButton pRipple type="submit" label="Zapisz"
             class="p-button-raised p-button-success p-d-block p-mt-5" style="width: 220px"></button>
@@ -72,7 +72,7 @@
 </p-dialog>
 
 
-<p-dialog header="Edytuj zajęcia" [(visible)]="displayEditActivityDialog" [style]="{width: '55vw'}">
+<p-dialog header="Edytuj zajęcia" [(visible)]="editActivityDialog" [style]="{width: '55vw'}">
 
   <form [formGroup]="form" (submit)="updateActivity(activityTemp.idActivity)">
     <label class="p-d-block p-mb-1" for="name">Nazwa</label>
@@ -89,7 +89,7 @@
   </form>
 </p-dialog>
 
-<p-dialog header="Usuń zajęcia" [(visible)]="displayDeleteActivityDialog" [style]="{width: '50vw'}">
+<p-dialog header="Usuń zajęcia" [(visible)]="deleteActivityDialog" [style]="{width: '50vw'}">
 
   <label class="p-d-block p-mb-1">Czy na pewno chcesz usunąć zajęcia {{activityTemp.name}}?</label>
 

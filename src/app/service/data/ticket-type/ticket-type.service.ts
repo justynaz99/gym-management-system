@@ -34,10 +34,7 @@ export class TicketTypeService {
     return this.http.delete(API_URL + id + '/delete')
   }
 
-  buyTicket(ticket: Ticket) {
-    return this.http.post("http://localhost:8080/api/ticket/buy", JSON.stringify(ticket),
-      {headers: {"Content-Type":"application/json; charset=UTF-8"}});
-  }
+
 
 
 }

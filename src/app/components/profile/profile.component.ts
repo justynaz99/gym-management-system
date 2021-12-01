@@ -8,6 +8,8 @@ import {TicketService} from "../../service/data/ticket/ticket.service";
 import {Ticket} from "../../model/ticket";
 import {AbstractControl, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {MustMatch} from "../../helpers/must-match.validator";
+import {tick} from "@angular/core/testing";
+import {DatePipe} from "@angular/common";
 
 @Component({
   selector: 'app-my-account',
@@ -42,8 +44,6 @@ export class ProfileComponent implements OnInit {
     if (!this.currentUser) {
       this.router.navigate(['/login']);
     }
-
-    console.log("Zalogowany użytkownik: " + this.currentUser);
 
     this.findAllUsersTickets();
 
@@ -167,13 +167,19 @@ export class ProfileComponent implements OnInit {
     this.ticketService.findAllUsersTickets(this.currentUser.idUser).subscribe(
       response => {
         this.usersTickets = response;
-        console.log(this.usersTickets);
+        let date;
+        let today = new Date;
+        for(let ticket of this.usersTickets) {
+          date = new Date(ticket.expirationDate);
+          ticket.status = date.getTime() >= today.getTime();
+        }
       }
     )
   }
 
 
-}
 
+
+}
 
 

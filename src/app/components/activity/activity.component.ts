@@ -19,13 +19,14 @@ export class ActivityComponent implements OnInit {
 
   currentUser!: User;
   activities!: Array<Activity>;
-  displayNewActivityDialog: boolean = false;
-  displayEditActivityDialog: boolean = false;
-  displayDeleteActivityDialog: boolean = false;
+  newActivityDialog: boolean = false;
+  editActivityDialog: boolean = false;
+  deleteActivityDialog: boolean = false;
   activityTemp: Activity = new Activity();
   form!: FormGroup;
   submitted: boolean = false;
   messages: Message[] = [];
+  roles: String[] = [];
 
   constructor(
     private activityService: ActivityDataService,
@@ -36,14 +37,12 @@ export class ActivityComponent implements OnInit {
 
 
   ngOnInit(): void {
+
     this.findAllActivities();
 
-    if (this.userService.currentUserValue !== null)
-      this.currentUser = this.userService.currentUserValue;
-    else
-      this.currentUser = new User();
+    this.findRoles();
 
-    console.log(this.currentUser)
+
 
     this.form = new FormGroup({
       name: new FormControl('',
@@ -55,6 +54,19 @@ export class ActivityComponent implements OnInit {
       description: new FormControl('')
     });
 
+  }
+
+  findRoles () {
+    if (this.userService.currentUserValue !== null) {
+      this.currentUser = this.userService.currentUserValue;
+
+      for (let role of this.currentUser.roles) {
+        this.roles.push(role.name);
+      }
+    }
+    else {
+      this.roles[0] = 'GUEST';
+    }
   }
 
   get f(): { [key: string]: AbstractControl } {
@@ -70,30 +82,36 @@ export class ActivityComponent implements OnInit {
     )
   }
 
-  addNewActivityDialog() {
-    this.displayNewActivityDialog = true;
+  displayNewActivityDialog() {
+    this.activityTemp = new Activity();
+    this.submitted = false;
+    this.newActivityDialog = true;
   }
 
-  closeAddNewActivityDialog() {
-    this.displayNewActivityDialog = false;
+  closeNewActivityDialog() {
+    this.newActivityDialog = false;
   }
 
-  editActivityDialog(id: number) {
+  displayEditActivityDialog(id: number) {
+    this.activityTemp = new Activity();
+    this.submitted = false;
     this.findActivityById(id);
-    this.displayEditActivityDialog = true;
+    this.editActivityDialog = true;
   }
 
   closeEditActivityDialog() {
-    this.displayEditActivityDialog = false;
+    this.editActivityDialog = false;
   }
 
-  deleteActivityDialog(id: number) {
+  displayDeleteActivityDialog(id: number) {
+    this.activityTemp = new Activity();
+    this.submitted = false;
     this.findActivityById(id);
-    this.displayDeleteActivityDialog = true;
+    this.deleteActivityDialog = true;
   }
 
   closeDeleteActivityDialog() {
-    this.displayDeleteActivityDialog = false;
+    this.deleteActivityDialog = false;
   }
 
 
@@ -111,8 +129,9 @@ export class ActivityComponent implements OnInit {
     }
 
     this.activityService.addActivity(this.activityTemp).subscribe(data => {
-      this.closeAddNewActivityDialog();
+      this.closeNewActivityDialog();
       this.findAllActivities();
+      this.submitted = false;
       this.messages = [{severity: 'success', summary: 'Sukces', detail: 'Poprawnie zapisano dane'}]
       }, error => {
       }
@@ -130,6 +149,7 @@ export class ActivityComponent implements OnInit {
       .subscribe(data => {
         this.closeEditActivityDialog();
         this.findAllActivities();
+        this.submitted = false;
         this.messages = [{severity: 'success', summary: 'Sukces', detail: 'Poprawnie edytowano dane'}]
       })
   }

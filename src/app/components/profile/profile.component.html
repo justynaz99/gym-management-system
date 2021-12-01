@@ -70,12 +70,16 @@
 
   <div class="p-mb-4">
     <p-fieldset legend="Moje karnety" [toggleable]="true" [collapsed]="true">
-      <p-table [value]="usersTickets" [paginator]="true" [rows]="10">
+
+      <label class="p-d-block p-mb-2" *ngIf="usersTickets.length === 0">Nie posiadasz jeszcze żadnych karnetów.</label>
+
+      <p-table [value]="usersTickets" [paginator]="true" [rows]="10" *ngIf="usersTickets.length !== 0">
         <ng-template pTemplate="header">
           <tr>
             <th>Karnet</th>
             <th>Data zakupu</th>
             <th>Data wygaśnięcia</th>
+            <th>Status</th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-ticket>
@@ -83,6 +87,8 @@
             <td>{{ticket.membershipTicketType.name}}</td>
             <td>{{ticket.activationDate}}</td>
             <td>{{ticket.expirationDate}}</td>
+            <td *ngIf="ticket.status === false" style="color: #73000c">nieaktywny</td>
+            <td *ngIf="ticket.status === true" style="color: #689F38">aktywny</td>
           </tr>
         </ng-template>
       </p-table>

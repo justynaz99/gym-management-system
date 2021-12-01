@@ -9,6 +9,8 @@ import {Message, PrimeNGConfig} from "primeng/api";
 import {AbstractControl, FormControl, FormGroup, Validators} from "@angular/forms";
 import {Ticket} from "../../model/ticket";
 import {Observable} from "rxjs";
+import {Role} from "../../model/role";
+import {TicketService} from "../../service/data/ticket/ticket.service";
 
 
 @Component({
@@ -21,35 +23,34 @@ export class TicketTypeComponent implements OnInit {
 
   ticketTypes!: Array<TicketType>;
   currentUser!: User;
-  displayNewTicketTypeDialog: boolean = false;
-  displayEditTicketTypeDialog: boolean = false;
-  displayDeleteTicketTypeDialog: boolean = false;
-  displayBuyTicketDialog: boolean = false;
+  newTicketTypeDialog: boolean = false;
+  editTicketTypeDialog: boolean = false;
+  deleteTicketTypeDialog: boolean = false;
+  buyTicketDialog: boolean = false;
   ticketTypeTemp: TicketType = new TicketType();
   form!: FormGroup;
   submitted: boolean = false;
   messages: Message[] = [];
   ticket: Ticket = new Ticket();
-  date!: Date;
+  roles: String[] = [];
+  usersTickets!: Ticket[];
 
   constructor(
     private ticketTypeService: TicketTypeService,
     private router: Router,
     private userService: UserService,
-    private primengConfig: PrimeNGConfig
+    private primengConfig: PrimeNGConfig,
+    private ticketService: TicketService
   ) {
   }
 
 
   ngOnInit(): void {
 
-    if (this.userService.currentUserValue !== null)
-      this.currentUser = this.userService.currentUserValue;
-    else
-      this.currentUser = new User();
-
+    this.findRoles();
 
     this.findAllTicketTypes();
+
     this.primengConfig.ripple = true;
 
     this.form = new FormGroup({
@@ -68,6 +69,19 @@ export class TicketTypeComponent implements OnInit {
     });
   }
 
+  findRoles() {
+    if (this.userService.currentUserValue !== null) {
+      this.currentUser = this.userService.currentUserValue;
+
+      for (let role of this.currentUser.roles) {
+        this.roles.push(role.name);
+      }
+    }
+    else {
+      this.roles[0] = 'GUEST';
+    }
+  }
+
   get f(): { [key: string]: AbstractControl } {
     return this.form.controls;
   }
@@ -80,42 +94,43 @@ export class TicketTypeComponent implements OnInit {
     )
   }
 
-
-
-
-  addNewTicketTypeDialog() {
-    this.displayNewTicketTypeDialog = true;
+  displayNewTicketTypeDialog() {
+    this.ticketTypeTemp = new TicketType();
+    this.submitted = false;
+    this.newTicketTypeDialog = true;
   }
 
   closeNewTicketTypeDialog() {
-    this.displayNewTicketTypeDialog = false;
+    this.newTicketTypeDialog = false;
   }
 
-  editTicketTypeDialog(id: number) {
+  displayEditTicketTypeDialog(id: number) {
+    this.ticketTypeTemp = new TicketType();
+    this.submitted = false;
     this.findTicketTypeById(id);
-    this.displayEditTicketTypeDialog = true;
+    this.editTicketTypeDialog = true;
   }
 
   closeEditTicketTypeDialog() {
-    this.displayEditTicketTypeDialog = false;
+    this.editTicketTypeDialog = false;
   }
 
-  deleteTicketTypeDialog(id: number) {
+  displayDeleteTicketTypeDialog(id: number) {
     this.findTicketTypeById(id);
-    this.displayDeleteTicketTypeDialog = true;
+    this.deleteTicketTypeDialog = true;
   }
 
   closeDeleteTicketTypeDialog() {
-    this.displayDeleteTicketTypeDialog = false;
+    this.deleteTicketTypeDialog = false;
   }
 
-  buyTicketDialog(id: number) {
+  displayBuyTicketDialog(id: number) {
     this.findTicketTypeById(id);
-    this.displayBuyTicketDialog = true;
+    this.buyTicketDialog = true;
   }
 
   closeBuyTicketDialog() {
-    this.displayBuyTicketDialog = false;
+    this.buyTicketDialog = false;
   }
 
 
@@ -165,23 +180,46 @@ export class TicketTypeComponent implements OnInit {
     })
   }
 
+
   buyTicket(id: number) {
+    let activationDate;
+    let expirationDate;
     if (this.userService.isLoggedIn()) {
-      this.date = new Date();
-      this.ticket.activationDate = this.date;
-      // this.ticket.expirationDate = this.date.setDate(this.date.getDate() + 30);
+
+      activationDate = new Date();
+      expirationDate = new Date();
+      expirationDate.setDate(activationDate.getDate() + 30);
+      this.ticket.activationDate = activationDate;
+      this.ticket.expirationDate = expirationDate;
       this.ticket.idUser = this.currentUser.idUser;
       this.ticket.idClub = 1;
       this.ticket.idNetwork = 1;
       this.ticketTypeService.findTicketTypeById(id).subscribe(response => {
         this.ticketTypeTemp = response;
       })
-      console.log(this.ticketTypeTemp);
       this.ticket.membershipTicketType = this.ticketTypeTemp;
-      console.log(this.ticket);
-      this.ticketTypeService.buyTicket(this.ticket).subscribe(response => {
-        this.closeBuyTicketDialog();
-      })
+
+      this.ticketService.findAllUsersTickets(this.currentUser.idUser).subscribe(
+        response => {
+          let date;
+          let today = new Date;
+          for(let ticket of response) {
+            date = new Date(ticket.expirationDate);
+            if (date.getTime() >= today.getTime()) {
+              this.closeBuyTicketDialog();
+              this.messages = [{severity: 'error', summary: 'Błąd', detail: 'Posiadasz już aktywny karnet'}]
+              return;
+            } else {
+              this.ticketService.buyTicket(this.ticket).subscribe(response => {
+                this.closeBuyTicketDialog();
+                this.messages = [{severity: 'success', summary: 'Sukces', detail: 'Kupiłeś nowy karnet!'}]
+              })
+            }
+          }
+        }
+      )
+
+
     } else {
       console.log("not logged in");
       this.router.navigate(['/login']);

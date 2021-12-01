@@ -4,6 +4,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {UserService} from "./service/data/user/user.service";
 import {User} from "./model/user";
 import {Role} from "./model/role";
+import {find} from "rxjs/operators";
 
 @Component({
   selector: 'app-root',
@@ -16,19 +17,42 @@ export class AppComponent implements OnInit {
   items: MenuItem[] = [];
   name = '';
   currentUser!: User;
+  roles: String[] = [];
 
 
   constructor(private route: ActivatedRoute, private userService: UserService, private router: Router) {
   }
 
   ngOnInit(): void {
-    this.name = this.route.snapshot.params['name'];
+
+    console.log("Zalogowano")
+
+    this.currentUser = this.userService.currentUserValue;
+
+    this.findRoles();
+
     this.loadMenuItems();
+
+    this.name = this.route.snapshot.params['name'];
 
   }
 
+  findRoles () {
+    if (this.userService.currentUserValue !== null) {
+      this.currentUser = this.userService.currentUserValue;
+
+      for (let role of this.currentUser.roles) {
+        this.roles.push(role.name);
+      }
+    }
+    else {
+      this.roles[0] = 'GUEST';
+    }
+  }
+
+
   loadMenuItems() {
-    this.currentUser = this.userService.currentUserValue;
+
     this.items = [
       // all
       {label: 'Strona główna', icon: 'pi pi-fw pi-home', routerLink: ['/home']},
@@ -39,7 +63,7 @@ export class AppComponent implements OnInit {
       {label: 'Zaloguj', icon: 'pi pi-fw pi-sign-in', routerLink: ['/login'], visible: !this.isUserLoggedIn()},
       {label: 'Zarejestruj', icon: 'pi pi-fw pi-user-plus', routerLink: ['/register'], visible: !this.isUserLoggedIn()},
       // staff
-      {label: 'Użytkownicy', icon: 'pi pi-fw pi-users', routerLink: ['/user']},
+      {label: 'Użytkownicy', icon: 'pi pi-fw pi-users', routerLink: ['/user'], visible: (this.isUserLoggedIn() && this.roles.includes('ADMIN'))},
       // {label: 'Plan zajęć', icon: 'pi pi-fw pi-book', routerLink: ['/workout-planner']},
       // logged in
       {
@@ -57,15 +81,19 @@ export class AppComponent implements OnInit {
     ];
   }
 
+
+
   isUserLoggedIn(): boolean {
     return this.userService.isLoggedIn();
   }
 
   logout() {
     this.userService.logOut().subscribe(data => {
+      this.findRoles();
       this.loadMenuItems();
       this.router.navigate(['/login']);
     });
+
   }
 
 

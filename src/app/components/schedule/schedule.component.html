@@ -24,7 +24,7 @@
       </div>
     </div>
 
-    <p-tabView *ngIf="currentUser.roles[0].name !== 'ADMIN'">
+    <p-tabView *ngIf="roles.includes('GUEST')">
       <p-tabPanel header="Zajęcia">
         <p-table [value]="positions"  [paginator]="true" [rows]="10"
                  [showCurrentPageReport]="true" >
@@ -44,15 +44,55 @@
               <td>{{position.coach}}</td>
               <td>{{position.startTime | date : 'shortTime' : '' : 'pl'}}</td>
               <td>{{position.finishTime | date : 'shortTime' : '' : 'pl'}}</td>
-              <td>{{countEnrollmentsByIdPosition(position.idPosition)}}</td>
-              <td><button pButton pRipple type="button" label="Zapisz się" (click)="displaySignUpDialog(position.idPosition)"
-                          class="p-button-outlined p-button-success p-d-block"></button></td>
+              <td></td>
+              <td></td>
             </tr>
           </ng-template>
         </p-table>
       </p-tabPanel>
-      <p-tabPanel header="Moje zapisy" >
-        <p-table [value]="enrollments"  [paginator]="true" [rows]="10"
+    </p-tabView>
+
+    <p-tabView *ngIf="roles.includes('USER') || roles.includes('ADMIN')">
+      <p-tabPanel header="Zajęcia">
+        <p-table [value]="positions"  [paginator]="true" [rows]="10"
+                 [showCurrentPageReport]="true" >
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Zajęcia</th>
+              <th>Trener</th>
+              <th>Start</th>
+              <th>Koniec</th>
+              <th>Zapisani</th>
+              <th></th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-position>
+            <tr>
+              <td>{{position.activity.name}}</td>
+              <td>{{position.coach}}</td>
+              <td>{{position.startTime | date : 'shortTime' : '' : 'pl'}}</td>
+              <td>{{position.finishTime | date : 'shortTime' : '' : 'pl'}}</td>
+              <td></td>
+              <td style="text-align: center">
+                <button pButton pRipple type="button" label="Zapisz się" (click)="displaySignUpDialog(position.idPosition)" *ngIf="roles.includes('USER')"
+                        class="p-button-outlined p-button-success p-d-block"></button>
+                <button pButton pRipple icon="pi pi-trash" (click)="displayDeletePositionDialog(position.idPosition)" *ngIf="roles.includes('ADMIN')"
+                        class="p-button-rounded p-button-warning" style="margin-right: 10px"></button>
+                <button pButton pRipple type="button" icon="pi pi-pencil" (click)="displayEditPositionDialog(position.idPosition)" *ngIf="roles.includes('ADMIN')"
+                        class="p-button-rounded p-button-info"></button>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+        <button pButton pRipple type="button" label="Dodaj zajęcia" (click)="displayAddNewPositionDialog()" *ngIf="roles.includes('ADMIN')"
+                class="p-button-raised p-button-success p-d-block p-mt-5" style="width: 220px"></button>
+      </p-tabPanel>
+
+      <p-tabPanel header="Moje zapisy" *ngIf="roles.includes('USER')">
+
+        <label class="p-d-block p-mb-2 p-mt-2" *ngIf="enrollments.length === 0">Nie jesteś jeszcze zapisany na żadne zajęcia.</label>
+
+        <p-table [value]="enrollments"  [paginator]="true" [rows]="10" *ngIf="enrollments.length !== 0"
                  [showCurrentPageReport]="true" >
           <ng-template pTemplate="header">
             <tr>
@@ -80,41 +120,7 @@
     </p-tabView>
 
 
-    <p-tabView *ngIf="currentUser.roles[0].name === 'ADMIN'">
-      <p-tabPanel header="Zajęcia">
-        <p-table [value]="positions"  [paginator]="true" [rows]="10"
-                 [showCurrentPageReport]="true" >
-          <ng-template pTemplate="header">
-            <tr>
-              <th>Zajęcia</th>
-              <th>Trener</th>
-              <th>Start</th>
-              <th>Koniec</th>
-              <th>Zapisani</th>
-              <th></th>
-            </tr>
-          </ng-template>
-          <ng-template pTemplate="body" let-position>
-            <tr>
-              <td>{{position.activity.name}}</td>
-              <td>{{position.coach}}</td>
-              <td>{{position.startTime | date : 'shortTime' : '' : 'pl'}}</td>
-              <td>{{position.finishTime | date : 'shortTime' : '' : 'pl'}}</td>
-              <td></td>
-              <td style="text-align: center">
-                <button pButton pRipple icon="pi pi-trash" (click)="displayDeletePositionDialog(position.idPosition)"
-                        class="p-button-rounded p-button-warning" style="margin-right: 10px"></button>
-                <button pButton pRipple type="button" icon="pi pi-pencil" (click)="displayEditPositionDialog(position.idPosition)"
-                        class="p-button-rounded p-button-info"></button>
-              </td>
-              <td></td>
-            </tr>
-          </ng-template>
-        </p-table>
-        <button pButton pRipple type="button" label="Dodaj zajęcia" (click)="displayAddNewPositionDialog()"
-                class="p-button-raised p-button-success p-d-block p-mt-5" style="width: 220px"></button>
-      </p-tabPanel>
-    </p-tabView>
+
   </p-card>
 </div>
 

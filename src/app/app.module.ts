@@ -52,7 +52,7 @@ import { PaymentComponent } from './components/payment/payment.component';
 import { EditUserComponent } from './components/edit-user/edit-user.component';
 
 import localePl from '@angular/common/locales/pl'
-import {registerLocaleData} from "@angular/common";
+import {CommonModule, registerLocaleData} from "@angular/common";
 
 registerLocaleData(localePl);
 
@@ -112,6 +112,7 @@ registerLocaleData(localePl);
     PanelModule,
     DropdownModule,
     FieldsetModule,
+    CommonModule
 
 
   ],

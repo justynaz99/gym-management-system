@@ -16,7 +16,7 @@ import {TicketTypeService} from "../../service/data/ticket-type/ticket-type.serv
 })
 export class EditUserComponent implements OnInit {
 
-  userTemp!: User;
+  userTemp: User = new User();
   idStr!: string | null;
   id!: number;
   editForm!: FormGroup;
@@ -24,6 +24,7 @@ export class EditUserComponent implements OnInit {
   messages!: Message[];
   usersTickets!: Ticket[];
   addTicketDialog: boolean = false;
+  deleteTicketDialog: boolean = false;
   ticketTypes!: TicketType[];
   date!: Date;
   ticket: Ticket = new Ticket();
@@ -119,11 +120,19 @@ export class EditUserComponent implements OnInit {
         this.ticketService.findAllUsersTickets(this.userTemp.idUser).subscribe(
           response => {
             this.usersTickets = response;
+            let date;
+            let today = new Date;
+            for(let ticket of this.usersTickets) {
+              date = new Date(ticket.expirationDate);
+              ticket.status = date.getTime() >= today.getTime();
+            }
           }
         )
       });
     }
   }
+
+
 
   displayAddTicketDialog() {
     this.findAllTicketTypes();
@@ -132,6 +141,21 @@ export class EditUserComponent implements OnInit {
 
   closeAddTicketDialog() {
     this.addTicketDialog = false;
+  }
+
+  displayDeleteTicketDialog(id: number) {
+    this.findTicketById(id);
+    this.deleteTicketDialog = true;
+  }
+
+  closeDeleteTicketDialog() {
+    this.deleteTicketDialog = false;
+  }
+
+  findTicketById(id: number) {
+    this.ticketService.findTicketById(id).subscribe(response => {
+      this.ticket = response;
+    })
   }
 
 
@@ -158,7 +182,7 @@ export class EditUserComponent implements OnInit {
       this.ticket.idNetwork = 1;
 
 
-      this.ticketTypeService.buyTicket(this.ticket).subscribe(response => {
+      this.ticketService.buyTicket(this.ticket).subscribe(response => {
         this.closeAddTicketDialog();
         this.findAllUsersTickets();
       })
@@ -169,4 +193,18 @@ export class EditUserComponent implements OnInit {
     }
   }
 
+  deleteTicketById(id: number) {
+    this.ticketService.deleteTicketById(id).subscribe(response => {
+      this.closeDeleteTicketDialog();
+      this.findAllUsersTickets();
+      this.messages = [
+        {severity: 'success', summary: 'Sukces', detail: 'Poprawnie usunięto karnet'},
+      ];
+    })
+  }
+
 }
+
+//TODO
+//menu użytkownicy
+

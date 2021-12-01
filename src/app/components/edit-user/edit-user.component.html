@@ -43,15 +43,23 @@
 
   <div class="p-mb-4">
     <p-fieldset legend="Karnety użytkownika" [toggleable]="true" [collapsed]="true">
+
+      <p-messages [(value)]="messages" [enableService]="false"></p-messages>
+
+      <label class="p-d-block p-mb-4" *ngIf="usersTickets.length === 0">Ten użytkownik nie posiada jeszcze żadnych
+        karnetów.</label>
+
       <button pButton pRipple type="button" label="Dodaj karnet" (click)="displayAddTicketDialog()"
-              class="p-button-raised p-button-success p-d-block p-mt-1 p-mb-4" style="width: 220px"></button>
-      <p-table [value]="usersTickets" [paginator]="true" [rows]="10">
+              class="p-button-raised p-button-success p-d-block p-mt-1 p-mb-2" style="width: 220px"></button>
+
+      <p-table [value]="usersTickets" [paginator]="true" [rows]="10" *ngIf="usersTickets.length !== 0">
         <ng-template pTemplate="header">
           <tr>
             <th>Karnet</th>
             <th>Data zakupu</th>
             <th>Data wygaśnięcia</th>
             <th>Status</th>
+            <th></th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-ticket>
@@ -61,7 +69,11 @@
             <td>{{ticket.expirationDate}}</td>
             <td *ngIf="ticket.status === true" style="color: #689F38">aktywny</td>
             <td *ngIf="ticket.status === false" style="color: #73000c">nieaktywny</td>
-            <td></td>
+            <td>
+              <button pButton pRipple
+                      (click)="displayDeleteTicketDialog(ticket.idTicket)"
+                      icon="pi pi-trash" class="p-button-rounded p-button-warning" style="margin-right: 10px"></button>
+            </td>
           </tr>
 
         </ng-template>
@@ -75,7 +87,8 @@
 <p-dialog header="Dodaj nowy karnet" [(visible)]="addTicketDialog" [style]="{width: '55vw'}">
 
   <label class="p-d-block p-mb-2">Typ karnetu</label>
-  <p-dropdown class="p-d-block p-mb-4" [style]="{width: '15vw'}" [options]="ticketTypes" [(ngModel)]="selectedTicketType" optionLabel="name"></p-dropdown>
+  <p-dropdown class="p-d-block p-mb-4" [style]="{width: '15vw'}" [options]="ticketTypes"
+              [(ngModel)]="selectedTicketType" placeholder="Wybierz typ karnetu" optionLabel="name"></p-dropdown>
 
   <label class="p-d-block p-mb-2">Data aktywacji</label>
   <p-calendar class="p-d-block p-mb-4" [(ngModel)]="ticket.activationDate" [inline]="true"></p-calendar>
@@ -83,6 +96,14 @@
   <button pButton pRipple type="button" label="Dodaj" (click)="addTicket()"
           class="p-button-raised p-button-success p-d-block p-mt-1 p-mb-4" style="width: 220px"></button>
 
+</p-dialog>
+
+<p-dialog header="Usuń karnet" [(visible)]="deleteTicketDialog" [style]="{width: '55vw'}">
+
+  <label class="p-d-block p-mb-2">Czy na pewno chcesz usunąć ten karnet?</label>
+
+  <button pButton pRipple type="button" label="Usuń" (click)="deleteTicketById(ticket.idTicket)"
+          class="p-button-raised p-button-success p-d-block p-mt-5" style="width: 220px"></button>
 
 </p-dialog>
 
