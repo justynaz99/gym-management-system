@@ -4,6 +4,7 @@ import {User} from "../../../model/user";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {map} from "rxjs/operators";
 import {Activity} from "../../../model/activity";
+import {Role} from "../../../model/role";
 
 let API_URL = "http://localhost:8080/api/user/"
 

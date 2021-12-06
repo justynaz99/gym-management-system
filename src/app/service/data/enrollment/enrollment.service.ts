@@ -13,7 +13,7 @@ export class EnrollmentService {
 
   constructor(private http: HttpClient) { }
 
-  signUpForActivity(enrollment: Enrollment): Observable<any> {
+  addEnrollment(enrollment: Enrollment): Observable<any> {
     return this.http.post(API_URL + "sign_up", JSON.stringify(enrollment),
       {headers: {"Content-Type":"application/json; charset=UTF-8"}});
   }
@@ -24,6 +24,18 @@ export class EnrollmentService {
 
   findAllByIdPosition(id: number) {
     return this.http.get<Enrollment[]>(API_URL + id + '/all_by_position')
+  }
+
+  deleteByIdEnrollment(id: number) {
+    return this.http.delete(API_URL + id + '/delete');
+  }
+
+  findByIdEnrollment(id: number) {
+    return this.http.get<Enrollment>(API_URL + id);
+  }
+
+  findByIdPositionAndIdUser(idPosition: number, idUser: number){
+    return this.http.get<Enrollment>(API_URL + idPosition + '/' + idUser);
   }
 
 

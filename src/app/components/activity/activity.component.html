@@ -22,7 +22,7 @@
   </p-card>
 </div>
 
-<div class="p-m-4 p-d-block" style="max-width: 80%" *ngIf="roles.includes('ADMIN')">
+<div class="p-m-4 p-d-block" style="max-width: 80%" *ngIf="roles.includes('ADMIN') || roles.includes('STAFF')">
   <p-card>
 
     <p-messages [(value)]="messages" [enableService]="false"></p-messages>

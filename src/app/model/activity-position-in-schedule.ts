@@ -8,5 +8,6 @@ export class ActivityPositionInSchedule {
   finishTime!: Date;
   coach!: string;
   activity!: Activity;
-  timeStr! : string;
+  participantsQuantity!: number;
+  maxParticipants!: number;
 }

@@ -63,7 +63,7 @@ export class AppComponent implements OnInit {
       {label: 'Zaloguj', icon: 'pi pi-fw pi-sign-in', routerLink: ['/login'], visible: !this.isUserLoggedIn()},
       {label: 'Zarejestruj', icon: 'pi pi-fw pi-user-plus', routerLink: ['/register'], visible: !this.isUserLoggedIn()},
       // staff
-      {label: 'Użytkownicy', icon: 'pi pi-fw pi-users', routerLink: ['/user'], visible: (this.isUserLoggedIn() && this.roles.includes('ADMIN'))},
+      {label: 'Użytkownicy', icon: 'pi pi-fw pi-users', routerLink: ['/user'], visible: (this.isUserLoggedIn() && (this.roles.includes('ADMIN')) || this.roles.includes('STAFF'))},
       // {label: 'Plan zajęć', icon: 'pi pi-fw pi-book', routerLink: ['/workout-planner']},
       // logged in
       {

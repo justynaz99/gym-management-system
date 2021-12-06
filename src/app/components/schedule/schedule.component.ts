@@ -11,6 +11,8 @@ import {User} from "../../model/user";
 import {UserService} from "../../service/data/user/user.service";
 import {Enrollment} from "../../model/enrollment";
 import {EnrollmentService} from "../../service/data/enrollment/enrollment.service";
+import {RoleService} from "../../service/data/role/role.service";
+import {Role} from "../../model/role";
 
 
 @Component({
@@ -33,14 +35,16 @@ export class ScheduleComponent implements OnInit {
   editPositionDialog: boolean = false;
   deletePositionDialog: boolean = false;
   signUpDialog: boolean = false;
+  signOutDialog: boolean = false;
   currentUser!: User;
-  positionTemp: ActivityPositionInSchedule = new ActivityPositionInSchedule();
+  position: ActivityPositionInSchedule = new ActivityPositionInSchedule();
   pipe: DatePipe = new DatePipe('pl');
   enrollment: Enrollment = new Enrollment();
-  enrollments: Enrollment[] = [];
-  enrollmentsNum!: number;
-  timeStr!: string | null;
-  roles: String[] = [];
+  usersEnrollments: Enrollment[] = [];
+  positionEnrollments: Enrollment[] = [];
+  usersPositionsId: number[] = [];
+  usersRoles: String[] = [];
+
 
 
 
@@ -50,7 +54,8 @@ export class ScheduleComponent implements OnInit {
     private router: Router,
     private config: PrimeNGConfig,
     private userService: UserService,
-    private enrollmentService: EnrollmentService
+    private enrollmentService: EnrollmentService,
+
   ) { }
 
 
@@ -75,6 +80,10 @@ export class ScheduleComponent implements OnInit {
           Validators.minLength(3),
           Validators.maxLength(40),
         ]),
+      maxParticipants: new FormControl('',
+        [
+          Validators.required
+        ]),
     });
 
     this.findRoles();
@@ -82,12 +91,10 @@ export class ScheduleComponent implements OnInit {
     this.dateStr = this.pipe.transform(this.date, 'shortDate');
     this.dayStr = this.pipe.transform(this.day, 'EEEE')
 
-    console.log(this.dateStr)
-
     this.findAllPositionsByDate(this.dateStr);
 
-    // if (this.currentUser !== null)
-    //   this.findAllEnrollmentsByIdUser(this.currentUser.idUser);
+    if (this.currentUser !== null)
+      this.findAllEnrollmentsByIdUser(this.currentUser.idUser);
 
   }
 
@@ -100,11 +107,11 @@ export class ScheduleComponent implements OnInit {
       this.currentUser = this.userService.currentUserValue;
 
       for (let role of this.currentUser.roles) {
-        this.roles.push(role.name);
+        this.usersRoles.push(role.name);
       }
     }
     else {
-      this.roles[0] = 'GUEST';
+      this.usersRoles[0] = 'GUEST';
     }
   }
 
@@ -135,39 +142,52 @@ export class ScheduleComponent implements OnInit {
     this.scheduleService.findAllPositionsByDate(date).subscribe(response => {
       this.positions = response;
     })
+
   }
 
-  // findAllEnrollmentsByIdUser(id: number) {
-  //   this.enrollmentService.findAllByIdUser(id).subscribe(response => {
-  //     this.enrollments = response;
-  //   })
-  // }
-  //
-  // findAllEnrollmentsByIdPosition(id: number) {
-  //   this.enrollmentService.findAllByIdPosition(id).subscribe(response => {
-  //     console.log(response);
-  //   })
-  // }
-  //
-  // countEnrollmentsByIdPosition(id: number) {
-  //   this.enrollmentService.findAllByIdPosition(id).subscribe(response => {
-  //     this.enrollmentsNum = response.length;
-  //   })
-  // }
+  findAllEnrollmentsByIdUser(id: number) {
+    this.enrollmentService.findAllByIdUser(id).subscribe(response => {
+      this.usersEnrollments = response;
+      for (let i = 0; i < this.usersEnrollments.length; i++) {
+        this.usersPositionsId[i] = this.usersEnrollments[i].position.idPosition;
+      }
+      console.log(this.usersPositionsId)
+    })
+  }
+
+  findAllEnrollmentsByIdPosition(id: number) {
+    this.enrollmentService.findAllByIdPosition(id).subscribe(response => {
+      this.positionEnrollments = response;
+    })
+  }
 
   findPositionById(id: number) {
     this.scheduleService.findPositionById(id).subscribe(response => {
-      this.positionTemp = response;
-      let startTime = new Date(this.positionTemp.startTime)
-      let finishTime = new Date(this.positionTemp.finishTime)
-      this.positionTemp.startTime = startTime;
-      this.positionTemp.finishTime = finishTime;
+      this.position = response;
+      let startTime = new Date(this.position.startTime)
+      let finishTime = new Date(this.position.finishTime)
+      this.position.startTime = startTime;
+      this.position.finishTime = finishTime;
       // this.timeStr = this.pipe.transform(response.startTime, "hh:mm", 'pl');
     })
   }
 
+  findEnrollmentById(id: number) {
+    this.enrollmentService.findByIdEnrollment(id).subscribe(response => {
+      this.enrollment = response;
+    })
+  }
+
+  findEnrollmentByIdPositionAndIdUser(idPosition: number, idUser: number) {
+    this.enrollmentService.findByIdPositionAndIdUser(idPosition, idUser).subscribe(response => {
+      this.enrollment = response;
+    })
+  }
+
+
+
   displayAddNewPositionDialog() {
-    this.positionTemp = new ActivityPositionInSchedule();
+    this.position = new ActivityPositionInSchedule();
     this.submitted = false;
     this.findAllActivities();
     this.addNewPositionDialog = true;
@@ -178,13 +198,11 @@ export class ScheduleComponent implements OnInit {
   }
 
   displayEditPositionDialog(id: number) {
-    this.positionTemp = new ActivityPositionInSchedule();
+    this.position = new ActivityPositionInSchedule();
     this.submitted = false;
     this.editPositionDialog = true;
     this.findAllActivities();
     this.findPositionById(id);
-
-
   }
 
   closeEditPositionDialog() {
@@ -193,7 +211,7 @@ export class ScheduleComponent implements OnInit {
 
   displayDeletePositionDialog(id: number) {
     this.findPositionById(id);
-    console.log(this.positionTemp);
+    console.log(this.position);
     this.deletePositionDialog = true;
   }
 
@@ -203,11 +221,27 @@ export class ScheduleComponent implements OnInit {
 
   displaySignUpDialog(id: number) {
     this.findPositionById(id);
-    this.signUpDialog = true;
+    if (this.positionEnrollments.length !<= this.position.maxParticipants) {
+      this.signUpDialog = true;
+    }
   }
 
   closeSignUpDialog() {
     this.signUpDialog = false;
+  }
+
+  displaySignOutDialog1(idEnrollment: number) {
+    this.findEnrollmentById(idEnrollment);
+    this.signOutDialog = true;
+  }
+
+  displaySignOutDialog2(idPosition: number, idUser: number) {
+    this.findEnrollmentByIdPositionAndIdUser(idPosition, idUser);
+    this.signOutDialog = true;
+  }
+
+  closeSignOutDialog() {
+    this.signOutDialog = false;
   }
 
 
@@ -219,9 +253,9 @@ export class ScheduleComponent implements OnInit {
       return;
     }
 
-    this.positionTemp.date = this.date;
+    this.position.date = this.date;
 
-    this.scheduleService.addPosition(this.positionTemp).subscribe(data => {
+    this.scheduleService.addPosition(this.position).subscribe(data => {
         this.closeAddNewPositionDialog();
         this.findAllPositionsByDate(this.dateStr);
         this.messages = [{severity: 'success', summary: 'Sukces', detail: 'Poprawnie zapisano dane'}]
@@ -237,7 +271,7 @@ export class ScheduleComponent implements OnInit {
       return;
     }
 
-    this.scheduleService.updatePosition(id, this.positionTemp)
+    this.scheduleService.updatePosition(id, this.position)
       .subscribe(data => {
         this.closeEditPositionDialog();
         this.findAllPositionsByDate(this.dateStr);
@@ -262,23 +296,44 @@ export class ScheduleComponent implements OnInit {
     )
   }
 
-  signUpForActivity(id: number) {
-    this.enrollment.idPosition = id;
-    this.enrollment.idActivity = this.positionTemp.activity.idActivity;
+  signUpForPosition(id: number) {
+    this.findPositionById(id);
+    this.enrollment.position = this.position;
+    this.enrollment.idActivity = this.position.activity.idActivity;
     this.enrollment.idClub = 1;
     this.enrollment.idNetwork = 1;
     this.enrollment.idUser = this.currentUser.idUser;
-
-    console.log(this.enrollment)
-    this.enrollmentService.signUpForActivity(this.enrollment).subscribe(response => {
-      this.closeSignUpDialog();
-      this.messages = [{severity: 'success', summary: 'Sukces', detail: 'Poprawnie zapisano na zajęcia'}]
+    this.enrollmentService.addEnrollment(this.enrollment).subscribe(response => {
+      this.position.participantsQuantity++;
+      this.scheduleService.updatePosition(id, this.position).subscribe(response => {
+        this.findAllPositionsByDate(this.dateStr);
+        this.findAllEnrollmentsByIdUser(this.currentUser.idUser);
+        this.closeSignUpDialog();
+        this.messages = [{severity: 'success', summary: 'Sukces', detail: 'Poprawnie zapisano na zajęcia'}]
+      })
     })
 
   }
 
+  signOutFromPosition(id: number) {
+    this.findEnrollmentById(id);
+    this.findPositionById(this.enrollment.position.idPosition);
+    this.enrollmentService.deleteByIdEnrollment(id).subscribe(response => {
+      this.position.participantsQuantity--;
+      this.findAllEnrollmentsByIdUser(this.currentUser.idUser);
+      this.scheduleService.updatePosition(id, this.position).subscribe(response => {
+        this.findAllPositionsByDate(this.dateStr);
+        this.closeSignOutDialog();
+        this.messages = [{severity: 'success', summary: 'Sukces', detail: 'Poprawnie wypisano z zajęć'}]
+      })
+    })
+  }
 
 
+
+//TODO
+  //lista użytkowników
+  //role
 
 
 

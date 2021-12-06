@@ -1,4 +1,4 @@
-<div class="p-m-4 p-d-block" style="max-width: 100%" *ngIf="roles.includes('ADMIN') || roles.includes('USER')">
+<div class="p-m-4 p-d-block" style="max-width: 100%" *ngIf="roles.includes('ADMIN') || roles.includes('USER') || roles.includes('STAFF')">
   <p-card>
 
     <p-messages [(value)]="messages" [enableService]="false"></p-messages>
@@ -10,7 +10,7 @@
           <th style="width: 40%"></th>
           <th></th>
           <th></th>
-          <th *ngIf="roles.includes('ADMIN') && roles.includes('USER')"></th>
+          <th *ngIf="roles.includes('ADMIN') && roles.includes('USER') || roles.includes('STAFF')"></th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-ticketType>
@@ -22,7 +22,7 @@
             <button pButton pRipple
                     type="button" label="Kup" class="p-button-raised" (click)="displayBuyTicketDialog(ticketType.idType)"></button>
           </td>
-          <td *ngIf="roles.includes('ADMIN')">
+          <td *ngIf="roles.includes('ADMIN') || roles.includes('STAFF')">
             <button pButton pRipple
                     (click)="displayDeleteTicketTypeDialog(ticketType.idType)"
                     icon="pi pi-trash" class="p-button-rounded p-button-warning" style="margin-right: 10px"></button>
@@ -34,7 +34,7 @@
       </ng-template>
     </p-table>
     <button pButton pRipple type="button" label="Dodaj karnet"
-            (click)="displayNewTicketTypeDialog()" *ngIf="roles.includes('ADMIN')"
+            (click)="displayNewTicketTypeDialog()" *ngIf="roles.includes('ADMIN') || roles.includes('STAFF')"
             class="p-button-raised p-button-success p-d-block p-mt-5" style="width: 220px"></button>
   </p-card>
 </div>

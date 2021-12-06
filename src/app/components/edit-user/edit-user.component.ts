@@ -8,6 +8,11 @@ import {TicketService} from "../../service/data/ticket/ticket.service";
 import {Ticket} from "../../model/ticket";
 import {TicketType} from "../../model/ticket-type";
 import {TicketTypeService} from "../../service/data/ticket-type/ticket-type.service";
+import {RoleService} from "../../service/data/role/role.service";
+import {Role} from "../../model/role";
+import {UserRoleService} from "../../service/data/user-role/user-role.service";
+import {UserRole} from "../../model/user-role";
+import {tick} from "@angular/core/testing";
 
 @Component({
   selector: 'app-edit-user',
@@ -21,14 +26,21 @@ export class EditUserComponent implements OnInit {
   id!: number;
   editForm!: FormGroup;
   submitted: boolean = false;
-  messages!: Message[];
-  usersTickets!: Ticket[];
+  messagesUser: Message[] = [];
+  messagesTickets: Message[] = [];
+  usersTickets: Ticket[] = [];
   addTicketDialog: boolean = false;
   deleteTicketDialog: boolean = false;
   ticketTypes!: TicketType[];
   date!: Date;
   ticket: Ticket = new Ticket();
   selectedTicketType!: TicketType;
+  roles: Role[] = [];
+  role!: Role;
+  role2!: Role;
+  newRoleDropdown: boolean = false;
+  userRoles: UserRole[] = [];
+  userRole!: UserRole;
 
 
 
@@ -37,7 +49,9 @@ export class EditUserComponent implements OnInit {
               private userService: UserService,
               private formBuilder: FormBuilder,
               private ticketService: TicketService,
-              private ticketTypeService: TicketTypeService) {
+              private ticketTypeService: TicketTypeService,
+              private roleService: RoleService,
+              private userRoleService: UserRoleService) {
 
   }
 
@@ -54,12 +68,14 @@ export class EditUserComponent implements OnInit {
     })
 
     if (this.id !== null) {
-      this.userService.findUserById(this.id).subscribe(response => {
-        this.userTemp = response;
-      });
+      this.findUserById(this.id);
     }
 
     this.findAllUsersTickets();
+
+    this.findAllRoles();
+
+    this.findAllUserRoles(this.id);
 
     this.editForm = new FormGroup(
       {
@@ -78,6 +94,7 @@ export class EditUserComponent implements OnInit {
         ),
         birthDate: new FormControl('', Validators.required),
         phoneNumber: new FormControl('', Validators.required),
+        role: new FormControl('', Validators.required),
       });
 
 
@@ -91,27 +108,30 @@ export class EditUserComponent implements OnInit {
     this.submitted = true;
 
     if (this.editForm.invalid) {
-      return
+      return;
     } else {
       this.userService.updateUser(this.userTemp.idUser, this.userTemp)
         .subscribe(data => {
           this.userService.findUserById(this.userTemp.idUser).subscribe(response => {
-            console.log(response);
           })
-          this.messages = [
+          this.messagesUser = [
             {severity: 'success', summary: 'Sukces', detail: 'Poprawnie zapisano dane'},
           ];
         }, error => {
-          this.messages = [
+          this.messagesUser = [
             {severity: 'error', summary: 'Błąd', detail: ''}
           ];
         });
     }
-
   }
 
-  //to get and display all user's tickets from database
-  //don't know why I have to find user and assign to userTemp one more time even if it's already done in ngOnInit
+  findUserById(id: number) {
+    this.userService.findUserById(this.id).subscribe(response => {
+      this.userTemp = response;
+    });
+  }
+
+
   findAllUsersTickets() {
 
     if (this.id !== null) {
@@ -132,9 +152,38 @@ export class EditUserComponent implements OnInit {
     }
   }
 
+  findAllRoles() {
+    this.roleService.findAllRoles().subscribe(response => {
+      this.roles = response;
+      console.log(response)
+    })
+  }
+
+  findTicketById(id: number) {
+    this.ticketService.findTicketById(id).subscribe(response => {
+      this.ticket = response;
+    })
+  }
+
+  findAllTicketTypes() {
+    this.ticketTypeService.findAllTicketTypes().subscribe(
+      response => {
+        this.ticketTypes = response;
+      }
+    )
+  }
+
+  findAllUserRoles(id: number) {
+    this.userRoleService.findAllByIdUser(id).subscribe(response => {
+      this.userRoles = response;
+      console.log(response);
+    })
+  }
+
 
 
   displayAddTicketDialog() {
+    this.ticket = new Ticket();
     this.findAllTicketTypes();
     this.addTicketDialog = true;
   }
@@ -152,20 +201,6 @@ export class EditUserComponent implements OnInit {
     this.deleteTicketDialog = false;
   }
 
-  findTicketById(id: number) {
-    this.ticketService.findTicketById(id).subscribe(response => {
-      this.ticket = response;
-    })
-  }
-
-
-  findAllTicketTypes() {
-    this.ticketTypeService.findAllTicketTypes().subscribe(
-      response => {
-        this.ticketTypes = response;
-      }
-    )
-  }
 
   addTicket() {
     let today;
@@ -181,10 +216,15 @@ export class EditUserComponent implements OnInit {
       this.ticket.idClub = 1;
       this.ticket.idNetwork = 1;
 
+      console.log(this.ticket.activationDate)
+      console.log(this.ticket.membershipTicketType)
 
       this.ticketService.buyTicket(this.ticket).subscribe(response => {
         this.closeAddTicketDialog();
         this.findAllUsersTickets();
+        this.messagesTickets = [
+          {severity: 'success', summary: 'Sukces', detail: 'Poprawnie dodano karnet'},
+        ];
       })
 
     } else {
@@ -197,11 +237,14 @@ export class EditUserComponent implements OnInit {
     this.ticketService.deleteTicketById(id).subscribe(response => {
       this.closeDeleteTicketDialog();
       this.findAllUsersTickets();
-      this.messages = [
+      this.messagesTickets = [
         {severity: 'success', summary: 'Sukces', detail: 'Poprawnie usunięto karnet'},
       ];
     })
   }
+
+
+
 
 }
 

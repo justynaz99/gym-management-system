@@ -9,7 +9,7 @@
           <button pButton pRipple type="button" icon="pi pi-angle-left" (click)="prevDay()"
                   class="p-button-rounded p-button-success p-button-outlined p-mt-4"></button>
         </div>
-        <div class="p-mr-3 p-ml-3" >
+        <div class="p-mr-3 p-ml-3">
           <h4
             style="color: #6c757d; font-weight: 600; text-align: center; text-transform: uppercase">{{dayStr}}</h4>
 
@@ -24,10 +24,10 @@
       </div>
     </div>
 
-    <p-tabView *ngIf="roles.includes('GUEST')">
+    <p-tabView *ngIf="usersRoles.includes('GUEST')">
       <p-tabPanel header="Zajęcia">
-        <p-table [value]="positions"  [paginator]="true" [rows]="10"
-                 [showCurrentPageReport]="true" >
+        <p-table [value]="positions" [paginator]="true" [rows]="10"
+                 [showCurrentPageReport]="true">
           <ng-template pTemplate="header">
             <tr>
               <th>Zajęcia</th>
@@ -44,7 +44,7 @@
               <td>{{position.coach}}</td>
               <td>{{position.startTime | date : 'shortTime' : '' : 'pl'}}</td>
               <td>{{position.finishTime | date : 'shortTime' : '' : 'pl'}}</td>
-              <td></td>
+              <td>{{position.participantsQuantity}}/{{position.maxParticipants}}</td>
               <td></td>
             </tr>
           </ng-template>
@@ -52,10 +52,10 @@
       </p-tabPanel>
     </p-tabView>
 
-    <p-tabView *ngIf="roles.includes('USER') || roles.includes('ADMIN')">
+    <p-tabView *ngIf="usersRoles.includes('USER') || usersRoles.includes('ADMIN') || usersRoles.includes('STAFF')">
       <p-tabPanel header="Zajęcia">
-        <p-table [value]="positions"  [paginator]="true" [rows]="10"
-                 [showCurrentPageReport]="true" >
+        <p-table [value]="positions" [paginator]="true" [rows]="10"
+                 [showCurrentPageReport]="true">
           <ng-template pTemplate="header">
             <tr>
               <th>Zajęcia</th>
@@ -72,28 +72,45 @@
               <td>{{position.coach}}</td>
               <td>{{position.startTime | date : 'shortTime' : '' : 'pl'}}</td>
               <td>{{position.finishTime | date : 'shortTime' : '' : 'pl'}}</td>
-              <td></td>
+              <td *ngIf="position.participantsQuantity < position.maxParticipants">
+                {{position.participantsQuantity}}/{{position.maxParticipants}}
+              </td>
+              <td *ngIf="position.participantsQuantity >= position.maxParticipants"
+                  style="color: #73000c">{{position.participantsQuantity}}/{{position.maxParticipants}}</td>
               <td style="text-align: center">
-                <button pButton pRipple type="button" label="Zapisz się" (click)="displaySignUpDialog(position.idPosition)" *ngIf="roles.includes('USER')"
+                <button pButton pRipple type="button" label="Zapisz się"
+                        (click)="displaySignUpDialog(position.idPosition)"
+                        *ngIf="usersRoles.includes('USER') && !usersPositionsId.includes(position.idPosition) && position.participantsQuantity < position.maxParticipants"
                         class="p-button-outlined p-button-success p-d-block"></button>
-                <button pButton pRipple icon="pi pi-trash" (click)="displayDeletePositionDialog(position.idPosition)" *ngIf="roles.includes('ADMIN')"
+                <button pButton pRipple type="button" label="Zapisz się" [disabled]="true"
+                        *ngIf="position.participantsQuantity >= position.maxParticipants && !usersPositionsId.includes(position.idPosition)"
+                        class="p-button-outlined p-button-success p-d-block"></button>
+                <button pButton pRipple type="button" label="Wypisz się"
+                        (click)="displaySignOutDialog2(position.idPosition, currentUser.idUser)"
+                        *ngIf="usersRoles.includes('USER') && usersPositionsId.includes(position.idPosition)"
+                        class="p-button-outlined p-button-danger p-d-block"></button>
+                <button pButton pRipple icon="pi pi-trash" (click)="displayDeletePositionDialog(position.idPosition)"
+                        *ngIf="usersRoles.includes('ADMIN') || usersRoles.includes('STAFF')"
                         class="p-button-rounded p-button-warning" style="margin-right: 10px"></button>
-                <button pButton pRipple type="button" icon="pi pi-pencil" (click)="displayEditPositionDialog(position.idPosition)" *ngIf="roles.includes('ADMIN')"
+                <button pButton pRipple type="button" icon="pi pi-pencil"
+                        (click)="displayEditPositionDialog(position.idPosition)" *ngIf="usersRoles.includes('ADMIN') || usersRoles.includes('STAFF')"
                         class="p-button-rounded p-button-info"></button>
               </td>
             </tr>
           </ng-template>
         </p-table>
-        <button pButton pRipple type="button" label="Dodaj zajęcia" (click)="displayAddNewPositionDialog()" *ngIf="roles.includes('ADMIN')"
+        <button pButton pRipple type="button" label="Dodaj zajęcia" (click)="displayAddNewPositionDialog()"
+                *ngIf="usersRoles.includes('ADMIN') || usersRoles.includes('STAFF')"
                 class="p-button-raised p-button-success p-d-block p-mt-5" style="width: 220px"></button>
       </p-tabPanel>
 
-      <p-tabPanel header="Moje zapisy" *ngIf="roles.includes('USER')">
+      <p-tabPanel header="Moje zapisy" *ngIf="usersRoles.includes('USER')">
 
-        <label class="p-d-block p-mb-2 p-mt-2" *ngIf="enrollments.length === 0">Nie jesteś jeszcze zapisany na żadne zajęcia.</label>
+        <label class="p-d-block p-mb-2 p-mt-2" *ngIf="usersEnrollments.length === 0">Nie jesteś jeszcze zapisany na
+          żadne zajęcia.</label>
 
-        <p-table [value]="enrollments"  [paginator]="true" [rows]="10" *ngIf="enrollments.length !== 0"
-                 [showCurrentPageReport]="true" >
+        <p-table [value]="usersEnrollments" [paginator]="true" [rows]="10" *ngIf="usersEnrollments.length !== 0"
+                 [showCurrentPageReport]="true">
           <ng-template pTemplate="header">
             <tr>
               <th>Zajęcia</th>
@@ -110,15 +127,17 @@
               <td>{{enrollment.position.coach}}</td>
               <td>{{enrollment.position.startTime | date : 'shortTime' : '' : 'pl'}}</td>
               <td>{{enrollment.position.finishTime | date : 'shortTime' : '' : 'pl'}}</td>
-              <td>{{enrollmentsNum}}</td>
-              <td><button pButton pRipple type="button" label="Wypisz się"
-                          class="p-button-outlined p-button-danger p-d-block"></button></td>
+              <td>{{enrollment.position.participantsQuantity}}/{{enrollment.position.maxParticipants}}</td>
+              <td>
+                <button pButton pRipple type="button" label="Wypisz się"
+                        (click)="displaySignOutDialog1(enrollment.idEnrollment)"
+                        class="p-button-outlined p-button-danger p-d-block"></button>
+              </td>
             </tr>
           </ng-template>
         </p-table>
       </p-tabPanel>
     </p-tabView>
-
 
 
   </p-card>
@@ -129,24 +148,34 @@
   <form [formGroup]="form" (submit)="addPosition()">
 
     <label class="p-d-block p-mb-1">Zajęcia</label>
-    <p-dropdown [options]="activities" [(ngModel)]="positionTemp.activity" placeholder="Wybierz zajęcia" optionLabel="name" formControlName="activity"></p-dropdown>
+    <p-dropdown [options]="activities" [(ngModel)]="position.activity" placeholder="Wybierz zajęcia" optionLabel="name"
+                formControlName="activity"></p-dropdown>
     <p-message *ngIf="f.activity.errors && submitted" severity="error"
                text="Wybierz rodzaj zajęć"></p-message>
 
     <label class="p-d-block p-mb-1 p-mt-3">Godzina rozpoczęcia</label>
-    <p-calendar [(ngModel)]="positionTemp.startTime" [timeOnly]="true" formControlName="startTime" class="p-mb-3"></p-calendar>
+    <p-calendar [(ngModel)]="position.startTime" [timeOnly]="true" formControlName="startTime"
+                class="p-mb-3"></p-calendar>
     <p-message *ngIf="f.startTime.errors && submitted" severity="error"
                text="Wprowadź godzinę rozpoczęcia zajęć"></p-message>
 
     <label class="p-d-block p-mb-1 p-mt-3">Godzina zakończenia</label>
-    <p-calendar [(ngModel)]="positionTemp.finishTime" [timeOnly]="true" formControlName="finishTime" class="p-mb-3"></p-calendar>
+    <p-calendar [(ngModel)]="position.finishTime" [timeOnly]="true" formControlName="finishTime"
+                class="p-mb-3"></p-calendar>
     <p-message *ngIf="f.finishTime.errors && submitted" severity="error"
                text="Wprowadź godzinę zakończenia zajęć"></p-message>
 
     <label class="p-d-block p-mb-1 p-mt-3" for="coach">Trener</label>
-    <input id="coach" class="p-mb-3" pKeyFilter="alpha" [(ngModel)]="positionTemp.coach" formControlName="coach" class="p-mb-3" pInputText/>
+    <input id="coach" class="p-mb-3" pKeyFilter="alpha" [(ngModel)]="position.coach" formControlName="coach"
+           class="p-mb-3" pInputText/>
     <p-message severity="error" text="Wprowadź imię i nazwisko trenera"
                *ngIf="f.coach.errors && submitted"></p-message>
+
+    <label class="p-d-block p-mb-1 p-mt-3" for="coach">Maksymalna liczba uczestników</label>
+    <input id="maxParticipants" class="p-mb-3" pKeyFilter="int" [(ngModel)]="position.maxParticipants"
+           formControlName="maxParticipants" class="p-mb-3" pInputText/>
+    <p-message severity="error" text="Wprowadź maksymalną liczbę uczestników"
+               *ngIf="f.maxParticipants.errors && submitted"></p-message>
 
     <button pButton pRipple type="submit" label="Zapisz"
             class="p-button-raised p-button-success p-d-block p-mt-5" style="width: 220px"></button>
@@ -156,27 +185,37 @@
 
 <p-dialog header="Edytuj zajęcia" [(visible)]="editPositionDialog" [style]="{width: '55vw'}">
 
-  <form [formGroup]="form" (submit)="updatePosition(positionTemp.idPosition)">
+  <form [formGroup]="form" (submit)="updatePosition(position.idPosition)">
 
     <label class="p-d-block p-mb-1">Zajęcia</label>
-    <p-dropdown [options]="activities" [(ngModel)]="positionTemp.activity" placeholder="Wybierz zajęcia" optionLabel="name" formControlName="activity"></p-dropdown>
+    <p-dropdown [options]="activities" [(ngModel)]="position.activity" placeholder="Wybierz zajęcia" optionLabel="name"
+                formControlName="activity"></p-dropdown>
     <p-message *ngIf="f.activity.errors && submitted" severity="error"
                text="Wybierz rodzaj zajęć"></p-message>
 
     <label class="p-d-block p-mb-1 p-mt-3">Godzina rozpoczęcia</label>
-    <p-calendar [(ngModel)]="positionTemp.startTime" [timeOnly]="true" formControlName="startTime" class="p-mb-3"></p-calendar>
+    <p-calendar [(ngModel)]="position.startTime" [timeOnly]="true" formControlName="startTime"
+                class="p-mb-3"></p-calendar>
     <p-message *ngIf="f.startTime.errors && submitted" severity="error"
                text="Wprowadź godzinę rozpoczęcia zajęć"></p-message>
 
     <label class="p-d-block p-mb-1 p-mt-3">Godzina zakończenia</label>
-    <p-calendar [(ngModel)]="positionTemp.finishTime" [timeOnly]="true" formControlName="finishTime" class="p-mb-3"></p-calendar>
+    <p-calendar [(ngModel)]="position.finishTime" [timeOnly]="true" formControlName="finishTime"
+                class="p-mb-3"></p-calendar>
     <p-message *ngIf="f.finishTime.errors && submitted" severity="error"
                text="Wprowadź godzinę zakończenia zajęć"></p-message>
 
     <label class="p-d-block p-mb-1 p-mt-3" for="coach">Trener</label>
-    <input id="coach" class="p-mb-3" pKeyFilter="alpha" [(ngModel)]="positionTemp.coach" formControlName="coach" pInputText/>
+    <input id="coach" class="p-mb-3" pKeyFilter="alpha" [(ngModel)]="position.coach" formControlName="coach"
+           pInputText/>
     <p-message severity="error" text="Wprowadź imię i nazwisko trenera"
                *ngIf="f.coach.errors && submitted"></p-message>
+
+    <label class="p-d-block p-mb-1 p-mt-3" for="coach">Maksymalna liczba uczestników</label>
+    <input id="maxParticipants" class="p-mb-3" pKeyFilter="int" [(ngModel)]="position.maxParticipants"
+           formControlName="maxParticipants" class="p-mb-3" pInputText/>
+    <p-message severity="error" text="Wprowadź maksymalną liczbę uczestników"
+               *ngIf="f.maxParticipants.errors && submitted"></p-message>
 
     <button pButton pRipple type="submit" label="Zapisz"
             class="p-button-raised p-button-success p-d-block p-mt-5" style="width: 220px"></button>
@@ -187,16 +226,34 @@
 
   <label class="p-d-block p-mb-1">Czy na pewno chcesz usunąć pozycję w grafiku?</label>
 
-  <button pButton pRipple type="button" label="Usuń" (click)="deletePositionById(positionTemp.idPosition)"
+  <button pButton pRipple type="button" label="Usuń" (click)="deletePositionById(position.idPosition)"
           class="p-button-raised p-button-success p-d-block p-mt-5" style="width: 220px"></button>
 
 </p-dialog>
 
 <p-dialog header="Zapisz się" [(visible)]="signUpDialog" [style]="{width: '50vw'}">
 
-<!--  <label class="p-d-block p-mb-1">{{positionTemp}}</label>-->
+  <label class="p-d-block p-mb-1">Czy na pewno chcesz zapisać się na zajęcia?</label>
 
-  <button pButton pRipple type="button" label="Zapisz się" (click)="signUpForActivity(positionTemp.idPosition)"
+  <button pButton pRipple type="button" label="Zapisz się" (click)="signUpForPosition(position.idPosition)"
+          class="p-button-raised p-button-success p-d-block p-mt-5" style="width: 220px"></button>
+
+</p-dialog>
+
+<p-dialog header="Zapisz się" [(visible)]="signUpDialog" [style]="{width: '50vw'}">
+
+  <label class="p-d-block p-mb-1">Czy na pewno chcesz zapisać się na zajęcia?</label>
+
+  <button pButton pRipple type="button" label="Zapisz się" (click)="signUpForPosition(position.idPosition)"
+          class="p-button-raised p-button-success p-d-block p-mt-5" style="width: 220px"></button>
+
+</p-dialog>
+
+<p-dialog header="Wypisz się" [(visible)]="signOutDialog" [style]="{width: '50vw'}">
+
+  <label class="p-d-block p-mb-1">Czy na pewno chcesz wypisać się z zajęć?</label>
+
+  <button pButton pRipple type="button" label="Wypisz się" (click)="signOutFromPosition(enrollment.idEnrollment)"
           class="p-button-raised p-button-success p-d-block p-mt-5" style="width: 220px"></button>
 
 </p-dialog>

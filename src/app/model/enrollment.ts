@@ -1,5 +1,9 @@
+import {ActivityPositionInSchedule} from "./activity-position-in-schedule";
+
 export class Enrollment {
-  idPosition!: number;
+
+  idEnrollment!: number;
+  position!: ActivityPositionInSchedule;
   idActivity!: number;
   idClub!: number;
   idNetwork!: number;
