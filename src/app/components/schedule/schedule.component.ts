@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ActivityDataService} from "../../service/data/activity/activity-data.service";
 import {Router} from "@angular/router";
 import {Activity} from "../../model/activity";
@@ -13,6 +13,9 @@ import {Enrollment} from "../../model/enrollment";
 import {EnrollmentService} from "../../service/data/enrollment/enrollment.service";
 import {RoleService} from "../../service/data/role/role.service";
 import {Role} from "../../model/role";
+import {TicketService} from "../../service/data/ticket/ticket.service";
+import {Ticket} from "../../model/ticket";
+import {tick} from "@angular/core/testing";
 
 
 @Component({
@@ -27,15 +30,19 @@ export class ScheduleComponent implements OnInit {
   day: Date = new Date();
   dateStr!: string | null;
   dayStr!: string | null;
-  positions!: ActivityPositionInSchedule[];
+  positions: ActivityPositionInSchedule[] = [];
   form!: FormGroup;
   submitted: boolean = false;
   messages: Message[] = [];
+  usersListDialogMessages: Message[] = [];
   addNewPositionDialog: boolean = false;
   editPositionDialog: boolean = false;
   deletePositionDialog: boolean = false;
+  enrollmentsListDialog: boolean = false;
   signUpDialog: boolean = false;
   signOutDialog: boolean = false;
+  addUserDialog: boolean = false;
+  deleteUserDialog: boolean = false;
   currentUser!: User;
   position: ActivityPositionInSchedule = new ActivityPositionInSchedule();
   pipe: DatePipe = new DatePipe('pl');
@@ -44,8 +51,9 @@ export class ScheduleComponent implements OnInit {
   positionEnrollments: Enrollment[] = [];
   usersPositionsId: number[] = [];
   usersRoles: String[] = [];
-
-
+  users: User[] = [];
+  idPosition!: number;
+  user!: User;
 
 
   constructor(
@@ -55,8 +63,9 @@ export class ScheduleComponent implements OnInit {
     private config: PrimeNGConfig,
     private userService: UserService,
     private enrollmentService: EnrollmentService,
-
-  ) { }
+    private ticketService: TicketService
+  ) {
+  }
 
 
   ngOnInit(): void {
@@ -95,22 +104,20 @@ export class ScheduleComponent implements OnInit {
 
     if (this.currentUser !== null)
       this.findAllEnrollmentsByIdUser(this.currentUser.idUser);
-
   }
 
   get f(): { [key: string]: AbstractControl } {
     return this.form.controls;
   }
 
-  findRoles () {
+  findRoles() {
     if (this.userService.currentUserValue !== null) {
       this.currentUser = this.userService.currentUserValue;
 
       for (let role of this.currentUser.roles) {
         this.usersRoles.push(role.name);
       }
-    }
-    else {
+    } else {
       this.usersRoles[0] = 'GUEST';
     }
   }
@@ -140,18 +147,34 @@ export class ScheduleComponent implements OnInit {
 
   findAllPositionsByDate(date: string | null) {
     this.scheduleService.findAllPositionsByDate(date).subscribe(response => {
-      this.positions = response;
+      if (response !== null) {
+        let now = new Date();
+        let startTime;
+        for (let position of response) {
+          startTime = new Date(position.startTime);
+          position.started = startTime.getTime() < now.getTime();
+        }
+        this.positions = response;
+        console.log(response)
+      }
+      else
+        this.positions = [];
     })
-
   }
+
 
   findAllEnrollmentsByIdUser(id: number) {
     this.enrollmentService.findAllByIdUser(id).subscribe(response => {
-      this.usersEnrollments = response;
-      for (let i = 0; i < this.usersEnrollments.length; i++) {
-        this.usersPositionsId[i] = this.usersEnrollments[i].position.idPosition;
+      let now = new Date();
+      let startTime;
+      for (let enrollment of response) {
+        startTime = new Date(enrollment.position.startTime);
+        enrollment.position.started = startTime.getTime() < now.getTime();
+        if (!enrollment.position.started) {
+          this.usersEnrollments.push(enrollment);
+          this.usersPositionsId.push(enrollment.position.idPosition);
+        }
       }
-      console.log(this.usersPositionsId)
     })
   }
 
@@ -168,7 +191,6 @@ export class ScheduleComponent implements OnInit {
       let finishTime = new Date(this.position.finishTime)
       this.position.startTime = startTime;
       this.position.finishTime = finishTime;
-      // this.timeStr = this.pipe.transform(response.startTime, "hh:mm", 'pl');
     })
   }
 
@@ -184,6 +206,24 @@ export class ScheduleComponent implements OnInit {
     })
   }
 
+  findLatestTicketByIdUser(idUser: number): Ticket {
+    let ticket = new Ticket();
+    let date;
+    let today = new Date();
+    this.ticketService.findAllUsersTickets(idUser).subscribe(response => {
+      console.log(response);
+      ticket = response[0];
+      date = new Date(ticket.expirationDate);
+      ticket.status = date.getTime() >= today.getTime();
+    })
+    return ticket;
+  }
+
+  findAllUsers() {
+    this.userService.findAllUsers().subscribe(response => {
+      this.users = response;
+    })
+  }
 
 
   displayAddNewPositionDialog() {
@@ -221,7 +261,7 @@ export class ScheduleComponent implements OnInit {
 
   displaySignUpDialog(id: number) {
     this.findPositionById(id);
-    if (this.positionEnrollments.length !<= this.position.maxParticipants) {
+    if (this.positionEnrollments.length ! <= this.position.maxParticipants) {
       this.signUpDialog = true;
     }
   }
@@ -235,8 +275,8 @@ export class ScheduleComponent implements OnInit {
     this.signOutDialog = true;
   }
 
-  displaySignOutDialog2(idPosition: number, idUser: number) {
-    this.findEnrollmentByIdPositionAndIdUser(idPosition, idUser);
+  displaySignOutDialog2(idPosition: number) {
+    this.findEnrollmentByIdPositionAndIdUser(idPosition, this.currentUser.idUser);
     this.signOutDialog = true;
   }
 
@@ -244,6 +284,33 @@ export class ScheduleComponent implements OnInit {
     this.signOutDialog = false;
   }
 
+  displayEnrollmentsListDialog(idPosition: number) {
+    this.positionEnrollments = [];
+    this.idPosition = idPosition;
+    this.findAllEnrollmentsByIdPosition(idPosition);
+    this.enrollmentsListDialog = true;
+  }
+
+  displayAddUserDialog(idPosition: number) {
+    this.findPositionById(idPosition);
+    this.findAllUsers();
+    this.addUserDialog = true;
+
+  }
+
+  closeAddUserDialog() {
+    this.addUserDialog = false;
+  }
+
+  displayDeleteUserDialog(idPosition: number, user: User) {
+    this.findPositionById(idPosition);
+    this.findEnrollmentByIdPositionAndIdUser(idPosition, user.idUser);
+    this.deleteUserDialog = true;
+  }
+
+  closeDeleteUserDialog() {
+    this.deleteUserDialog = false;
+  }
 
 
   addPosition() {
@@ -258,6 +325,7 @@ export class ScheduleComponent implements OnInit {
     this.scheduleService.addPosition(this.position).subscribe(data => {
         this.closeAddNewPositionDialog();
         this.findAllPositionsByDate(this.dateStr);
+
         this.messages = [{severity: 'success', summary: 'Sukces', detail: 'Poprawnie zapisano dane'}]
       }, error => {
       }
@@ -296,47 +364,89 @@ export class ScheduleComponent implements OnInit {
     )
   }
 
-  signUpForPosition(id: number) {
-    this.findPositionById(id);
+  signUpForPosition(idPosition: number) {
+    this.findPositionById(idPosition);
     this.enrollment.position = this.position;
     this.enrollment.idActivity = this.position.activity.idActivity;
     this.enrollment.idClub = 1;
     this.enrollment.idNetwork = 1;
-    this.enrollment.idUser = this.currentUser.idUser;
+    this.enrollment.user = this.currentUser;
     this.enrollmentService.addEnrollment(this.enrollment).subscribe(response => {
       this.position.participantsQuantity++;
-      this.scheduleService.updatePosition(id, this.position).subscribe(response => {
-        this.findAllPositionsByDate(this.dateStr);
-        this.findAllEnrollmentsByIdUser(this.currentUser.idUser);
+      this.scheduleService.updatePosition(idPosition, this.position).subscribe(response => {
+        this.ngOnInit();
         this.closeSignUpDialog();
         this.messages = [{severity: 'success', summary: 'Sukces', detail: 'Poprawnie zapisano na zajęcia'}]
       })
     })
-
   }
 
-  signOutFromPosition(id: number) {
-    this.findEnrollmentById(id);
+  signOutFromPosition(idEnrollment: number) {
+    this.findEnrollmentById(idEnrollment);
     this.findPositionById(this.enrollment.position.idPosition);
-    this.enrollmentService.deleteByIdEnrollment(id).subscribe(response => {
+    this.enrollmentService.deleteByIdEnrollment(idEnrollment).subscribe(response => {
       this.position.participantsQuantity--;
-      this.findAllEnrollmentsByIdUser(this.currentUser.idUser);
-      this.scheduleService.updatePosition(id, this.position).subscribe(response => {
-        this.findAllPositionsByDate(this.dateStr);
+      this.scheduleService.updatePosition(this.position.idPosition, this.position).subscribe(response => {
+        this.usersPositionsId.splice(this.usersPositionsId.indexOf(this.position.idPosition));
+        this.usersEnrollments.splice(this.usersEnrollments.indexOf(this.enrollment));
+        this.ngOnInit();
         this.closeSignOutDialog();
         this.messages = [{severity: 'success', summary: 'Sukces', detail: 'Poprawnie wypisano z zajęć'}]
       })
     })
   }
 
+  signUpUserForPosition(user: User) {
+      this.enrollment = new Enrollment();
+      this.enrollment.position = this.position;
+      this.enrollment.idActivity = this.position.activity.idActivity;
+      this.enrollment.idClub = 1;
+      this.enrollment.idNetwork = 1;
+      this.enrollment.user = user;
+      this.enrollmentService.addEnrollment(this.enrollment).subscribe(response => {
+        this.position.participantsQuantity++;
+        this.scheduleService.updatePosition(this.position.idPosition, this.position).subscribe(response => {
+          this.ngOnInit();
+          this.closeAddUserDialog();
+          this.usersListDialogMessages = [{
+            severity: 'success',
+            summary: 'Sukces',
+            detail: 'Poprawnie zapisano użytkownika'
+          }]
+        })
+      })
+
+  }
+
+  signOutUserFromPosition() {
+    this.enrollmentService.deleteByIdEnrollment(this.enrollment.idEnrollment).subscribe(response => {
+      this.position.participantsQuantity--;
+      this.scheduleService.updatePosition(this.position.idPosition, this.position).subscribe(response => {
+       this.ngOnInit();
+        this.closeDeleteUserDialog();
+        this.usersListDialogMessages = [{
+          severity: 'success',
+          summary: 'Sukces',
+          detail: 'Poprawnie wypisano użytkownika'
+        }]
+      })
+    })
+  }
+
+
 
 
 //TODO
-  //lista użytkowników
-  //role
-
-
-
+  //komunikat jeśli pracownik chce zapisać dwa razy tego samego użytkownika
+  //wygasić przycisk zapisz się po rozpoczęciu zajęć
+  //naprawić przycisk "wypisz się"
+  //zmienić komunikaty na toasty
+  //komunikaty przy logowaniu i rejestracji
+  //zawieszenie karnetu i odwieszenie karnetu
+  //usunąć usuwanie użytkowników
+  //security
+  //resetowanie hasła
+  //wyszukiwanie przy liście użytkowników i przy dodawaniu użytkownika do zajęć
 
 
 }

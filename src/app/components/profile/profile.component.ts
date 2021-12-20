@@ -173,6 +173,7 @@ export class ProfileComponent implements OnInit {
           date = new Date(ticket.expirationDate);
           ticket.status = date.getTime() >= today.getTime();
         }
+        console.log(response)
       }
     )
   }

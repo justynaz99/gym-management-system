@@ -15,8 +15,8 @@ export class TicketService {
     return this.http.get<Ticket[]>(API_URL + 'all/' + idUser);
   }
 
-  findTicketById(id: number) {
-    return this.http.get<Ticket>(API_URL + id);
+  findTicketById(idTicket: number) {
+    return this.http.get<Ticket>(API_URL + idTicket);
   }
 
   buyTicket(ticket: Ticket) {
@@ -24,7 +24,7 @@ export class TicketService {
       {headers: {"Content-Type":"application/json; charset=UTF-8"}});
   }
 
-  deleteTicketById(id: number) {
-    return this.http.delete(API_URL + id + '/delete')
+  deleteTicketById(idTicket: number) {
+    return this.http.delete(API_URL + idTicket + '/delete')
   }
 }

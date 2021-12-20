@@ -10,4 +10,5 @@ export class ActivityPositionInSchedule {
   activity!: Activity;
   participantsQuantity!: number;
   maxParticipants!: number;
+  started!: boolean;
 }
