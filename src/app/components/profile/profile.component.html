@@ -1,10 +1,11 @@
 <div class="p-m-4 p-d-block" style="max-width: 75%" xmlns="http://www.w3.org/1999/html">
 
+  <p-toast></p-toast>
+
   <div class="p-mb-4">
     <p-fieldset legend="Moje dane" [toggleable]="true" [collapsed]="true">
       <form [formGroup]="editForm" (submit)="updateUser()">
 
-        <p-messages [(value)]="messages" [enableService]="false"></p-messages>
 
         <label class="p-d-block p-mb-1" for="name">Imię</label>
         <input id="name" class="p-mb-3" [(ngModel)]="currentUser.firstName" formControlName="firstName"
@@ -43,8 +44,6 @@
 
   <div class="p-mb-4">
     <p-fieldset legend="Zmień hasło" [toggleable]="true" [collapsed]="true">
-
-      <p-messages [(value)]="passMessages" [enableService]="false"></p-messages>
 
       <form [formGroup]="editPasswordFrom" (submit)="changePassword()">
         <label class="p-d-block p-mb-1 p-mt-3">Aktualne hasło</label>

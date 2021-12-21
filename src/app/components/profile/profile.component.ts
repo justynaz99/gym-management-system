@@ -14,7 +14,8 @@ import {DatePipe} from "@angular/common";
 @Component({
   selector: 'app-my-account',
   templateUrl: './profile.component.html',
-  styleUrls: ['./profile.component.css']
+  styleUrls: ['./profile.component.css'],
+  providers: [MessageService]
 })
 export class ProfileComponent implements OnInit {
 
@@ -35,7 +36,8 @@ export class ProfileComponent implements OnInit {
               private router: Router,
               private ticketService: TicketService,
               private formBuilder: FormBuilder,
-              private config: PrimeNGConfig) {
+              private config: PrimeNGConfig,
+              private messageService: MessageService) {
 
     this.currentUser = JSON.parse(<string>localStorage.getItem('currentUser'));
   }
@@ -104,10 +106,7 @@ export class ProfileComponent implements OnInit {
             console.log(response);
             localStorage.setItem('currentUser', JSON.stringify(response));
           })
-
-          this.messages = [
-            {severity: 'success', summary: 'Sukces', detail: 'Poprawnie zapisano dane'},
-          ];
+          this.showSuccessEditData()
         }, error => {
           this.messages = [
             {severity: 'error', summary: 'Błąd', detail: ''}
@@ -149,13 +148,10 @@ export class ProfileComponent implements OnInit {
     this.checkPassword().subscribe(data => {
       if (data) {
         this.correctPassword = true;
-        console.log("correct pass")
         this.currentUser.password = this.newPassword;
         this.userService.changePassword(this.currentUser.idUser, this.currentUser).subscribe(data => {
         })
-        this.passMessages = [
-          {severity: 'success', summary: 'Sukces', detail: 'Poprawnie zapisano dane'},
-        ];
+        this.showSuccessEditPassword();
       } else {
         this.correctPassword = false;
 
@@ -177,6 +173,16 @@ export class ProfileComponent implements OnInit {
       }
     )
   }
+
+  showSuccessEditData() {
+    this.messageService.add({severity: 'success', summary: 'Sukces', detail: 'Poprawnie edytowano dane!'})
+  }
+
+  showSuccessEditPassword() {
+    this.messageService.add({severity: 'success', summary: 'Sukces', detail: 'Poprawnie edytowano hasło!'})
+  }
+
+
 
 
 

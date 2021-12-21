@@ -1,8 +1,7 @@
+<p-toast></p-toast>
+
 <div class="p-m-4 p-d-block" style="max-width: 80%" *ngIf="roles.includes('GUEST') || roles.includes('USER')">
-
   <p-card>
-
-    <p-messages [(value)]="messages" [enableService]="false"></p-messages>
 
     <p-table [value]="activities"  [paginator]="true" [rows]="10"
              [showCurrentPageReport]="true">
@@ -24,8 +23,6 @@
 
 <div class="p-m-4 p-d-block" style="max-width: 80%" *ngIf="roles.includes('ADMIN') || roles.includes('STAFF')">
   <p-card>
-
-    <p-messages [(value)]="messages" [enableService]="false"></p-messages>
 
     <p-table [value]="activities"  [paginator]="true" [rows]="10"
              [showCurrentPageReport]="true">

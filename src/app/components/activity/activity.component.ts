@@ -5,7 +5,7 @@ import {Activity} from "../../model/activity";
 import {User} from "../../model/user";
 import {UserService} from "../../service/data/user/user.service";
 import {AbstractControl, FormControl, FormGroup, Validators} from "@angular/forms";
-import {Message} from "primeng/api";
+import {Message, MessageService} from "primeng/api";
 import {Role} from "../../model/role";
 
 
@@ -13,6 +13,7 @@ import {Role} from "../../model/role";
   selector: 'app-classes-list',
   templateUrl: './activity.component.html',
   styleUrls: ['./activity.component.css'],
+  providers: [MessageService]
 })
 
 export class ActivityComponent implements OnInit {
@@ -31,7 +32,8 @@ export class ActivityComponent implements OnInit {
   constructor(
     private activityService: ActivityDataService,
     private router: Router,
-    private userService: UserService
+    private userService: UserService,
+    private messageService: MessageService
   ) {
   }
 
@@ -132,7 +134,7 @@ export class ActivityComponent implements OnInit {
       this.closeNewActivityDialog();
       this.findAllActivities();
       this.submitted = false;
-      this.messages = [{severity: 'success', summary: 'Sukces', detail: 'Poprawnie zapisano dane'}]
+      this.showSuccessAdd()
       }, error => {
       }
     );
@@ -150,7 +152,7 @@ export class ActivityComponent implements OnInit {
         this.closeEditActivityDialog();
         this.findAllActivities();
         this.submitted = false;
-        this.messages = [{severity: 'success', summary: 'Sukces', detail: 'Poprawnie edytowano dane'}]
+        this.showSuccessEdit()
       })
   }
 
@@ -163,9 +165,21 @@ export class ActivityComponent implements OnInit {
       } else {
         this.closeDeleteActivityDialog();
         this.findAllActivities();
-        this.messages = [{severity: 'success', summary: 'Sukces', detail: 'Poprawnie usunięto dane'}]
+        this.showSuccessDelete()
       }
     })
+  }
+
+  showSuccessAdd() {
+    this.messageService.add({severity: 'success', summary: 'Sukces', detail: 'Poprawnie dodano zajęcia!'})
+  }
+
+  showSuccessEdit() {
+    this.messageService.add({severity: 'success', summary: 'Sukces', detail: 'Poprawnie edytowano zajęcia!'})
+  }
+
+  showSuccessDelete() {
+    this.messageService.add({severity: 'success', summary: 'Sukces', detail: 'Poprawnie usunięto zajęcia!'})
   }
 
 

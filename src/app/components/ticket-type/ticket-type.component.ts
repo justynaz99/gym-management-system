@@ -5,7 +5,7 @@ import {TicketType} from "../../model/ticket-type";
 import {UserService} from "../../service/data/user/user.service";
 import {User} from "../../model/user";
 import {DialogModule} from 'primeng/dialog';
-import {Message, PrimeNGConfig} from "primeng/api";
+import {Message, MessageService, PrimeNGConfig} from "primeng/api";
 import {AbstractControl, FormControl, FormGroup, Validators} from "@angular/forms";
 import {Ticket} from "../../model/ticket";
 import {Observable} from "rxjs";
@@ -16,7 +16,8 @@ import {TicketService} from "../../service/data/ticket/ticket.service";
 @Component({
   selector: 'app-tickets-list',
   templateUrl: './ticket-type.component.html',
-  styleUrls: ['./ticket-type.component.css']
+  styleUrls: ['./ticket-type.component.css'],
+  providers: [MessageService]
 })
 export class TicketTypeComponent implements OnInit {
 
@@ -40,7 +41,8 @@ export class TicketTypeComponent implements OnInit {
     private router: Router,
     private userService: UserService,
     private primengConfig: PrimeNGConfig,
-    private ticketService: TicketService
+    private ticketService: TicketService,
+    private messageService: MessageService
   ) {
   }
 
@@ -150,7 +152,7 @@ export class TicketTypeComponent implements OnInit {
     this.ticketTypeService.addTicketType(this.ticketTypeTemp).subscribe(data => {
         this.closeNewTicketTypeDialog();
         this.findAllTicketTypes();
-        this.messages = [{severity: 'success', summary: 'Sukces', detail: 'Poprawnie zapisano dane'}]
+        this.showSuccessAdd()
       }, error => {
       }
     );
@@ -167,7 +169,7 @@ export class TicketTypeComponent implements OnInit {
       .subscribe(data => {
         this.closeEditTicketTypeDialog();
         this.findAllTicketTypes();
-        this.messages = [{severity: 'success', summary: 'Sukces', detail: 'Poprawnie edytowano dane'}]
+        this.showSuccessEdit()
       }, error => {
       });
   }
@@ -176,7 +178,7 @@ export class TicketTypeComponent implements OnInit {
     this.ticketTypeService.deleteTicketTypeById(id).subscribe(response => {
       this.closeDeleteTicketTypeDialog();
       this.findAllTicketTypes();
-      this.messages = [{severity: 'success', summary: 'Sukces', detail: 'Poprawnie usunięto dane'}]
+      this.showSuccessDelete();
     })
   }
 
@@ -201,29 +203,55 @@ export class TicketTypeComponent implements OnInit {
 
       this.ticketService.findAllUsersTickets(this.currentUser.idUser).subscribe(
         response => {
-          let date;
-          let today = new Date;
-          for(let ticket of response) {
-            date = new Date(ticket.expirationDate);
-            if (date.getTime() >= today.getTime()) {
+          if (response.length === 0) {
+            this.ticketService.buyTicket(this.ticket).subscribe(response => {
               this.closeBuyTicketDialog();
-              this.messages = [{severity: 'error', summary: 'Błąd', detail: 'Posiadasz już aktywny karnet'}]
-              return;
-            } else {
-              this.ticketService.buyTicket(this.ticket).subscribe(response => {
+              this.showSuccessBuy();
+            })
+          } else {
+            let date;
+            let today = new Date;
+            for(let ticket of response) {
+              date = new Date(ticket.expirationDate);
+              if (date.getTime() >= today.getTime()) {
                 this.closeBuyTicketDialog();
-                this.messages = [{severity: 'success', summary: 'Sukces', detail: 'Kupiłeś nowy karnet!'}]
-              })
+                this.showErrorBuy();
+                return;
+              } else {
+                this.ticketService.buyTicket(this.ticket).subscribe(response => {
+                  this.closeBuyTicketDialog();
+                  this.showSuccessBuy()
+                })
+              }
             }
           }
+
         }
       )
-
-
     } else {
       console.log("not logged in");
       this.router.navigate(['/login']);
     }
+  }
+
+  showSuccessBuy() {
+    this.messageService.add({severity: 'success', summary: 'Sukces', detail: 'Kupiłeś nowy karnet!'})
+  }
+
+  showErrorBuy() {
+    this.messageService.add({severity: 'error', summary: 'Błąd', detail: 'Posiadasz już aktywny karnet'})
+  }
+
+  showSuccessAdd() {
+    this.messageService.add({severity: 'success', summary: 'Sukces', detail: 'Poprawnie dodano karnet!'})
+  }
+
+  showSuccessEdit() {
+    this.messageService.add({severity: 'success', summary: 'Sukces', detail: 'Poprawnie edytowano karnet!'})
+  }
+
+  showSuccessDelete() {
+    this.messageService.add({severity: 'success', summary: 'Sukces', detail: 'Poprawnie usunięto karnet!'})
   }
 
 

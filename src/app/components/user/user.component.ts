@@ -2,7 +2,7 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {User} from "../../model/user";
 import {Activity} from "../../model/activity";
 import {AbstractControl, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
-import {Message, PrimeNGConfig} from "primeng/api";
+import {Message, MessageService, PrimeNGConfig} from "primeng/api";
 import {ActivityDataService} from "../../service/data/activity/activity-data.service";
 import {Router} from "@angular/router";
 import {UserService} from "../../service/data/user/user.service";
@@ -12,7 +12,8 @@ import {Table} from "primeng/table";
 @Component({
   selector: 'app-user',
   templateUrl: './user.component.html',
-  styleUrls: ['./user.component.css']
+  styleUrls: ['./user.component.css'],
+  providers: [MessageService]
 })
 export class UserComponent implements OnInit {
 
@@ -32,7 +33,8 @@ export class UserComponent implements OnInit {
     private router: Router,
     private userService: UserService,
     private config: PrimeNGConfig,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private messageService: MessageService
   ) {
   }
 
@@ -84,12 +86,6 @@ export class UserComponent implements OnInit {
 
     );
 
-    this.cols = [
-      { field: 'vin', header: 'Vin' },
-      { field: 'year', header: 'Year' },
-      { field: 'brand', header: 'Brand' },
-      { field: 'color', header: 'Color' }
-    ];
 
   }
 
@@ -145,7 +141,7 @@ export class UserComponent implements OnInit {
     this.userService.register(this.userTemp).subscribe(data => {
         this.closeAddNewUserDialog();
         this.findAllUsers();
-        this.messages = [{severity: 'success', summary: 'Sukces', detail: 'Poprawnie zapisano dane'}]
+        this.showSuccessAdd();
       }, error => {
         this.usernameTaken = true;
       }
@@ -176,5 +172,9 @@ export class UserComponent implements OnInit {
 
   navigateToEditUserPage(id: number) {
     this.router.navigate(['/edit-user/' + id]);
+  }
+
+  showSuccessAdd() {
+    this.messageService.add({severity: 'success', summary: 'Sukces', detail: 'Poprawnie dodano użytkownika!'})
   }
 }

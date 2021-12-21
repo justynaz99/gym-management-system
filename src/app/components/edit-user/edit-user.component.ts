@@ -3,7 +3,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {User} from "../../model/user";
 import {UserService} from "../../service/data/user/user.service";
 import {AbstractControl, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
-import {Message} from "primeng/api";
+import {Message, MessageService} from "primeng/api";
 import {TicketService} from "../../service/data/ticket/ticket.service";
 import {Ticket} from "../../model/ticket";
 import {TicketType} from "../../model/ticket-type";
@@ -17,7 +17,8 @@ import {tick} from "@angular/core/testing";
 @Component({
   selector: 'app-edit-user',
   templateUrl: './edit-user.component.html',
-  styleUrls: ['./edit-user.component.css']
+  styleUrls: ['./edit-user.component.css'],
+  providers: [MessageService]
 })
 export class EditUserComponent implements OnInit {
 
@@ -51,7 +52,8 @@ export class EditUserComponent implements OnInit {
               private ticketService: TicketService,
               private ticketTypeService: TicketTypeService,
               private roleService: RoleService,
-              private userRoleService: UserRoleService) {
+              private userRoleService: UserRoleService,
+              private messageService: MessageService) {
 
   }
 
@@ -114,13 +116,7 @@ export class EditUserComponent implements OnInit {
         .subscribe(data => {
           this.userService.findUserById(this.userTemp.idUser).subscribe(response => {
           })
-          this.messagesUser = [
-            {severity: 'success', summary: 'Sukces', detail: 'Poprawnie zapisano dane'},
-          ];
-        }, error => {
-          this.messagesUser = [
-            {severity: 'error', summary: 'Błąd', detail: ''}
-          ];
+          this.showSuccessEdit();
         });
     }
   }
@@ -222,9 +218,7 @@ export class EditUserComponent implements OnInit {
       this.ticketService.buyTicket(this.ticket).subscribe(response => {
         this.closeAddTicketDialog();
         this.findAllUsersTickets();
-        this.messagesTickets = [
-          {severity: 'success', summary: 'Sukces', detail: 'Poprawnie dodano karnet'},
-        ];
+        this.showSuccessAddTicket();
       })
 
     } else {
@@ -241,6 +235,14 @@ export class EditUserComponent implements OnInit {
         {severity: 'success', summary: 'Sukces', detail: 'Poprawnie usunięto karnet'},
       ];
     })
+  }
+
+  showSuccessEdit() {
+    this.messageService.add({severity: 'success', summary: 'Sukces', detail: 'Poprawnie edytowano dane użytkownika!'})
+  }
+
+  showSuccessAddTicket() {
+    this.messageService.add({severity: 'success', summary: 'Sukces', detail: 'Poprawnie dodano karnet!'})
   }
 
 

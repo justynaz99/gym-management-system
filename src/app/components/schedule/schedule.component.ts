@@ -3,7 +3,7 @@ import {ActivityDataService} from "../../service/data/activity/activity-data.ser
 import {Router} from "@angular/router";
 import {Activity} from "../../model/activity";
 import {DatePipe, registerLocaleData, Time} from "@angular/common";
-import {Message, PrimeNGConfig} from "primeng/api";
+import {Message, MessageService, PrimeNGConfig} from "primeng/api";
 import {ScheduleService} from "../../service/data/schedule/schedule.service";
 import {ActivityPositionInSchedule} from "../../model/activity-position-in-schedule";
 import {AbstractControl, FormControl, FormGroup, Validators} from "@angular/forms";
@@ -21,7 +21,8 @@ import {tick} from "@angular/core/testing";
 @Component({
   selector: 'app-schedule',
   templateUrl: './schedule.component.html',
-  styleUrls: ['./schedule.component.css']
+  styleUrls: ['./schedule.component.css'],
+  providers: [MessageService]
 })
 export class ScheduleComponent implements OnInit {
 
@@ -64,7 +65,8 @@ export class ScheduleComponent implements OnInit {
     private config: PrimeNGConfig,
     private userService: UserService,
     private enrollmentService: EnrollmentService,
-    private ticketService: TicketService
+    private ticketService: TicketService,
+    private messageService: MessageService
   ) {
   }
 
@@ -343,7 +345,7 @@ export class ScheduleComponent implements OnInit {
         this.closeAddNewPositionDialog();
         this.findAllPositionsByDate(this.dateStr);
 
-        this.messages = [{severity: 'success', summary: 'Sukces', detail: 'Poprawnie zapisano dane'}]
+        this.showSuccessAddPosition()
       }, error => {
       }
     );
@@ -360,7 +362,7 @@ export class ScheduleComponent implements OnInit {
       .subscribe(data => {
         this.closeEditPositionDialog();
         this.findAllPositionsByDate(this.dateStr);
-        this.messages = [{severity: 'success', summary: 'Sukces', detail: 'Poprawnie edytowano dane'}]
+        this.showSuccessEditPosition()
       })
   }
 
@@ -368,7 +370,7 @@ export class ScheduleComponent implements OnInit {
     this.scheduleService.deletePositionById(id).subscribe(response => {
       this.closeDeletePositionDialog();
       this.findAllPositionsByDate(this.dateStr);
-      this.messages = [{severity: 'success', summary: 'Sukces', detail: 'Poprawnie usunięto dane'}]
+      this.showSuccessDeletePosition();
     })
   }
 
@@ -383,6 +385,7 @@ export class ScheduleComponent implements OnInit {
 
   signUpForPosition(idPosition: number) {
     this.findPositionById(idPosition);
+    this.enrollment = new Enrollment();
     this.enrollment.position = this.position;
     this.enrollment.idActivity = this.position.activity.idActivity;
     this.enrollment.idClub = 1;
@@ -393,7 +396,7 @@ export class ScheduleComponent implements OnInit {
       this.scheduleService.updatePosition(idPosition, this.position).subscribe(response => {
         this.ngOnInit();
         this.closeSignUpDialog();
-        this.messages = [{severity: 'success', summary: 'Sukces', detail: 'Poprawnie zapisano na zajęcia'}]
+        this.showSuccessSignedUp()
       })
     })
   }
@@ -408,7 +411,7 @@ export class ScheduleComponent implements OnInit {
         this.usersEnrollments.splice(this.usersEnrollments.indexOf(this.enrollment));
         this.ngOnInit();
         this.closeSignOutDialog();
-        this.messages = [{severity: 'success', summary: 'Sukces', detail: 'Poprawnie wypisano z zajęć'}]
+        this.showSuccessSignedOut();
       })
     })
   }
@@ -433,11 +436,7 @@ export class ScheduleComponent implements OnInit {
         this.ngOnInit();
         this.findAllEnrollmentsByIdPosition(this.position.idPosition);
         this.closeAddUserDialog();
-        this.enrollmentsListDialogMessages = [{
-          severity: 'success',
-          summary: 'Sukces',
-          detail: 'Poprawnie zapisano użytkownika'
-        }]
+        this.showSuccessUserSignedUp()
       })
     })
   }
@@ -451,18 +450,41 @@ export class ScheduleComponent implements OnInit {
         this.ngOnInit();
         this.findAllEnrollmentsByIdPosition(this.position.idPosition);
         this.closeDeleteUserDialog();
-        this.enrollmentsListDialogMessages = [{
-          severity: 'success',
-          summary: 'Sukces',
-          detail: 'Poprawnie wypisano użytkownika'
-        }]
+        this.showSuccessUserSignedOut()
       })
     })
   }
 
+  showSuccessSignedUp() {
+    this.messageService.add({severity: 'success', summary: 'Sukces', detail: 'Poprawnie zapisano na zajęcia!'})
+  }
+
+  showSuccessSignedOut() {
+    this.messageService.add({severity: 'success', summary: 'Sukces', detail: 'Poprawnie wypisano z zajęć'})
+  }
+
+  showSuccessUserSignedUp() {
+    this.messageService.add({severity: 'success', summary: 'Sukces', detail: 'Poprawnie zapisano użytkownika!'})
+  }
+
+  showSuccessUserSignedOut() {
+    this.messageService.add({severity: 'success', summary: 'Sukces', detail: 'Poprawnie wypisano użytkownika'})
+  }
+
+  showSuccessDeletePosition() {
+    this.messageService.add({severity: 'success', summary: 'Sukces', detail: 'Poprawnie usunięto pozycję'})
+  }
+
+  showSuccessEditPosition() {
+    this.messageService.add({severity: 'success', summary: 'Sukces', detail: 'Poprawnie edytowano pozycję'})
+  }
+
+  showSuccessAddPosition() {
+    this.messageService.add({severity: 'success', summary: 'Sukces', detail: 'Poprawnie dodano pozycję'})
+  }
+
 
 //TODO
-  //komunikat jeśli pracownik chce zapisać dwa razy tego samego użytkownika
   //zmienić komunikaty na toasty
   //komunikaty przy logowaniu i rejestracji
   //zawieszenie karnetu i odwieszenie karnetu

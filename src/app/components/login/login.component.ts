@@ -21,7 +21,7 @@ export class LoginComponent implements OnInit {
   form!: FormGroup;
   submitted: boolean = false;
 
-  constructor(private userService: UserService, private router: Router, private app: AppComponent) { }
+  constructor(private userService: UserService, private router: Router, private app: AppComponent, private messageService: MessageService) { }
 
   ngOnInit() {
     if(this.userService.currentUserValue) {
@@ -47,9 +47,14 @@ export class LoginComponent implements OnInit {
       this.router.navigate(['/home']);
       this.currentUser = this.userService.currentUserValue;
       this.app.loadMenuItems();
+      this.showSuccess();
     }, err => {
       this.errorMessage = "Niepoprawny email lub hasło";
     });
+  }
+
+  showSuccess() {
+    this.messageService.add({severity:'success', summary: 'Success', detail: 'Message Content'});
   }
 
   resetPasswordDialog() {

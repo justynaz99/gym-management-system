@@ -1,10 +1,10 @@
 <div class="p-m-4 p-d-block" style="max-width: 75%" xmlns="http://www.w3.org/1999/html">
 
+  <p-toast></p-toast>
+
   <div class="p-mb-4">
     <p-fieldset legend="Dane użytkownika" [toggleable]="true" [collapsed]="true">
       <form [formGroup]="editForm" (submit)="updateUser()">
-
-        <p-messages [(value)]="messagesUser" [enableService]="false"></p-messages>
 
         <label class="p-d-block p-mb-1" for="name">Imię</label>
         <input id="name" class="p-mb-3" [(ngModel)]="userTemp.firstName" formControlName="firstName"
@@ -51,8 +51,6 @@
 
   <div class="p-mb-4">
     <p-fieldset legend="Karnety użytkownika" [toggleable]="true" [collapsed]="true">
-
-      <p-messages [(value)]="messagesTickets" [enableService]="false"></p-messages>
 
       <label class="p-d-block p-mb-4" *ngIf="usersTickets.length === 0">Ten użytkownik nie posiada jeszcze żadnych
         karnetów.</label>

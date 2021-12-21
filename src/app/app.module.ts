@@ -53,6 +53,7 @@ import { EditUserComponent } from './components/edit-user/edit-user.component';
 
 import localePl from '@angular/common/locales/pl'
 import {CommonModule, registerLocaleData} from "@angular/common";
+import {RippleModule} from "primeng/ripple";
 
 registerLocaleData(localePl);
 
@@ -112,7 +113,8 @@ registerLocaleData(localePl);
     PanelModule,
     DropdownModule,
     FieldsetModule,
-    CommonModule
+    CommonModule,
+    RippleModule
 
 
   ],
