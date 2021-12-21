@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {User} from "../../model/user";
 import {Activity} from "../../model/activity";
 import {AbstractControl, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
@@ -7,6 +7,7 @@ import {ActivityDataService} from "../../service/data/activity/activity-data.ser
 import {Router} from "@angular/router";
 import {UserService} from "../../service/data/user/user.service";
 import {MustMatch} from "../../helpers/must-match.validator";
+import {Table} from "primeng/table";
 
 @Component({
   selector: 'app-user',
@@ -25,6 +26,7 @@ export class UserComponent implements OnInit {
   submitted: boolean = false;
   messages: Message[] = [];
   usernameTaken: boolean = false;
+  cols!: any[];
 
   constructor(
     private router: Router,
@@ -82,11 +84,20 @@ export class UserComponent implements OnInit {
 
     );
 
+    this.cols = [
+      { field: 'vin', header: 'Vin' },
+      { field: 'year', header: 'Year' },
+      { field: 'brand', header: 'Brand' },
+      { field: 'color', header: 'Color' }
+    ];
+
   }
 
   get f(): { [key: string]: AbstractControl } {
     return this.form.controls;
   }
+
+
 
 
   findAllUsers() {

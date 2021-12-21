@@ -34,7 +34,7 @@ export class ScheduleComponent implements OnInit {
   form!: FormGroup;
   submitted: boolean = false;
   messages: Message[] = [];
-  usersListDialogMessages: Message[] = [];
+  enrollmentsListDialogMessages: Message[] = [];
   addNewPositionDialog: boolean = false;
   editPositionDialog: boolean = false;
   deletePositionDialog: boolean = false;
@@ -46,7 +46,7 @@ export class ScheduleComponent implements OnInit {
   currentUser!: User;
   position: ActivityPositionInSchedule = new ActivityPositionInSchedule();
   pipe: DatePipe = new DatePipe('pl');
-  enrollment: Enrollment = new Enrollment();
+  enrollment!: any;
   usersEnrollments: Enrollment[] = [];
   positionEnrollments: Enrollment[] = [];
   usersPositionsId: number[] = [];
@@ -54,6 +54,7 @@ export class ScheduleComponent implements OnInit {
   users: User[] = [];
   idPosition!: number;
   user!: User;
+  notSignedUpUsers: User[] = [];
 
 
   constructor(
@@ -104,7 +105,10 @@ export class ScheduleComponent implements OnInit {
 
     if (this.currentUser !== null)
       this.findAllEnrollmentsByIdUser(this.currentUser.idUser);
+
   }
+
+
 
   get f(): { [key: string]: AbstractControl } {
     return this.form.controls;
@@ -155,9 +159,7 @@ export class ScheduleComponent implements OnInit {
           position.started = startTime.getTime() < now.getTime();
         }
         this.positions = response;
-        console.log(response)
-      }
-      else
+      } else
         this.positions = [];
     })
   }
@@ -211,7 +213,7 @@ export class ScheduleComponent implements OnInit {
     let date;
     let today = new Date();
     this.ticketService.findAllUsersTickets(idUser).subscribe(response => {
-      console.log(response);
+
       ticket = response[0];
       date = new Date(ticket.expirationDate);
       ticket.status = date.getTime() >= today.getTime();
@@ -251,7 +253,6 @@ export class ScheduleComponent implements OnInit {
 
   displayDeletePositionDialog(id: number) {
     this.findPositionById(id);
-    console.log(this.position);
     this.deletePositionDialog = true;
   }
 
@@ -285,20 +286,36 @@ export class ScheduleComponent implements OnInit {
   }
 
   displayEnrollmentsListDialog(idPosition: number) {
+    this.enrollmentsListDialogMessages = [];
     this.positionEnrollments = [];
     this.idPosition = idPosition;
     this.findAllEnrollmentsByIdPosition(idPosition);
     this.enrollmentsListDialog = true;
+    this.findAllUsers();
   }
 
   displayAddUserDialog(idPosition: number) {
-    this.findPositionById(idPosition);
-    this.findAllUsers();
-    this.addUserDialog = true;
 
+    this.notSignedUpUsers = [];
+
+    this.findPositionById(idPosition);
+    let signedUpUsersIds = [];
+
+    for (let enrollment of this.positionEnrollments) {
+      signedUpUsersIds.push(enrollment.user.idUser);
+    }
+
+    for (let user of this.users) {
+      if (!signedUpUsersIds.includes(user.idUser)) {
+        this.notSignedUpUsers.push(user);
+      }
+    }
+
+    this.addUserDialog = true;
   }
 
   closeAddUserDialog() {
+    this.usersEnrollments = [];
     this.addUserDialog = false;
   }
 
@@ -396,35 +413,45 @@ export class ScheduleComponent implements OnInit {
     })
   }
 
-  signUpUserForPosition(user: User) {
-      this.enrollment = new Enrollment();
-      this.enrollment.position = this.position;
-      this.enrollment.idActivity = this.position.activity.idActivity;
-      this.enrollment.idClub = 1;
-      this.enrollment.idNetwork = 1;
-      this.enrollment.user = user;
-      this.enrollmentService.addEnrollment(this.enrollment).subscribe(response => {
-        this.position.participantsQuantity++;
-        this.scheduleService.updatePosition(this.position.idPosition, this.position).subscribe(response => {
-          this.ngOnInit();
-          this.closeAddUserDialog();
-          this.usersListDialogMessages = [{
-            severity: 'success',
-            summary: 'Sukces',
-            detail: 'Poprawnie zapisano użytkownika'
-          }]
-        })
-      })
+  checkIfThisEnrollmentExists(idUser: number, idPosition: number) {
+    this.enrollment = null;
+    this.findEnrollmentByIdPositionAndIdUser(idPosition, idUser);
+    return this.enrollment !== null;
 
   }
+
+  signUpUserForPosition(user: User) {
+    this.enrollment = new Enrollment();
+    this.enrollment.position = this.position;
+    this.enrollment.idActivity = this.position.activity.idActivity;
+    this.enrollment.idClub = 1;
+    this.enrollment.idNetwork = 1;
+    this.enrollment.user = user;
+    this.enrollmentService.addEnrollment(this.enrollment).subscribe(response => {
+      this.position.participantsQuantity++;
+      this.scheduleService.updatePosition(this.position.idPosition, this.position).subscribe(response => {
+        this.ngOnInit();
+        this.findAllEnrollmentsByIdPosition(this.position.idPosition);
+        this.closeAddUserDialog();
+        this.enrollmentsListDialogMessages = [{
+          severity: 'success',
+          summary: 'Sukces',
+          detail: 'Poprawnie zapisano użytkownika'
+        }]
+      })
+    })
+  }
+
+
 
   signOutUserFromPosition() {
     this.enrollmentService.deleteByIdEnrollment(this.enrollment.idEnrollment).subscribe(response => {
       this.position.participantsQuantity--;
       this.scheduleService.updatePosition(this.position.idPosition, this.position).subscribe(response => {
-       this.ngOnInit();
+        this.ngOnInit();
+        this.findAllEnrollmentsByIdPosition(this.position.idPosition);
         this.closeDeleteUserDialog();
-        this.usersListDialogMessages = [{
+        this.enrollmentsListDialogMessages = [{
           severity: 'success',
           summary: 'Sukces',
           detail: 'Poprawnie wypisano użytkownika'
@@ -434,19 +461,13 @@ export class ScheduleComponent implements OnInit {
   }
 
 
-
-
 //TODO
   //komunikat jeśli pracownik chce zapisać dwa razy tego samego użytkownika
-  //wygasić przycisk zapisz się po rozpoczęciu zajęć
-  //naprawić przycisk "wypisz się"
   //zmienić komunikaty na toasty
   //komunikaty przy logowaniu i rejestracji
   //zawieszenie karnetu i odwieszenie karnetu
-  //usunąć usuwanie użytkowników
   //security
   //resetowanie hasła
-  //wyszukiwanie przy liście użytkowników i przy dodawaniu użytkownika do zajęć
 
 
 }

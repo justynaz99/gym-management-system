@@ -2,8 +2,17 @@
   <p-card>
     <p-messages [(value)]="messages" [enableService]="false"></p-messages>
 
-    <p-table [value]="users"  [paginator]="true" [rows]="10"
-             [showCurrentPageReport]="true">
+    <p-table #dt [value]="users"  [paginator]="true" [rows]="10"
+             [showCurrentPageReport]="true" [globalFilterFields]="['firstName', 'lastName']">
+
+      <ng-template pTemplate="caption">
+        <div class="table-header">
+          <span class="p-input-icon-left">
+                <i class="pi pi-search"></i>
+                <input pInputText type="text" (input)="dt.filterGlobal($any($event.target).value, 'contains')" placeholder="Wyszukaj użytkownika" />
+            </span>
+        </div>
+      </ng-template>
       <ng-template pTemplate="header">
         <tr>
           <th>Imię</th>
@@ -22,8 +31,8 @@
           <td>{{user.birthDate | date : 'longDate'}}</td>
           <td>{{user.phoneNumber}}</td>
           <td>
-            <button pButton pRipple icon="pi pi-trash" (click)="displayDeleteUserDialog(user.idUser)"
-                    class="p-button-rounded p-button-warning" style="margin-right: 10px"></button>
+<!--            <button pButton pRipple icon="pi pi-trash" (click)="displayDeleteUserDialog(user.idUser)"-->
+<!--                    class="p-button-rounded p-button-warning" style="margin-right: 10px"></button>-->
             <button pButton pRipple type="button" icon="pi pi-pencil" (click)="navigateToEditUserPage(user.idUser)"
                     class="p-button-rounded p-button-info"></button>
           </td>
@@ -122,12 +131,12 @@
   </form>
 </p-dialog>
 
-<p-dialog header="Usuń użytkownika" [(visible)]="deleteUserDialog" [style]="{width: '50vw'}">
+<!--<p-dialog header="Usuń użytkownika" [(visible)]="deleteUserDialog" [style]="{width: '50vw'}">-->
 
-  <label class="p-d-block p-mb-1">Czy na pewno chcesz usunąć konto użytkownika {{userTemp.firstName}} {{userTemp.lastName}}?</label>
-  <label class="p-d-block p-mb-1">Spowoduje to automatyczne usunięcie wszystkich karnetów oraz zapisów na zajęcia użytkownika.</label>
+<!--  <label class="p-d-block p-mb-1">Czy na pewno chcesz usunąć konto użytkownika {{userTemp.firstName}} {{userTemp.lastName}}?</label>-->
+<!--  <label class="p-d-block p-mb-1">Spowoduje to automatyczne usunięcie wszystkich karnetów oraz zapisów na zajęcia użytkownika.</label>-->
 
-  <button pButton pRipple type="button" label="Usuń" (click)="deleteUserById(userTemp.idUser)"
-          class="p-button-raised p-button-success p-d-block p-mt-5" style="width: 220px"></button>
+<!--  <button pButton pRipple type="button" label="Usuń" (click)="deleteUserById(userTemp.idUser)"-->
+<!--          class="p-button-raised p-button-success p-d-block p-mt-5" style="width: 220px"></button>-->
 
-</p-dialog>
+<!--</p-dialog>-->

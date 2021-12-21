@@ -276,10 +276,10 @@
 </p-dialog>
 
 <p-dialog header="Zapisani uczestnicy" [(visible)]="enrollmentsListDialog" [style]="{width: '50vw'}">
-  <div class="p-mt-4">
-    <p-messages [(value)]="usersListDialogMessages" [enableService]="false"></p-messages>
+  <div class="p-mt-4 p-mb-2" style="margin-bottom: 20px !important;">
+    <p-messages [(value)]="enrollmentsListDialogMessages" [enableService]="false"></p-messages>
   </div>
-  <div style="max-width: 60% !important;">
+  <div style="width: 60%">
     <p-table [value]="positionEnrollments" *ngIf="positionEnrollments.length !== 0">
       <ng-template pTemplate="body" let-enrollment>
         <tr>
@@ -296,7 +296,7 @@
       </ng-template>
     </p-table>
 
-    <label class="p-d-block p-mb-2 p-mt-2" *ngIf="positionEnrollments.length === 0">Nikt jeszcze nie zapisał się na te
+    <label class="p-d-block p-mb-2" *ngIf="positionEnrollments.length === 0">Nikt jeszcze nie zapisał się na te
       zajęcia.</label>
 
     <button pButton pRipple type="button" label="Dodaj użytkownika" (click)="displayAddUserDialog(idPosition)"
@@ -306,9 +306,17 @@
   </div>
 </p-dialog>
 
-<p-dialog header="Dodaj uczestnika" [(visible)]="addUserDialog" [style]="{width: '50vw'}">
+<p-dialog header="Dodaj użytkownika" [(visible)]="addUserDialog" [style]="{width: '50vw'}">
   <div style="max-width: 60% !important;">
-    <p-table [value]="users" *ngIf="users.length !== 0" [paginator]="true" [rows]="5">
+    <p-table #dt [value]="notSignedUpUsers" *ngIf="notSignedUpUsers.length !== 0" [paginator]="true" [rows]="5" [globalFilterFields]="['firstName', 'lastName']">
+      <ng-template pTemplate="header">
+        <div class="table-header p-mb-2" >
+          <span class="p-input-icon-left">
+                <i class="pi pi-search"></i>
+                <input pInputText type="text" (input)="dt.filterGlobal($any($event.target).value, 'contains')" placeholder="Wyszukaj użytkownika" />
+            </span>
+        </div>
+      </ng-template>
       <ng-template pTemplate="body" let-user>
         <tr>
           <td>{{user.firstName}} {{user.lastName}}</td>
@@ -320,7 +328,7 @@
       </ng-template>
     </p-table>
 
-    <label class="p-d-block p-mb-2 p-mt-2" *ngIf="users.length === 0">Brak użytkowników do wyświetlenia.</label>
+    <label class="p-d-block p-mb-2" *ngIf="notSignedUpUsers.length === 0">Brak użytkowników do wyświetlenia.</label>
   </div>
 </p-dialog>
 
