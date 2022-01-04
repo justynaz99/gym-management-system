@@ -8,6 +8,7 @@ import {Router} from "@angular/router";
 import {UserService} from "../../service/data/user/user.service";
 import {MustMatch} from "../../helpers/must-match.validator";
 import {Table} from "primeng/table";
+import {DatePipe} from "@angular/common";
 
 @Component({
   selector: 'app-user',
@@ -28,6 +29,7 @@ export class UserComponent implements OnInit {
   messages: Message[] = [];
   usernameTaken: boolean = false;
   cols!: any[];
+  pipe: DatePipe = new DatePipe('pl');
 
   constructor(
     private router: Router,
@@ -41,10 +43,6 @@ export class UserComponent implements OnInit {
   ngOnInit(): void {
     this.findAllUsers();
     this.currentUser = this.userService.currentUserValue;
-
-    this.config.setTranslation({
-      "monthNames": ["Styczeń", "Luty", "Marzec", "Kwiecień", "Maj", "Czerwiec", "Lipiec", "Sierpień", "Wrzesień", "Październik", "Listopad", "Grudzień"]
-    })
 
     this.form = this.formBuilder.group(
       {

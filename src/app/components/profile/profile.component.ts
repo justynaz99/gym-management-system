@@ -10,6 +10,7 @@ import {AbstractControl, FormBuilder, FormControl, FormGroup, Validators} from "
 import {MustMatch} from "../../helpers/must-match.validator";
 import {tick} from "@angular/core/testing";
 import {DatePipe} from "@angular/common";
+import {TicketType} from "../../model/ticket-type";
 
 @Component({
   selector: 'app-my-account',
@@ -27,9 +28,9 @@ export class ProfileComponent implements OnInit {
   submitted: boolean = false;
   correctPassword: boolean = true;
   passSubmitted: boolean = false;
+  usersRoles: String[] = [];
 
   messages!: Message[];
-  passMessages!: Message[];
   usersTickets!: Ticket[];
 
   constructor(private userService: UserService,
@@ -84,6 +85,20 @@ export class ProfileComponent implements OnInit {
         validator: MustMatch('password', 'confirmPassword')
       }
     );
+
+    this.findRoles();
+  }
+
+  findRoles() {
+    if (this.userService.currentUserValue !== null) {
+      this.currentUser = this.userService.currentUserValue;
+
+      for (let role of this.currentUser.roles) {
+        this.usersRoles.push(role.name);
+      }
+    } else {
+      this.usersRoles[0] = 'GUEST';
+    }
   }
 
   get f(): { [key: string]: AbstractControl } {
@@ -166,10 +181,13 @@ export class ProfileComponent implements OnInit {
         let date;
         let today = new Date;
         for(let ticket of this.usersTickets) {
+          if (ticket.membershipTicketType === null) {
+            ticket.membershipTicketType = new TicketType();
+            ticket.membershipTicketType.name = '-';
+          }
           date = new Date(ticket.expirationDate);
           ticket.status = date.getTime() >= today.getTime();
         }
-        console.log(response)
       }
     )
   }

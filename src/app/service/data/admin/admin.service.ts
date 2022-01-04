@@ -16,7 +16,7 @@ export class AdminService {
   constructor(private http: HttpClient) {
     this.currentUser = JSON.parse(<string>localStorage.getItem('currentUser'));
     this.headers = new HttpHeaders({
-      authorization:'Bearer ' + this.currentUser.token,
+      authorization:'Bearer ' + this.currentUser.resetPasswordToken,
       "Content-Type":"application/json; charset=UTF-8"
     });
   }

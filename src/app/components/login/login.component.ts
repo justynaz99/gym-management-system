@@ -20,6 +20,7 @@ export class LoginComponent implements OnInit {
   displayResetPasswordDialog: boolean = false;
   form!: FormGroup;
   submitted: boolean = false;
+  resetPasswordEmail!: string;
 
   constructor(private userService: UserService, private router: Router, private app: AppComponent, private messageService: MessageService) { }
 
@@ -36,6 +37,7 @@ export class LoginComponent implements OnInit {
           Validators.email
         ])
     });
+
   }
 
   get f(): { [key: string]: AbstractControl } {
@@ -53,9 +55,14 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  showSuccess() {
-    this.messageService.add({severity:'success', summary: 'Success', detail: 'Message Content'});
+  sendEmailWithResetPasswordToken(username: String) {
+    this.userService.sendResetPasswordToken(username).subscribe(response => {
+      this.closeResetPasswordDialog();
+      this.showSuccessSendResetPasswordEmail();
+    });
+
   }
+
 
   resetPasswordDialog() {
     this.displayResetPasswordDialog = true;
@@ -64,5 +71,15 @@ export class LoginComponent implements OnInit {
   closeResetPasswordDialog() {
     this.displayResetPasswordDialog = false;
   }
+
+  showSuccess() {
+    this.messageService.add({severity:'success', summary: 'Success', detail: 'Message Content'});
+  }
+
+  showSuccessSendResetPasswordEmail() {
+    this.messageService.add({severity: 'success', summary: 'Sukces', detail: 'Wysłano email z linkiem do strony ze zmianą hasła!'})
+  }
+
+
 
 }

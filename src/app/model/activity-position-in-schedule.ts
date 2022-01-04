@@ -3,6 +3,7 @@ import {Activity} from "./activity";
 
 export class ActivityPositionInSchedule {
   idPosition!: number;
+  activityName!: string;
   date!: Date;
   startTime!: Date;
   finishTime!: Date;

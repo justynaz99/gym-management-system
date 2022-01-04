@@ -67,7 +67,7 @@
     </p-fieldset>
   </div>
 
-  <div class="p-mb-4">
+  <div class="p-mb-4" *ngIf="usersRoles.includes('USER')">
     <p-fieldset legend="Moje karnety" [toggleable]="true" [collapsed]="true">
 
       <label class="p-d-block p-mb-2" *ngIf="usersTickets.length === 0">Nie posiadasz jeszcze żadnych karnetów.</label>

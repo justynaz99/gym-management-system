@@ -28,7 +28,7 @@
           <td>{{user.firstName}}</td>
           <td>{{user.lastName}}</td>
           <td style="width: 25%">{{user.username}}</td>
-          <td>{{user.birthDate | date : 'longDate'}}</td>
+          <td>{{pipe.transform(user.birthDate, 'longDate')}}</td>
           <td>{{user.phoneNumber}}</td>
           <td>
 <!--            <button pButton pRipple icon="pi pi-trash" (click)="displayDeleteUserDialog(user.idUser)"-->

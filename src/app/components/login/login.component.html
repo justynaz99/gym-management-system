@@ -1,4 +1,4 @@
-
+<p-toast></p-toast>
 <div class="p-m-4 p-d-block" style="width: max-content">
   <p-card header="Zaloguj się">
     <div class="p-pr-6 p-pl-6">
@@ -24,9 +24,9 @@
 
   <p-dialog header="Resetuj hasło" [(visible)]="displayResetPasswordDialog" [style]="{width: '55vw'}">
 
-    <form [formGroup]="form" (submit)="closeResetPasswordDialog()" >
+    <form [formGroup]="form" (submit)="sendEmailWithResetPasswordToken(resetPasswordEmail)" >
       <label class="p-d-block p-mb-3" for="username">Podaj adres email, na który wyślemy link do zresetowania hasła</label>
-      <input id="username" class="p-mb-3" [(ngModel)]="user.username" formControlName="username" pInputText/>
+      <input id="username" class="p-mb-3" [(ngModel)]="resetPasswordEmail" formControlName="username" pInputText/>
       <p-message *ngIf="f.username.errors && submitted" severity="error"
                  text="Podaj poprawny format adresu email"></p-message>
 

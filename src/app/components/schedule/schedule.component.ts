@@ -342,10 +342,12 @@ export class ScheduleComponent implements OnInit {
     this.position.date = this.date;
 
     this.scheduleService.addPosition(this.position).subscribe(data => {
+      data.activityName = data.activity.name;
+      this.scheduleService.updatePosition(data.idPosition, data).subscribe(response => {
         this.closeAddNewPositionDialog();
         this.findAllPositionsByDate(this.dateStr);
-
         this.showSuccessAddPosition()
+      })
       }, error => {
       }
     );
@@ -485,11 +487,11 @@ export class ScheduleComponent implements OnInit {
 
 
 //TODO
-  //zmienić komunikaty na toasty
   //komunikaty przy logowaniu i rejestracji
   //zawieszenie karnetu i odwieszenie karnetu
   //security
-  //resetowanie hasła
+  //komunikat przy opisach, długość opisu
+  //długość karnetu
 
 
 }

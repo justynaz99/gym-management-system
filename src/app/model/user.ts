@@ -8,6 +8,6 @@ export class User {
   password: string = "";
   birthDate!: Date;
   phoneNumber: string = "";
-  token: string = "";
+  resetPasswordToken!: string | null;
   roles!: Role[];
 }

@@ -13,6 +13,7 @@ import {Role} from "../../model/role";
 import {UserRoleService} from "../../service/data/user-role/user-role.service";
 import {UserRole} from "../../model/user-role";
 import {tick} from "@angular/core/testing";
+import {DatePipe} from "@angular/common";
 
 @Component({
   selector: 'app-edit-user',
@@ -42,6 +43,7 @@ export class EditUserComponent implements OnInit {
   newRoleDropdown: boolean = false;
   userRoles: UserRole[] = [];
   userRole!: UserRole;
+  pipe: DatePipe = new DatePipe('pl');
 
 
 
@@ -216,9 +218,13 @@ export class EditUserComponent implements OnInit {
       console.log(this.ticket.membershipTicketType)
 
       this.ticketService.buyTicket(this.ticket).subscribe(response => {
-        this.closeAddTicketDialog();
-        this.findAllUsersTickets();
-        this.showSuccessAddTicket();
+        response.ticketName = response.membershipTicketType.name;
+        this.ticketService.updateTicket(response).subscribe(response => {
+          this.closeAddTicketDialog();
+          this.findAllUsersTickets();
+          this.showSuccessAddTicket();
+        })
+
       })
 
     } else {

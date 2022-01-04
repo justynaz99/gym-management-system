@@ -205,8 +205,11 @@ export class TicketTypeComponent implements OnInit {
         response => {
           if (response.length === 0) {
             this.ticketService.buyTicket(this.ticket).subscribe(response => {
-              this.closeBuyTicketDialog();
-              this.showSuccessBuy();
+              response.ticketName = response.membershipTicketType.name;
+              this.ticketService.updateTicket(response).subscribe(response => {
+                this.closeBuyTicketDialog();
+                this.showSuccessBuy();
+              })
             })
           } else {
             let date;

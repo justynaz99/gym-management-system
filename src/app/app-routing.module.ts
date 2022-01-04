@@ -18,6 +18,7 @@ import {DetailComponent} from "./components/detail/detail/detail.component";
 import {UserComponent} from "./components/user/user.component";
 import {PaymentComponent} from "./components/payment/payment.component";
 import {EditUserComponent} from "./components/edit-user/edit-user.component";
+import {ResetPasswordComponent} from "./components/reset-password/reset-password.component";
 
 const routes: Routes = [
   //public pages
@@ -28,6 +29,8 @@ const routes: Routes = [
   {path: 'schedule', component: ScheduleComponent},
   {path: 'ticket-type', component: TicketTypeComponent},
   {path: 'activity', component: ActivityComponent},
+  {path: 'reset-password/:token', component: ResetPasswordComponent},
+  {path: 'reset-password', component: ResetPasswordComponent},
   //user + admin pages
   {path: 'home/:name', component: HomeComponent, canActivate: [AuthGuard]},
   {path: 'profile', component: ProfileComponent, canActivate: [AuthGuard]},
@@ -56,6 +59,7 @@ const routes: Routes = [
 export class AppRoutingModule {
   constructor(private router: Router) {
     this.router.errorHandler = (error: any) => {
+      console.log(error)
       this.router.navigate(['/404']);
     }
   }

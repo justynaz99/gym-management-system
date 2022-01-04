@@ -85,6 +85,18 @@ export class UserService {
     return this.http.delete(API_URL + id + '/delete')
   }
 
+  sendResetPasswordToken(username: String) {
+    return this.http.get(API_URL + 'generate_reset_token/' + username);
+  }
+
+  checkIfTokenIsValid(token: string | null) {
+    return this.http.get(API_URL + 'token_validation/' + token);
+  }
+
+  findUserByToken(token: string | null) {
+    return this.http.get<User>(API_URL + 'find_by_token/' + token)
+  }
+
 
 
 

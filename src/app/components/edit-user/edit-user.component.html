@@ -67,7 +67,7 @@
         </ng-template>
         <ng-template pTemplate="body" let-ticket>
           <tr>
-            <td>{{ticket.membershipTicketType.name}}</td>
+            <td>{{ticket.ticketName}}</td>
             <td>{{ticket.activationDate}}</td>
             <td>{{ticket.expirationDate}}</td>
             <td *ngIf="ticket.status === true" style="color: #689F38">aktywny</td>
