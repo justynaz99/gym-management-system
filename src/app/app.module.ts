@@ -55,6 +55,7 @@ import localePl from '@angular/common/locales/pl'
 import {CommonModule, registerLocaleData} from "@angular/common";
 import {RippleModule} from "primeng/ripple";
 import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
+import { StaffComponent } from './components/staff/staff.component';
 
 registerLocaleData(localePl);
 
@@ -78,7 +79,8 @@ registerLocaleData(localePl);
     UserComponent,
     PaymentComponent,
     EditUserComponent,
-    ResetPasswordComponent
+    ResetPasswordComponent,
+    StaffComponent
   ],
   imports: [
     BrowserModule,

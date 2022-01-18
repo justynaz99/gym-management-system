@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
 import {Message, MessageService} from "primeng/api";
-import {UserService} from "../../service/data/user/user.service";
+import {UserAuthenticationService} from "../../service/data/user-authentication/user-authentication.service";
 import {User} from "../../model/user";
 import {AppComponent} from "../../app.component";
 import {AbstractControl, FormControl, FormGroup, Validators} from "@angular/forms";
+import {UserService} from "../../service/data/user/user.service";
 
 @Component({
   selector: 'app-login',
@@ -22,10 +23,15 @@ export class LoginComponent implements OnInit {
   submitted: boolean = false;
   resetPasswordEmail!: string;
 
-  constructor(private userService: UserService, private router: Router, private app: AppComponent, private messageService: MessageService) { }
+  constructor(private userAuthService: UserAuthenticationService,
+              private userService: UserService,
+              private router: Router,
+              private app: AppComponent,
+              private messageService: MessageService) {
+  }
 
   ngOnInit() {
-    if(this.userService.currentUserValue) {
+    if (this.userAuthService.currentUserValue) {
       this.router.navigate(['/home']);
       return;
     }
@@ -45,9 +51,9 @@ export class LoginComponent implements OnInit {
   }
 
   login() {
-    this.userService.login(this.user).subscribe(data => {
+    this.userAuthService.login(this.user).subscribe(data => {
       this.router.navigate(['/home']);
-      this.currentUser = this.userService.currentUserValue;
+      this.currentUser = this.userAuthService.currentUserValue;
       this.app.loadMenuItems();
       this.showSuccess();
     }, err => {
@@ -73,13 +79,16 @@ export class LoginComponent implements OnInit {
   }
 
   showSuccess() {
-    this.messageService.add({severity:'success', summary: 'Success', detail: 'Message Content'});
+    this.messageService.add({severity: 'success', summary: 'Success', detail: 'Message Content'});
   }
 
   showSuccessSendResetPasswordEmail() {
-    this.messageService.add({severity: 'success', summary: 'Sukces', detail: 'Wysłano email z linkiem do strony ze zmianą hasła!'})
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Sukces',
+      detail: 'Wysłano email z linkiem do strony ze zmianą hasła!'
+    })
   }
-
 
 
 }

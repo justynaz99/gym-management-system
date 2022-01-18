@@ -12,13 +12,14 @@ import {LogoutComponent} from "./components/logout/logout.component";
 import {ActivityComponent} from "./components/activity/activity.component";
 import {NotFoundComponent} from "./components/not-found/not-found.component";
 import {UnauthorizedComponent} from "./components/unauthorized/unauthorized.component";
-import {AuthGuard} from "./guards/auth.guard";
+import {AuthGuard} from "./service/guards/auth.guard";
 import {Role} from "./model/role";
 import {DetailComponent} from "./components/detail/detail/detail.component";
 import {UserComponent} from "./components/user/user.component";
 import {PaymentComponent} from "./components/payment/payment.component";
 import {EditUserComponent} from "./components/edit-user/edit-user.component";
 import {ResetPasswordComponent} from "./components/reset-password/reset-password.component";
+import {StaffComponent} from "./components/staff/staff.component";
 
 const routes: Routes = [
   //public pages
@@ -40,6 +41,7 @@ const routes: Routes = [
   {path: 'detail/:id', component: DetailComponent, canActivate: [AuthGuard]},
   {path: 'workout-planner', component: WorkoutPlannerComponent, canActivate: [AuthGuard]},
   {path: 'user', component: UserComponent, canActivate: [AuthGuard]},
+  {path: 'staff', component: StaffComponent, canActivate: [AuthGuard]},
   {path: 'edit-user/:id', component: EditUserComponent, canActivate: [AuthGuard]},
   //public error pages
   {path: '404', component: NotFoundComponent},

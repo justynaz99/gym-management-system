@@ -85,16 +85,16 @@
 
                   <div *ngIf="usersRoles.includes('USER')">
                     <div *ngIf="!usersPositionsId.includes(position.idPosition)">
-                      <button pButton pRipple type="button" label="Zapisz się"
+                      <button pButton pRipple type="button" label="Zapisz się" style="width: 120px"
                               (click)="displaySignUpDialog(position.idPosition)"
                               *ngIf="(position.participantsQuantity < position.maxParticipants && !position.started)"
                               class="p-button-outlined p-button-success p-d-block"></button>
-                      <button pButton pRipple type="button" label="Zapisz się" [disabled]="true"
+                      <button pButton pRipple type="button" label="Zapisz się" [disabled]="true" style="width: 120px"
                               *ngIf="(position.participantsQuantity >= position.maxParticipants) || position.started"
                               class="p-button-outlined p-button-success p-d-block"></button>
                     </div>
 
-                    <button pButton pRipple type="button" label="Wypisz się"
+                    <button pButton pRipple type="button" label="Wypisz się" style="width: 120px"
                             (click)="displaySignOutDialog2(position.idPosition)"
                             *ngIf="usersPositionsId.includes(position.idPosition)"
                             class="p-button-outlined p-button-danger p-d-block"></button>
@@ -147,7 +147,7 @@
                 <td>{{enrollment.position.finishTime | date : 'shortTime' : '' : 'pl'}}</td>
                 <td>{{enrollment.position.participantsQuantity}}/{{enrollment.position.maxParticipants}}</td>
                 <td>
-                  <button pButton pRipple type="button" label="Wypisz się"
+                  <button pButton pRipple type="button" label="Wypisz się" style="width: 120px"
                           (click)="displaySignOutDialog1(enrollment.idEnrollment)"
                           class="p-button-outlined p-button-danger p-d-block"></button>
                 </td>
@@ -285,7 +285,7 @@
       <ng-template pTemplate="body" let-enrollment>
         <tr>
           <td>{{enrollment.user.firstName}} {{enrollment.user.lastName}}</td>
-          <!--          <td>{{findLatestTicketByIdUser(enrollment.user.idUser).status}}</td>-->
+          <!--          <td>{{findLatestTicketByIdUser(enrollment.user-authentication.idUser).status}}</td>-->
           <td>
             <button pButton pRipple icon="pi pi-trash"
                     *ngIf="usersRoles.includes('ADMIN') || usersRoles.includes('STAFF')"

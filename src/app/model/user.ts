@@ -10,4 +10,5 @@ export class User {
   phoneNumber: string = "";
   resetPasswordToken!: string | null;
   roles!: Role[];
+  token!: string;
 }

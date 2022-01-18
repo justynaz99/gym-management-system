@@ -5,10 +5,12 @@ import {AbstractControl, FormBuilder, FormControl, FormGroup, Validators} from "
 import {Message, MessageService, PrimeNGConfig} from "primeng/api";
 import {ActivityDataService} from "../../service/data/activity/activity-data.service";
 import {Router} from "@angular/router";
-import {UserService} from "../../service/data/user/user.service";
+import {UserAuthenticationService} from "../../service/data/user-authentication/user-authentication.service";
 import {MustMatch} from "../../helpers/must-match.validator";
 import {Table} from "primeng/table";
 import {DatePipe} from "@angular/common";
+import {Role} from "../../model/role";
+import {UserService} from "../../service/data/user/user.service";
 
 @Component({
   selector: 'app-user',
@@ -33,6 +35,7 @@ export class UserComponent implements OnInit {
 
   constructor(
     private router: Router,
+    private userAuthService: UserAuthenticationService,
     private userService: UserService,
     private config: PrimeNGConfig,
     private formBuilder: FormBuilder,
@@ -41,8 +44,10 @@ export class UserComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.findAllUsers();
-    this.currentUser = this.userService.currentUserValue;
+
+    this.findAllUsersByRoleName("USER");
+
+    this.currentUser = this.userAuthService.currentUserValue;
 
     this.form = this.formBuilder.group(
       {
@@ -102,6 +107,13 @@ export class UserComponent implements OnInit {
     )
   }
 
+  findAllUsersByRoleName(roleName: string) {
+    this.userService.findAllUsersByRoleName(roleName).subscribe(response => {
+      this.users = response;
+    })
+
+  }
+
   displayAddNewUserDialog() {
     this.newUserDialog = true;
   }
@@ -136,7 +148,7 @@ export class UserComponent implements OnInit {
       return;
     }
 
-    this.userService.register(this.userTemp).subscribe(data => {
+    this.userAuthService.register(this.userTemp).subscribe(data => {
         this.closeAddNewUserDialog();
         this.findAllUsers();
         this.showSuccessAdd();

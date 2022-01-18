@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {User} from "../../model/user";
-import {UserService} from "../../service/data/user/user.service";
+import {UserAuthenticationService} from "../../service/data/user-authentication/user-authentication.service";
 import {Router} from "@angular/router";
 import {Message, MessageService, PrimeNGConfig} from "primeng/api";
 import {Observable, Subject} from "rxjs";
@@ -11,6 +11,7 @@ import {MustMatch} from "../../helpers/must-match.validator";
 import {tick} from "@angular/core/testing";
 import {DatePipe} from "@angular/common";
 import {TicketType} from "../../model/ticket-type";
+import {UserService} from "../../service/data/user/user.service";
 
 @Component({
   selector: 'app-my-account',
@@ -33,7 +34,8 @@ export class ProfileComponent implements OnInit {
   messages!: Message[];
   usersTickets!: Ticket[];
 
-  constructor(private userService: UserService,
+  constructor(private userAuthService: UserAuthenticationService,
+              private userService: UserService,
               private router: Router,
               private ticketService: TicketService,
               private formBuilder: FormBuilder,
@@ -90,8 +92,8 @@ export class ProfileComponent implements OnInit {
   }
 
   findRoles() {
-    if (this.userService.currentUserValue !== null) {
-      this.currentUser = this.userService.currentUserValue;
+    if (this.userAuthService.currentUserValue !== null) {
+      this.currentUser = this.userAuthService.currentUserValue;
 
       for (let role of this.currentUser.roles) {
         this.usersRoles.push(role.name);
@@ -133,7 +135,7 @@ export class ProfileComponent implements OnInit {
 
   checkPassword(): Observable<boolean> {
     const result = new Subject<boolean>();
-    this.userService.login(this.currentUser).subscribe(data => {
+    this.userAuthService.login(this.currentUser).subscribe(data => {
       result.next(true);
       result.complete();
     }, error => {
@@ -180,7 +182,7 @@ export class ProfileComponent implements OnInit {
         this.usersTickets = response;
         let date;
         let today = new Date;
-        for(let ticket of this.usersTickets) {
+        for (let ticket of this.usersTickets) {
           if (ticket.membershipTicketType === null) {
             ticket.membershipTicketType = new TicketType();
             ticket.membershipTicketType.name = '-';
@@ -199,10 +201,6 @@ export class ProfileComponent implements OnInit {
   showSuccessEditPassword() {
     this.messageService.add({severity: 'success', summary: 'Sukces', detail: 'Poprawnie edytowano hasło!'})
   }
-
-
-
-
 
 
 }

@@ -28,7 +28,7 @@
         <p-calendar [(ngModel)]="user.birthDate" dateFormat="yy-mm-dd"
                     formControlName="birthDate" [monthNavigator]="true" [yearNavigator]="true"
                     yearRange="1930:2021"></p-calendar>
-        <!--        <p-inputMask class="p-mb-3" mask="9999-99-99" [(ngModel)]="user.birthDate" placeholder="2021-09-13"-->
+        <!--        <p-inputMask class="p-mb-3" mask="9999-99-99" [(ngModel)]="user-authentication.birthDate" placeholder="2021-09-13"-->
         <!--                     slotChar="yyyy-mm-dd" formControlName="birthDate"></p-inputMask>-->
         <p-message *ngIf="f.birthDate.errors && submitted" severity="error" text="Data urodzenia wymagana"></p-message>
 

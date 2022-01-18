@@ -1,10 +1,11 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
-import {UserService} from "../../service/data/user/user.service";
+import {UserAuthenticationService} from "../../service/data/user-authentication/user-authentication.service";
 import {User} from "../../model/user";
 import {AbstractControl, FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {MustMatch} from "../../helpers/must-match.validator";
 import {MessageService, PrimeNGConfig} from "primeng/api";
+import {UserService} from "../../service/data/user/user.service";
 
 @Component({
   selector: 'app-reset-password',
@@ -23,6 +24,7 @@ export class ResetPasswordComponent implements OnInit {
   passSubmitted: boolean = false;
 
   constructor(private route: ActivatedRoute,
+              private userAuthService: UserAuthenticationService,
               private userService: UserService,
               private router: Router,
               private formBuilder: FormBuilder,
@@ -98,7 +100,7 @@ export class ResetPasswordComponent implements OnInit {
     this.user.password = this.newPassword;
 
     this.userService.changePassword(this.user.idUser, this.user).subscribe(data => {
-      this.router.navigate(['/home']);
+      this.router.navigate(['/login']);
     })
 
     this.user.resetPasswordToken = null;

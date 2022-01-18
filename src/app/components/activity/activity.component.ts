@@ -3,10 +3,11 @@ import {ActivityDataService} from "../../service/data/activity/activity-data.ser
 import {Router} from "@angular/router";
 import {Activity} from "../../model/activity";
 import {User} from "../../model/user";
-import {UserService} from "../../service/data/user/user.service";
+import {UserAuthenticationService} from "../../service/data/user-authentication/user-authentication.service";
 import {AbstractControl, FormControl, FormGroup, Validators} from "@angular/forms";
 import {Message, MessageService} from "primeng/api";
 import {Role} from "../../model/role";
+import {UserService} from "../../service/data/user/user.service";
 
 
 @Component({
@@ -32,7 +33,7 @@ export class ActivityComponent implements OnInit {
   constructor(
     private activityService: ActivityDataService,
     private router: Router,
-    private userService: UserService,
+    private userAuthService: UserAuthenticationService,
     private messageService: MessageService
   ) {
   }
@@ -59,8 +60,8 @@ export class ActivityComponent implements OnInit {
   }
 
   findRoles () {
-    if (this.userService.currentUserValue !== null) {
-      this.currentUser = this.userService.currentUserValue;
+    if (this.userAuthService.currentUserValue !== null) {
+      this.currentUser = this.userAuthService.currentUserValue;
 
       for (let role of this.currentUser.roles) {
         this.roles.push(role.name);
@@ -123,6 +124,9 @@ export class ActivityComponent implements OnInit {
     })
   }
 
+  /**
+   * @return
+   */
   addActivity() {
     this.submitted = true;
 
@@ -131,6 +135,7 @@ export class ActivityComponent implements OnInit {
     }
 
     this.activityService.addActivity(this.activityTemp).subscribe(data => {
+      console.log(data)
       this.closeNewActivityDialog();
       this.findAllActivities();
       this.submitted = false;

@@ -8,7 +8,7 @@ import {ScheduleService} from "../../service/data/schedule/schedule.service";
 import {ActivityPositionInSchedule} from "../../model/activity-position-in-schedule";
 import {AbstractControl, FormControl, FormGroup, Validators} from "@angular/forms";
 import {User} from "../../model/user";
-import {UserService} from "../../service/data/user/user.service";
+import {UserAuthenticationService} from "../../service/data/user-authentication/user-authentication.service";
 import {Enrollment} from "../../model/enrollment";
 import {EnrollmentService} from "../../service/data/enrollment/enrollment.service";
 import {RoleService} from "../../service/data/role/role.service";
@@ -16,6 +16,7 @@ import {Role} from "../../model/role";
 import {TicketService} from "../../service/data/ticket/ticket.service";
 import {Ticket} from "../../model/ticket";
 import {tick} from "@angular/core/testing";
+import {UserService} from "../../service/data/user/user.service";
 
 
 @Component({
@@ -63,6 +64,7 @@ export class ScheduleComponent implements OnInit {
     private scheduleService: ScheduleService,
     private router: Router,
     private config: PrimeNGConfig,
+    private userAuthService: UserAuthenticationService,
     private userService: UserService,
     private enrollmentService: EnrollmentService,
     private ticketService: TicketService,
@@ -117,8 +119,8 @@ export class ScheduleComponent implements OnInit {
   }
 
   findRoles() {
-    if (this.userService.currentUserValue !== null) {
-      this.currentUser = this.userService.currentUserValue;
+    if (this.userAuthService.currentUserValue !== null) {
+      this.currentUser = this.userAuthService.currentUserValue;
 
       for (let role of this.currentUser.roles) {
         this.usersRoles.push(role.name);

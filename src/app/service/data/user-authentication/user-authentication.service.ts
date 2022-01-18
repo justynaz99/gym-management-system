@@ -6,12 +6,12 @@ import {map} from "rxjs/operators";
 import {Activity} from "../../../model/activity";
 import {Role} from "../../../model/role";
 
-let API_URL = "http://localhost:8080/api/user/"
+let API_URL = "http://localhost:8080/api/user-auth/"
 
 @Injectable({
   providedIn: 'root'
 })
-export class UserService {
+export class UserAuthenticationService {
 
   public currentUser: Observable<User>;
   private currentUserSubject: BehaviorSubject<User>;
@@ -59,45 +59,6 @@ export class UserService {
   public isLoggedIn(): boolean {
     return !!localStorage.getItem('currentUser');
   }
-
-  updateUser(id: number, user: User) {
-    return this.http.put(API_URL + id + '/edit', user);
-  }
-
-  findUserById(id: number) {
-    return this.http.get<User>(API_URL + id);
-  }
-
-  changePassword(id: number, user: User) {
-    return this.http.put(API_URL + id + '/edit-password', user);
-  }
-
-  findAllUsers() {
-    return this.http.get<User[]>(API_URL + 'all');
-  }
-
-  addUser(user: User): Observable<any> {
-    return this.http.post(API_URL + "add", JSON.stringify(user),
-      {headers: {"Content-Type":"application/json; charset=UTF-8"}});
-  }
-
-  deleteUserById(id: number) {
-    return this.http.delete(API_URL + id + '/delete')
-  }
-
-  sendResetPasswordToken(username: String) {
-    return this.http.get(API_URL + 'generate_reset_token/' + username);
-  }
-
-  checkIfTokenIsValid(token: string | null) {
-    return this.http.get(API_URL + 'token_validation/' + token);
-  }
-
-  findUserByToken(token: string | null) {
-    return this.http.get<User>(API_URL + 'find_by_token/' + token)
-  }
-
-
 
 
 }

@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {User} from "../../model/user";
-import {UserService} from "../../service/data/user/user.service";
+import {UserAuthenticationService} from "../../service/data/user-authentication/user-authentication.service";
 import {AbstractControl, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {Message, MessageService} from "primeng/api";
 import {TicketService} from "../../service/data/ticket/ticket.service";
@@ -14,6 +14,7 @@ import {UserRoleService} from "../../service/data/user-role/user-role.service";
 import {UserRole} from "../../model/user-role";
 import {tick} from "@angular/core/testing";
 import {DatePipe} from "@angular/common";
+import {UserService} from "../../service/data/user/user.service";
 
 @Component({
   selector: 'app-edit-user',
@@ -28,7 +29,6 @@ export class EditUserComponent implements OnInit {
   id!: number;
   editForm!: FormGroup;
   submitted: boolean = false;
-  messagesUser: Message[] = [];
   messagesTickets: Message[] = [];
   usersTickets: Ticket[] = [];
   addTicketDialog: boolean = false;
@@ -36,19 +36,16 @@ export class EditUserComponent implements OnInit {
   ticketTypes!: TicketType[];
   date!: Date;
   ticket: Ticket = new Ticket();
-  selectedTicketType!: TicketType;
   roles: Role[] = [];
   role!: Role;
-  role2!: Role;
-  newRoleDropdown: boolean = false;
-  userRoles: UserRole[] = [];
-  userRole!: UserRole;
   pipe: DatePipe = new DatePipe('pl');
-
+  currentUser!: User;
+  usersRoles: String[] = [];
 
 
   constructor(private router: Router,
               private route: ActivatedRoute,
+              private userAuthService: UserAuthenticationService,
               private userService: UserService,
               private formBuilder: FormBuilder,
               private ticketService: TicketService,
@@ -73,13 +70,12 @@ export class EditUserComponent implements OnInit {
 
     if (this.id !== null) {
       this.findUserById(this.id);
+
     }
 
     this.findAllUsersTickets();
 
     this.findAllRoles();
-
-    this.findAllUserRoles(this.id);
 
     this.editForm = new FormGroup(
       {
@@ -108,6 +104,7 @@ export class EditUserComponent implements OnInit {
     return this.editForm.controls;
   }
 
+
   updateUser() {
     this.submitted = true;
 
@@ -124,9 +121,16 @@ export class EditUserComponent implements OnInit {
   }
 
   findUserById(id: number) {
-    this.userService.findUserById(this.id).subscribe(response => {
+    this.userService.findUserById(id).subscribe(response => {
       this.userTemp = response;
+      this.findRoles(this.userTemp);
     });
+  }
+
+  findRoles(user: User) {
+    for (let role of user.roles) {
+      this.usersRoles.push(role.name);
+    }
   }
 
 
@@ -140,7 +144,7 @@ export class EditUserComponent implements OnInit {
             this.usersTickets = response;
             let date;
             let today = new Date;
-            for(let ticket of this.usersTickets) {
+            for (let ticket of this.usersTickets) {
               date = new Date(ticket.expirationDate);
               ticket.status = date.getTime() >= today.getTime();
             }
@@ -171,14 +175,6 @@ export class EditUserComponent implements OnInit {
     )
   }
 
-  findAllUserRoles(id: number) {
-    this.userRoleService.findAllByIdUser(id).subscribe(response => {
-      this.userRoles = response;
-      console.log(response);
-    })
-  }
-
-
 
   displayAddTicketDialog() {
     this.ticket = new Ticket();
@@ -202,11 +198,12 @@ export class EditUserComponent implements OnInit {
 
   addTicket() {
     let today;
-    if (this.userService.isLoggedIn()) {
+    let date;
+    if (this.userAuthService.isLoggedIn()) {
 
-      this.date = new Date();
-      this.date.setDate(this.date.getDate() + 30);
-      this.ticket.expirationDate = this.date;
+      date = new Date();
+      date.setDate(date.getDate() + 30);
+      this.ticket.expirationDate = date;
       today = new Date();
       this.ticket.status = this.ticket.expirationDate.getTime() > today.getTime();
 
@@ -214,11 +211,15 @@ export class EditUserComponent implements OnInit {
       this.ticket.idClub = 1;
       this.ticket.idNetwork = 1;
 
-      console.log(this.ticket.activationDate)
-      console.log(this.ticket.membershipTicketType)
-
       this.ticketService.buyTicket(this.ticket).subscribe(response => {
         response.ticketName = response.membershipTicketType.name;
+        date = new Date(response.activationDate);
+        console.log(date)
+        date.setDate(date.getDate() + 30);
+        response.expirationDate = date;
+        console.log(response.expirationDate)
+        today = new Date();
+        response.status = response.expirationDate.getTime() > today.getTime();
         this.ticketService.updateTicket(response).subscribe(response => {
           this.closeAddTicketDialog();
           this.findAllUsersTickets();
@@ -252,10 +253,5 @@ export class EditUserComponent implements OnInit {
   }
 
 
-
-
 }
-
-//TODO
-//menu użytkownicy
 

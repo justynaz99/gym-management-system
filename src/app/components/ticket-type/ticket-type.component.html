@@ -99,7 +99,9 @@
                text="Nieprawidłowy format. Przykład: 99.99"></p-message>
 
     <label class="p-d-block p-mb-1">Opis</label>
-    <textarea [rows]="5" [cols]="30" [(ngModel)]="ticketTypeTemp.description" formControlName="description" pInputTextarea class="p-mb-3"></textarea>
+    <textarea id="description" [rows]="5" [cols]="30" [(ngModel)]="ticketTypeTemp.description" formControlName="description" pInputTextarea class="p-mb-3"></textarea>
+    <p-message *ngIf="f.description.errors && submitted" severity="error"
+               text="Tekst może składać się z maksymalnie 255 znaków"></p-message>
 
     <button pButton pRipple type="submit" label="Zapisz"
             class="p-button-raised p-button-success p-d-block p-mt-5" style="width: 220px"></button>

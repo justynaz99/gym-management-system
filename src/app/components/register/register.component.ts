@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {User} from "../../model/user";
-import {UserService} from "../../service/data/user/user.service";
+import {UserAuthenticationService} from "../../service/data/user-authentication/user-authentication.service";
 import {Router} from "@angular/router";
 import {Message, MessageService, PrimeNGConfig} from "primeng/api";
 import {AbstractControl, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
@@ -18,11 +18,11 @@ export class RegisterComponent implements OnInit {
   registerForm!: FormGroup;
   submitted: boolean = false;
 
-  constructor(private userService: UserService, private router: Router, private formBuilder: FormBuilder, private config: PrimeNGConfig) {
+  constructor(private userAuthService: UserAuthenticationService, private router: Router, private formBuilder: FormBuilder, private config: PrimeNGConfig) {
   }
 
   ngOnInit() {
-    if (this.userService.currentUserValue) {
+    if (this.userAuthService.currentUserValue) {
       this.router.navigate(['/profile']);
       return;
     }
@@ -84,7 +84,7 @@ export class RegisterComponent implements OnInit {
     if (this.registerForm.invalid) {
       return;
     } else {
-      this.userService.register(this.user).subscribe(data => {
+      this.userAuthService.register(this.user).subscribe(data => {
         this.router.navigate(['/login']);
       }, err => {
         this.usernameTaken = true;

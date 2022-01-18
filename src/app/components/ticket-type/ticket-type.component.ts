@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {TicketTypeService} from "../../service/data/ticket-type/ticket-type.service";
 import {Router} from "@angular/router";
 import {TicketType} from "../../model/ticket-type";
-import {UserService} from "../../service/data/user/user.service";
+import {UserAuthenticationService} from "../../service/data/user-authentication/user-authentication.service";
 import {User} from "../../model/user";
 import {DialogModule} from 'primeng/dialog';
 import {Message, MessageService, PrimeNGConfig} from "primeng/api";
@@ -39,7 +39,7 @@ export class TicketTypeComponent implements OnInit {
   constructor(
     private ticketTypeService: TicketTypeService,
     private router: Router,
-    private userService: UserService,
+    private userService: UserAuthenticationService,
     private primengConfig: PrimeNGConfig,
     private ticketService: TicketService,
     private messageService: MessageService
@@ -62,7 +62,10 @@ export class TicketTypeComponent implements OnInit {
           Validators.minLength(3),
           Validators.maxLength(20),
         ]),
-      description: new FormControl(''),
+      description: new FormControl('',
+        [
+          Validators.maxLength(255)
+        ]),
       price: new FormControl('',
         [
           Validators.required,
@@ -78,8 +81,7 @@ export class TicketTypeComponent implements OnInit {
       for (let role of this.currentUser.roles) {
         this.roles.push(role.name);
       }
-    }
-    else {
+    } else {
       this.roles[0] = 'GUEST';
     }
   }
@@ -214,7 +216,7 @@ export class TicketTypeComponent implements OnInit {
           } else {
             let date;
             let today = new Date;
-            for(let ticket of response) {
+            for (let ticket of response) {
               date = new Date(ticket.expirationDate);
               if (date.getTime() >= today.getTime()) {
                 this.closeBuyTicketDialog();
