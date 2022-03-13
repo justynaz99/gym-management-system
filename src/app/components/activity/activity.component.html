@@ -54,7 +54,7 @@
 
 <p-dialog header="Dodaj nowe zajęcia" [(visible)]="newActivityDialog" [style]="{width: '55vw'}">
 
-  <form [formGroup]="form" (submit)="addActivity()">
+  <form [formGroup]="form" (submit)="addActivity(activityTemp)">
     <label class="p-d-block p-mb-1" for="name">Nazwa</label>
     <input class="p-mb-3" [(ngModel)]="activityTemp.name" formControlName="name" pInputText/>
     <p-message *ngIf="f.name.errors && submitted" severity="error"

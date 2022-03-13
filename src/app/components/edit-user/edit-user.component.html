@@ -4,7 +4,7 @@
 
   <div class="p-mb-4">
     <p-fieldset legend="Dane użytkownika" [toggleable]="true" [collapsed]="true">
-      <form [formGroup]="editForm" (submit)="updateUser()">
+      <form [formGroup]="editForm" (submit)="updateUser(userTemp)">
 
         <label class="p-d-block p-mb-1" for="name">Imię</label>
         <input id="name" class="p-mb-3" [(ngModel)]="userTemp.firstName" formControlName="firstName"

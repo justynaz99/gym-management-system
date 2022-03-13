@@ -8,7 +8,7 @@ import {ScheduleService} from "../../service/data/schedule/schedule.service";
 import {ActivityPositionInSchedule} from "../../model/activity-position-in-schedule";
 import {AbstractControl, FormControl, FormGroup, Validators} from "@angular/forms";
 import {User} from "../../model/user";
-import {UserAuthenticationService} from "../../service/data/user-authentication/user-authentication.service";
+import {UserAuthService} from "../../service/data/user-auth/user-auth.service";
 import {Enrollment} from "../../model/enrollment";
 import {EnrollmentService} from "../../service/data/enrollment/enrollment.service";
 import {RoleService} from "../../service/data/role/role.service";
@@ -64,7 +64,7 @@ export class ScheduleComponent implements OnInit {
     private scheduleService: ScheduleService,
     private router: Router,
     private config: PrimeNGConfig,
-    private userAuthService: UserAuthenticationService,
+    private userAuthService: UserAuthService,
     private userService: UserService,
     private enrollmentService: EnrollmentService,
     private ticketService: TicketService,
@@ -100,7 +100,7 @@ export class ScheduleComponent implements OnInit {
         ]),
     });
 
-    this.findRoles();
+    this.findCurrentUser();
 
     this.dateStr = this.pipe.transform(this.date, 'shortDate');
     this.dayStr = this.pipe.transform(this.day, 'EEEE')
@@ -118,7 +118,10 @@ export class ScheduleComponent implements OnInit {
     return this.form.controls;
   }
 
-  findRoles() {
+  /**
+   * method finds current user and pushes it's role's names to string list
+   */
+  findCurrentUser() {
     if (this.userAuthService.currentUserValue !== null) {
       this.currentUser = this.userAuthService.currentUserValue;
 
@@ -130,6 +133,9 @@ export class ScheduleComponent implements OnInit {
     }
   }
 
+  /**
+   * decrements date by 1 and finds positions from schedule by this date
+   */
   prevDay() {
     this.date.setDate(this.date.getDate() - 1);
     this.day.setDate(this.day.getDate() - 1);
@@ -139,6 +145,9 @@ export class ScheduleComponent implements OnInit {
 
   }
 
+  /**
+   * increments date by 1 and finds positions from schedule by this date
+   */
   nextDay() {
     this.date.setDate(this.date.getDate() + 1);
     this.day.setDate(this.day.getDate() + 1);
@@ -153,9 +162,17 @@ export class ScheduleComponent implements OnInit {
     })
   }
 
+  /**
+   * finds all positions from schedule by date from param
+   * @param date
+   */
   findAllPositionsByDate(date: string | null) {
     this.scheduleService.findAllPositionsByDate(date).subscribe(response => {
       if (response !== null) {
+        /**
+         * checks if start time is lower than now
+         * if sign up button should be disabled or not
+         */
         let now = new Date();
         let startTime;
         for (let position of response) {
@@ -169,6 +186,11 @@ export class ScheduleComponent implements OnInit {
   }
 
 
+  /**
+   * finds all enrollments with user's id from param
+   * only enrollments for positions which haven't stared yet are pushed to usersEnrollment list to display them in My Activities panel
+   * @param id
+   */
   findAllEnrollmentsByIdUser(id: number) {
     this.enrollmentService.findAllByIdUser(id).subscribe(response => {
       let now = new Date();
@@ -184,12 +206,20 @@ export class ScheduleComponent implements OnInit {
     })
   }
 
+  /**
+   * finds all enrollment for positions with id from param and assigns response to positions enrollments list
+   * @param id
+   */
   findAllEnrollmentsByIdPosition(id: number) {
     this.enrollmentService.findAllByIdPosition(id).subscribe(response => {
       this.positionEnrollments = response;
     })
   }
 
+  /**
+   * finds position with id from param and assigns it to position field
+   * @param id
+   */
   findPositionById(id: number) {
     this.scheduleService.findPositionById(id).subscribe(response => {
       this.position = response;
@@ -200,12 +230,22 @@ export class ScheduleComponent implements OnInit {
     })
   }
 
+  /**
+   * finds enrollment with id from param and assigns it to enrollment field
+   * @param id
+   */
   findEnrollmentById(id: number) {
     this.enrollmentService.findByIdEnrollment(id).subscribe(response => {
       this.enrollment = response;
     })
   }
 
+  /**
+   * finds enrollment with user id and position id from param
+   * to find enrollment to sign out user from position
+   * @param idPosition
+   * @param idUser
+   */
   findEnrollmentByIdPositionAndIdUser(idPosition: number, idUser: number) {
     this.enrollmentService.findByIdPositionAndIdUser(idPosition, idUser).subscribe(response => {
       this.enrollment = response;
@@ -225,12 +265,14 @@ export class ScheduleComponent implements OnInit {
     return ticket;
   }
 
+  /**
+   * finds all records from User table and assigns response to users list
+   */
   findAllUsers() {
     this.userService.findAllUsers().subscribe(response => {
       this.users = response;
     })
   }
-
 
   displayAddNewPositionDialog() {
     this.position = new ActivityPositionInSchedule();
@@ -298,6 +340,11 @@ export class ScheduleComponent implements OnInit {
     this.findAllUsers();
   }
 
+  /**
+   * displays only users which are not signed up for this position
+   * to avoid adding users twice (creating the same enrollment twice)
+   * @param idPosition
+   */
   displayAddUserDialog(idPosition: number) {
 
     this.notSignedUpUsers = [];
@@ -334,6 +381,9 @@ export class ScheduleComponent implements OnInit {
   }
 
 
+  /**
+   * saves new position
+   */
   addPosition() {
     this.submitted = true;
 
@@ -344,6 +394,9 @@ export class ScheduleComponent implements OnInit {
     this.position.date = this.date;
 
     this.scheduleService.addPosition(this.position).subscribe(data => {
+      /**
+       * need to set activityName field in case this activity will be deleted
+       */
       data.activityName = data.activity.name;
       this.scheduleService.updatePosition(data.idPosition, data).subscribe(response => {
         this.closeAddNewPositionDialog();
@@ -355,6 +408,10 @@ export class ScheduleComponent implements OnInit {
     );
   }
 
+  /**
+   * updates position with id from param
+   * @param id
+   */
   updatePosition(id: number) {
     this.submitted = true;
 
@@ -370,6 +427,10 @@ export class ScheduleComponent implements OnInit {
       })
   }
 
+  /**
+   * deletes position with id from param
+   * @param id
+   */
   deletePositionById(id: number) {
     this.scheduleService.deletePositionById(id).subscribe(response => {
       this.closeDeletePositionDialog();
@@ -378,6 +439,9 @@ export class ScheduleComponent implements OnInit {
     })
   }
 
+  /**
+   * finds all records from Activity database
+   */
   findAllActivities() {
     this.activityService.findAllActivities().subscribe(
       response => {
@@ -387,6 +451,10 @@ export class ScheduleComponent implements OnInit {
     )
   }
 
+  /**
+   * saves new enrollment for position from param
+   * @param idPosition
+   */
   signUpForPosition(idPosition: number) {
     this.findPositionById(idPosition);
     this.enrollment = new Enrollment();
@@ -405,6 +473,10 @@ export class ScheduleComponent implements OnInit {
     })
   }
 
+  /**
+   * deletes enrollment with id from param
+   * @param idEnrollment
+   */
   signOutFromPosition(idEnrollment: number) {
     this.findEnrollmentById(idEnrollment);
     this.findPositionById(this.enrollment.position.idPosition);
@@ -427,6 +499,12 @@ export class ScheduleComponent implements OnInit {
 
   }
 
+  /**
+   * saves new enrollment with id of user from param
+   * to enable staff or admin sign up user for position
+   * position which id should contain enrollment is saved in position field
+   * @param user
+   */
   signUpUserForPosition(user: User) {
     this.enrollment = new Enrollment();
     this.enrollment.position = this.position;
@@ -446,10 +524,16 @@ export class ScheduleComponent implements OnInit {
   }
 
 
-
+  /**
+   * deletes enrollment with id from param
+   *
+   */
   signOutUserFromPosition() {
     this.enrollmentService.deleteByIdEnrollment(this.enrollment.idEnrollment).subscribe(response => {
       this.position.participantsQuantity--;
+      /**
+       * updates position after changing quantity of participants
+       */
       this.scheduleService.updatePosition(this.position.idPosition, this.position).subscribe(response => {
         this.ngOnInit();
         this.findAllEnrollmentsByIdPosition(this.position.idPosition);

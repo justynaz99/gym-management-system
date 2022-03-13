@@ -3,7 +3,7 @@ import {ActivityDataService} from "../../service/data/activity/activity-data.ser
 import {Router} from "@angular/router";
 import {Activity} from "../../model/activity";
 import {User} from "../../model/user";
-import {UserAuthenticationService} from "../../service/data/user-authentication/user-authentication.service";
+import {UserAuthService} from "../../service/data/user-auth/user-auth.service";
 import {AbstractControl, FormControl, FormGroup, Validators} from "@angular/forms";
 import {Message, MessageService} from "primeng/api";
 import {Role} from "../../model/role";
@@ -33,7 +33,7 @@ export class ActivityComponent implements OnInit {
   constructor(
     private activityService: ActivityDataService,
     private router: Router,
-    private userAuthService: UserAuthenticationService,
+    private userAuthService: UserAuthService,
     private messageService: MessageService
   ) {
   }
@@ -44,8 +44,6 @@ export class ActivityComponent implements OnInit {
     this.findAllActivities();
 
     this.findRoles();
-
-
 
     this.form = new FormGroup({
       name: new FormControl('',
@@ -59,6 +57,9 @@ export class ActivityComponent implements OnInit {
 
   }
 
+  /**
+   * method push current user's role's names to string list
+   */
   findRoles () {
     if (this.userAuthService.currentUserValue !== null) {
       this.currentUser = this.userAuthService.currentUserValue;
@@ -77,6 +78,9 @@ export class ActivityComponent implements OnInit {
   }
 
 
+  /**
+   * method gets all records from Activity table and assigns them to activities list
+   */
   findAllActivities() {
     this.activityService.findAllActivities().subscribe(
       response => {
@@ -84,6 +88,7 @@ export class ActivityComponent implements OnInit {
       }
     )
   }
+
 
   displayNewActivityDialog() {
     this.activityTemp = new Activity();
@@ -125,17 +130,16 @@ export class ActivityComponent implements OnInit {
   }
 
   /**
-   * @return
+   * method to save activity from param
    */
-  addActivity() {
+  addActivity(activity: Activity) {
     this.submitted = true;
 
     if (this.form.invalid) {
       return;
     }
 
-    this.activityService.addActivity(this.activityTemp).subscribe(data => {
-      console.log(data)
+    this.activityService.addActivity(activity).subscribe(data => {
       this.closeNewActivityDialog();
       this.findAllActivities();
       this.submitted = false;
@@ -145,6 +149,11 @@ export class ActivityComponent implements OnInit {
     );
   }
 
+  /**
+   *
+   * @param id activity
+   * method to update activity with id from param
+   */
   updateActivity(id: number) {
     this.submitted = true;
 
@@ -161,8 +170,14 @@ export class ActivityComponent implements OnInit {
       })
   }
 
+  /**
+   *
+   * @param id activity
+   * method to delete activity with id from param
+   */
   deleteActivityById(id: number) {
     this.activityService.deleteActivityById(id).subscribe(response => {
+      //response return null when it can't be deleted because of foreign key constraints
       if (response === null) {
         this.closeDeleteActivityDialog();
         this.findAllActivities();

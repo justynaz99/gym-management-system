@@ -1,5 +1,5 @@
 export class Role {
   idRole!: number;
-  name!: String;
-  description!: String;
+  name!: string;
+  description!: string;
 }

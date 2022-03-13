@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
-import {UserAuthenticationService} from "../../service/data/user-authentication/user-authentication.service";
+import {UserAuthService} from "../../service/data/user-auth/user-auth.service";
 import {User} from "../../model/user";
 import {AbstractControl, FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {MustMatch} from "../../helpers/must-match.validator";
@@ -24,7 +24,7 @@ export class ResetPasswordComponent implements OnInit {
   passSubmitted: boolean = false;
 
   constructor(private route: ActivatedRoute,
-              private userAuthService: UserAuthenticationService,
+              private userAuthService: UserAuthService,
               private userService: UserService,
               private router: Router,
               private formBuilder: FormBuilder,
@@ -42,6 +42,9 @@ export class ResetPasswordComponent implements OnInit {
 
     this.checkIfTokenIsValid(this.token);
 
+    /**
+     * find user by token from param and assign it to user field
+     */
     this.userService.findUserByToken(this.token).subscribe(response => {
       if (response != null) {
         console.log(response)
@@ -73,6 +76,10 @@ export class ResetPasswordComponent implements OnInit {
     return this.editPasswordFrom.controls;
   }
 
+  /**
+   * checks if token from param exists in database
+   * @param token
+   */
   checkIfTokenIsValid(token: string | null) {
     let valid: Object;
     this.userService.checkIfTokenIsValid(token).subscribe(response => {
@@ -95,6 +102,11 @@ export class ResetPasswordComponent implements OnInit {
     this.newPasswordControl = target.value;
   }
 
+  /**
+   * assigns new password value to user's password
+   * then redirects to login page
+   * sets reset password token to null
+   */
   changePassword() {
     this.passSubmitted = true;
     this.user.password = this.newPassword;

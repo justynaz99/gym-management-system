@@ -8,7 +8,6 @@ import {RouterModule} from "@angular/router";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import { HomeComponent } from './components/home/home.component';
 import {AccordionModule} from 'primeng/accordion';
-import {MenuItem} from 'primeng/api';
 import {TabMenuModule} from 'primeng/tabmenu';
 import {ButtonModule} from 'primeng/button';
 import {InputTextModule} from "primeng/inputtext";
@@ -20,7 +19,6 @@ import {ToastModule} from 'primeng/toast';
 import { RegisterComponent } from './components/register/register.component';
 import {InputMaskModule} from "primeng/inputmask";
 import { ScheduleComponent } from './components/schedule/schedule.component';
-import { WorkoutPlannerComponent } from './components/workout-planner/workout-planner.component';
 import {ToolbarModule} from "primeng/toolbar";
 import {FileUploadModule} from "primeng/fileupload";
 import {SortIcon, TableHeaderCheckbox, TableModule} from "primeng/table";
@@ -35,8 +33,6 @@ import {FullCalendarModule} from 'primeng/fullcalendar';
 import {TabViewModule} from 'primeng/tabview';
 import { NotFoundComponent } from './components/not-found/not-found.component';
 import { UnauthorizedComponent } from './components/unauthorized/unauthorized.component';
-import { DetailComponent } from './components/detail/detail/detail.component';
-import { AdminComponent } from './components/admin/admin/admin.component';
 import {CalendarModule} from "primeng/calendar";
 import {KeyFilterModule} from "primeng/keyfilter";
 import {MenubarModule} from "primeng/menubar";
@@ -48,7 +44,6 @@ import {PanelModule} from "primeng/panel";
 import {DropdownModule} from "primeng/dropdown";
 import {FieldsetModule} from "primeng/fieldset";
 import { UserComponent } from './components/user/user.component';
-import { PaymentComponent } from './components/payment/payment.component';
 import { EditUserComponent } from './components/edit-user/edit-user.component';
 
 import localePl from '@angular/common/locales/pl'
@@ -67,17 +62,13 @@ registerLocaleData(localePl);
     HomeComponent,
     RegisterComponent,
     ScheduleComponent,
-    WorkoutPlannerComponent,
     TicketTypeComponent,
     ProfileComponent,
     LogoutComponent,
     ActivityComponent,
     NotFoundComponent,
     UnauthorizedComponent,
-    DetailComponent,
-    AdminComponent,
     UserComponent,
-    PaymentComponent,
     EditUserComponent,
     ResetPasswordComponent,
     StaffComponent

@@ -4,7 +4,7 @@ import {AbstractControl, FormBuilder, FormGroup, Validators} from "@angular/form
 import {Message, MessageService, PrimeNGConfig} from "primeng/api";
 import {DatePipe} from "@angular/common";
 import {Router} from "@angular/router";
-import {UserAuthenticationService} from "../../service/data/user-authentication/user-authentication.service";
+import {UserAuthService} from "../../service/data/user-auth/user-auth.service";
 import {MustMatch} from "../../helpers/must-match.validator";
 import {UserService} from "../../service/data/user/user.service";
 
@@ -31,7 +31,7 @@ export class StaffComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private userAuthService: UserAuthenticationService,
+    private userAuthService: UserAuthService,
     private userService: UserService,
     private config: PrimeNGConfig,
     private formBuilder: FormBuilder,
@@ -93,8 +93,9 @@ export class StaffComponent implements OnInit {
   }
 
 
-
-
+  /**
+   * finds all records from User table and assigns it to users list
+   */
   findAllUsers() {
     this.userService.findAllUsers().subscribe(
       response => {
@@ -103,6 +104,10 @@ export class StaffComponent implements OnInit {
     )
   }
 
+  /**
+   * finds all users with role with name from param
+   * @param roleName
+   */
   findAllUsersByRoleName(roleName: string) {
     this.userService.findAllUsersByRoleName(roleName).subscribe(response => {
       this.users = response;
@@ -120,23 +125,19 @@ export class StaffComponent implements OnInit {
 
 
 
-  displayDeleteUserDialog(id: number) {
-    this.findUserById(id);
-    this.deleteUserDialog = true;
-  }
-
-  closeDeleteUserDialog() {
-    this.deleteUserDialog = false;
-  }
-
-
+  /**
+   * finds user with id from param and assigns it to userTemp field
+   * @param id
+   */
   findUserById(id: number) {
     this.userService.findUserById(id).subscribe(response => {
       this.userTemp = response;
-      console.log(response);
     })
   }
 
+  /**
+   * method enables admin register new employee
+   */
   addUser() {
     this.submitted = true;
 
@@ -154,6 +155,10 @@ export class StaffComponent implements OnInit {
     );
   }
 
+  /**
+   * method enables admin update employee data
+   * @param id
+   */
   updateUser(id: number) {
     this.submitted = true;
 
@@ -168,13 +173,6 @@ export class StaffComponent implements OnInit {
       })
   }
 
-  deleteUserById(id: number) {
-    this.userService.deleteUserById(id).subscribe(response => {
-      this.closeDeleteUserDialog();
-      this.findAllUsers();
-      this.messages = [{severity: 'success', summary: 'Sukces', detail: 'Poprawnie usunięto dane'}]
-    })
-  }
 
   navigateToEditUserPage(id: number) {
     this.router.navigate(['/edit-user/' + id]);

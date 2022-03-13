@@ -1,10 +1,11 @@
 import {Component, OnInit} from '@angular/core';
 import {MenuItem} from "primeng/api";
 import {ActivatedRoute, Router} from "@angular/router";
-import {UserAuthenticationService} from "./service/data/user-authentication/user-authentication.service";
+import {UserAuthService} from "./service/data/user-auth/user-auth.service";
 import {User} from "./model/user";
 import {Role} from "./model/role";
 import {find} from "rxjs/operators";
+import {RoleService} from "./service/data/role/role.service";
 
 @Component({
   selector: 'app-root',
@@ -18,40 +19,42 @@ export class AppComponent implements OnInit {
   name = '';
   currentUser!: User;
   roles: String[] = [];
+  admin!: Role;
+  staff! : Role;
+  user!: Role;
 
 
-  constructor(private route: ActivatedRoute, private userService: UserAuthenticationService, private router: Router) {
+
+  constructor(private route: ActivatedRoute, private userService: UserAuthService, private router: Router, private roleService: RoleService) {
   }
 
   ngOnInit(): void {
-
-    console.log("Zalogowano")
-
-    this.currentUser = this.userService.currentUserValue;
-
-    this.findRoles();
 
     this.loadMenuItems();
 
     this.name = this.route.snapshot.params['name'];
 
+
   }
 
-  findRoles () {
+  findCurrentUser() {
     if (this.userService.currentUserValue !== null) {
       this.currentUser = this.userService.currentUserValue;
+      this.roles = [];
 
       for (let role of this.currentUser.roles) {
         this.roles.push(role.name);
       }
-    }
-    else {
+    } else {
       this.roles[0] = 'GUEST';
     }
   }
 
 
   loadMenuItems() {
+
+    this.findCurrentUser();
+    console.log(this.currentUser)
 
     this.items = [
       // all
@@ -63,9 +66,8 @@ export class AppComponent implements OnInit {
       {label: 'Zaloguj', icon: 'pi pi-fw pi-sign-in', routerLink: ['/login'], visible: !this.isUserLoggedIn()},
       {label: 'Zarejestruj', icon: 'pi pi-fw pi-user-plus', routerLink: ['/register'], visible: !this.isUserLoggedIn()},
       // staff
-      {label: 'Klubowicze', icon: 'pi pi-fw pi-users', routerLink: ['/user'], visible: (this.isUserLoggedIn() && (this.roles.includes('ADMIN')) || this.roles.includes('STAFF'))},
-      {label: 'Pracownicy', icon: 'pi pi-fw pi-users', routerLink: ['/staff'], visible: (this.isUserLoggedIn() && (this.roles.includes('ADMIN')))},
-      // {label: 'Plan zajęć', icon: 'pi pi-fw pi-book', routerLink: ['/workout-planner']},
+      {label: 'Klubowicze', icon: 'pi pi-fw pi-users', routerLink: ['/user'], visible: (this.isUserLoggedInAndAdmin() || this.isUserLoggedInAndStaff())},
+      {label: 'Pracownicy', icon: 'pi pi-fw pi-users', routerLink: ['/staff'], visible: (this.isUserLoggedInAndAdmin())},
       // logged in
       {
         label: 'Moje konto', icon: 'pi pi-fw pi-user', visible: this.isUserLoggedIn(),
@@ -83,12 +85,22 @@ export class AppComponent implements OnInit {
   }
 
   isUserLoggedIn(): boolean {
+    console.log(this.roles)
     return this.userService.isLoggedIn();
   }
 
+  isUserLoggedInAndAdmin(): boolean {
+    return this.userService.isLoggedIn() && this.roles.includes("ADMIN");
+  }
+
+  isUserLoggedInAndStaff(): boolean {
+    return this.userService.isLoggedIn() && this.roles.includes("STAFF");
+  }
+
+
   logout() {
     this.userService.logOut().subscribe(data => {
-      this.findRoles();
+      this.findCurrentUser();
       this.loadMenuItems();
       this.router.navigate(['/login']);
     });

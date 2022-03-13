@@ -20,6 +20,14 @@ export class TicketTypeService {
 
   }
 
+  /**
+   *
+   * @name getCurrentUserHeader
+   * @return headers
+   * method to get current user from local storage and return headers for this user which contains token
+   * to authorized current user
+   *
+   */
   private getCurrentUserHeader() : HttpHeaders{
     this.currentUser = JSON.parse(<string>localStorage.getItem('currentUser'));
 
@@ -33,23 +41,48 @@ export class TicketTypeService {
     return this.headers;
   }
 
+  /**
+   * @name findAllTicketTypes
+   * method sends request to get all records from TicketType table
+   */
   findAllTicketTypes() {
     return this.http.get<TicketType[]>(API_URL + 'all');
   }
 
+  /**
+   * @name findTicketTypeById
+   * @param id of ticket type
+   * method sends request to get ticket type with id from param
+   */
   findTicketTypeById(id: number) {
     return this.http.get<TicketType>(API_URL + id, {headers: this.getCurrentUserHeader()});
   }
 
+  /**
+   * @name addTicketType
+   * @param ticketType
+   * method sends request to save ticket type from param
+   */
   addTicketType(ticketType: TicketType): Observable<any> {
     return this.http.post(API_URL + "add", JSON.stringify(ticketType),
       {headers: this.getCurrentUserHeader()});
   }
 
+  /**
+   * @name updateTicketType
+   * @param id ticket type
+   * @param ticketType
+   * method sends request to save ticket type from param
+   */
   updateTicketType(id: number, ticketType: TicketType) {
     return this.http.put(API_URL + id + '/edit', ticketType, {headers: this.getCurrentUserHeader()});
   }
 
+  /**
+   * @name deleteTicketTypeById
+   * @param id ticket type
+   * method sends request to delete ticket type with id from param
+   */
   deleteTicketTypeById(id: number) {
     return this.http.delete(API_URL + id + '/delete', {headers: this.getCurrentUserHeader()});
   }

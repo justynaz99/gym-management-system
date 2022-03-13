@@ -5,7 +5,7 @@ import {AbstractControl, FormBuilder, FormControl, FormGroup, Validators} from "
 import {Message, MessageService, PrimeNGConfig} from "primeng/api";
 import {ActivityDataService} from "../../service/data/activity/activity-data.service";
 import {Router} from "@angular/router";
-import {UserAuthenticationService} from "../../service/data/user-authentication/user-authentication.service";
+import {UserAuthService} from "../../service/data/user-auth/user-auth.service";
 import {MustMatch} from "../../helpers/must-match.validator";
 import {Table} from "primeng/table";
 import {DatePipe} from "@angular/common";
@@ -35,7 +35,7 @@ export class UserComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private userAuthService: UserAuthenticationService,
+    private userAuthService: UserAuthService,
     private userService: UserService,
     private config: PrimeNGConfig,
     private formBuilder: FormBuilder,
@@ -72,7 +72,11 @@ export class UserComponent implements OnInit {
           ]
         ],
         birthDate: ['', Validators.required],
-        phoneNumber: ['', Validators.required],
+        phoneNumber: ['', [
+          Validators.required,
+          Validators.minLength(11),
+          Validators.maxLength(11)
+        ]],
         password: ['',
           [
             Validators.required,
@@ -98,7 +102,9 @@ export class UserComponent implements OnInit {
 
 
 
-
+  /**
+   * finds all records from User table and assigns it to users list
+   */
   findAllUsers() {
     this.userService.findAllUsers().subscribe(
       response => {
@@ -107,6 +113,10 @@ export class UserComponent implements OnInit {
     )
   }
 
+  /**
+   * finds all users with role with name from param
+   * @param roleName
+   */
   findAllUsersByRoleName(roleName: string) {
     this.userService.findAllUsersByRoleName(roleName).subscribe(response => {
       this.users = response;
@@ -123,17 +133,14 @@ export class UserComponent implements OnInit {
   }
 
 
-
-  displayDeleteUserDialog(id: number) {
-    this.findUserById(id);
-    this.deleteUserDialog = true;
-  }
-
   closeDeleteUserDialog() {
     this.deleteUserDialog = false;
   }
 
-
+  /**
+   * finds user with id from param and assigns it to userTemp field
+   * @param id
+   */
   findUserById(id: number) {
     this.userService.findUserById(id).subscribe(response => {
       this.userTemp = response;
@@ -141,6 +148,9 @@ export class UserComponent implements OnInit {
     })
   }
 
+  /**
+   * method enables admin and employee register new user
+   */
   addUser() {
     this.submitted = true;
 
@@ -150,7 +160,7 @@ export class UserComponent implements OnInit {
 
     this.userAuthService.register(this.userTemp).subscribe(data => {
         this.closeAddNewUserDialog();
-        this.findAllUsers();
+      this.findAllUsersByRoleName("USER");
         this.showSuccessAdd();
       }, error => {
         this.usernameTaken = true;
@@ -158,6 +168,10 @@ export class UserComponent implements OnInit {
     );
   }
 
+  /**
+   * method enables admin and employee update user data
+   * @param id
+   */
   updateUser(id: number) {
     this.submitted = true;
 
@@ -167,18 +181,11 @@ export class UserComponent implements OnInit {
 
     this.userService.updateUser(id, this.userTemp)
       .subscribe(data => {
-        this.findAllUsers();
+        this.findAllUsersByRoleName("USER");
         this.messages = [{severity: 'success', summary: 'Sukces', detail: 'Poprawnie edytowano dane'}]
       })
   }
 
-  deleteUserById(id: number) {
-    this.userService.deleteUserById(id).subscribe(response => {
-      this.closeDeleteUserDialog();
-      this.findAllUsers();
-      this.messages = [{severity: 'success', summary: 'Sukces', detail: 'Poprawnie usunięto dane'}]
-    })
-  }
 
   navigateToEditUserPage(id: number) {
     this.router.navigate(['/edit-user/' + id]);

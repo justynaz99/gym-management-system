@@ -11,7 +11,7 @@ let API_URL = "http://localhost:8080/api/user-auth/"
 @Injectable({
   providedIn: 'root'
 })
-export class UserAuthenticationService {
+export class UserAuthService {
 
   public currentUser: Observable<User>;
   private currentUserSubject: BehaviorSubject<User>;
@@ -25,6 +25,12 @@ export class UserAuthenticationService {
     return this.currentUserSubject.value;
   }
 
+  /**
+   * @name login
+   * @param user
+   * method creates token from entered username and password and sends request to find user with those values,
+   * if found, save this user in local storage as current user
+   */
   login(user: User): Observable<any> {
     const headers = new HttpHeaders(user ? {
       authorization:'Basic ' + btoa(user.username + ':' + user.password)
@@ -41,6 +47,10 @@ export class UserAuthenticationService {
     );
   }
 
+  /**
+   * @name logOut
+   * method sends request to logout user and remove him from local storage
+   */
   logOut(): Observable<any> {
     return this.http.post(API_URL + "logout", {}).pipe(
       map(response => {
@@ -51,11 +61,21 @@ export class UserAuthenticationService {
     );
   }
 
+  /**
+   * @name register
+   * @param user
+   * method sends request to register user with entered values
+   */
   register(user: User): Observable<any> {
     return this.http.post(API_URL + "registration", JSON.stringify(user),
       {headers: {"Content-Type":"application/json; charset=UTF-8"}});
   }
 
+  /**
+   * @name isLoggedIn
+   * method checks if any user is log in
+   * checks if there is any user saved in local storage
+   */
   public isLoggedIn(): boolean {
     return !!localStorage.getItem('currentUser');
   }

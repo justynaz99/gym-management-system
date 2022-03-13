@@ -31,7 +31,7 @@
           <td>{{pipe.transform(user.birthDate, 'longDate')}}</td>
           <td>{{user.phoneNumber}}</td>
           <td>
-<!--            <button pButton pRipple icon="pi pi-trash" (click)="displayDeleteUserDialog(user-authentication.idUser)"-->
+<!--            <button pButton pRipple icon="pi pi-trash" (click)="displayDeleteUserDialog(user-auth.idUser)"-->
 <!--                    class="p-button-rounded p-button-warning" style="margin-right: 10px"></button>-->
             <button pButton pRipple type="button" icon="pi pi-pencil" (click)="navigateToEditUserPage(user.idUser)"
                     class="p-button-rounded p-button-info"></button>
@@ -70,17 +70,17 @@
     <p-calendar [(ngModel)]="userTemp.birthDate" dateFormat="yy-mm-dd"
                 formControlName="birthDate" [monthNavigator]="true" [yearNavigator]="true"
                 yearRange="1930:2021"></p-calendar>
-    <!--        <p-inputMask class="p-mb-3" mask="9999-99-99" [(ngModel)]="user-authentication.birthDate" placeholder="2021-09-13"-->
+    <!--        <p-inputMask class="p-mb-3" mask="9999-99-99" [(ngModel)]="user-auth.birthDate" placeholder="2021-09-13"-->
     <!--                     slotChar="yyyy-mm-dd" formControlName="birthDate"></p-inputMask>-->
     <p-message *ngIf="f.birthDate.errors && submitted" severity="error" text="Data urodzenia wymagana"></p-message>
 
-    <label class="p-d-block p-mb-1" style="margin-top: 20px">Numer telefonu</label>
-    <p-inputMask id="phone" class="p-mb-3" mask="999-999-999" placeholder="999-999-999"
-                 [(ngModel)]="userTemp.phoneNumber" formControlName="phoneNumber"></p-inputMask>
+    <label class="p-d-block p-mb-1" style="margin-top: 20px">Numer telefonu (format: 000-000-000)</label>
+    <input id="phone" class="p-mb-3" pKeyFilter="int"
+                 [(ngModel)]="userTemp.phoneNumber" formControlName="phoneNumber" pInputText/>
     <p-message *ngIf="f.phoneNumber.errors && submitted" severity="error"
                text="Numer telefonu wymagany"></p-message>
 
-    <label class="p-d-block p-mb-1 p-mt-3">Hasło</label>
+    <label class="p-d-block p-mb-1">Hasło</label>
     <p-password class="p-mb-3" id="password" [feedback]="false"
                 [(ngModel)]="userTemp.password" formControlName="password"></p-password>
     <p-message *ngIf="f.password.errors && submitted" severity="error"

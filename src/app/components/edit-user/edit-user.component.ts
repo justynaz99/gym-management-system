@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {User} from "../../model/user";
-import {UserAuthenticationService} from "../../service/data/user-authentication/user-authentication.service";
+import {UserAuthService} from "../../service/data/user-auth/user-auth.service";
 import {AbstractControl, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {Message, MessageService} from "primeng/api";
 import {TicketService} from "../../service/data/ticket/ticket.service";
@@ -40,12 +40,14 @@ export class EditUserComponent implements OnInit {
   role!: Role;
   pipe: DatePipe = new DatePipe('pl');
   currentUser!: User;
-  usersRoles: String[] = [];
+  currentUserRoles: String[] = [];
+  usersRoles: string[] = [];
+  roleName!: string;
 
 
   constructor(private router: Router,
               private route: ActivatedRoute,
-              private userAuthService: UserAuthenticationService,
+              private userAuthService: UserAuthService,
               private userService: UserService,
               private formBuilder: FormBuilder,
               private ticketService: TicketService,
@@ -58,7 +60,9 @@ export class EditUserComponent implements OnInit {
 
   ngOnInit(): void {
 
-    //get id parameter from url, assign to id
+    /**
+     * get id parameter from url, assign to id field
+     */
     this.route.paramMap.subscribe(param => {
       if (param.has('id')) {
         this.idStr = param.get('id');
@@ -70,12 +74,14 @@ export class EditUserComponent implements OnInit {
 
     if (this.id !== null) {
       this.findUserById(this.id);
-
+      this.userTemp.roles = [];
     }
 
     this.findAllUsersTickets();
 
     this.findAllRoles();
+
+    this.findCurrentUser();
 
     this.editForm = new FormGroup(
       {
@@ -104,22 +110,46 @@ export class EditUserComponent implements OnInit {
     return this.editForm.controls;
   }
 
+  /**
+   * method finds current user and pushes it's role's names to string list
+   */
+  findCurrentUser () {
+    if (this.userAuthService.currentUserValue !== null) {
+      this.currentUser = this.userAuthService.currentUserValue;
+      console.log(this.currentUser)
 
-  updateUser() {
+      for (let role of this.currentUser.roles) {
+        this.currentUserRoles.push(role.name);
+      }
+    }
+    else {
+      this.currentUserRoles[0] = 'GUEST';
+    }
+  }
+
+
+  /**
+   * method to update user from param
+   */
+  updateUser(user: User) {
     this.submitted = true;
 
     if (this.editForm.invalid) {
       return;
     } else {
-      this.userService.updateUser(this.userTemp.idUser, this.userTemp)
-        .subscribe(data => {
-          this.userService.findUserById(this.userTemp.idUser).subscribe(response => {
+      console.log(this.userTemp)
+      this.userService.updateUser(user.idUser, user).subscribe(data => {
+          this.userService.findUserById(user.idUser).subscribe(response => {
           })
           this.showSuccessEdit();
         });
     }
   }
 
+  /**
+   * method to find user with id from param
+   * @param id
+   */
   findUserById(id: number) {
     this.userService.findUserById(id).subscribe(response => {
       this.userTemp = response;
@@ -134,8 +164,11 @@ export class EditUserComponent implements OnInit {
   }
 
 
+  /**
+   * method finds user with id from url
+   * then finds all tickets of this user to display then in user's tickets panel
+   */
   findAllUsersTickets() {
-
     if (this.id !== null) {
       this.userService.findUserById(this.id).subscribe(response => {
         this.userTemp = response;
@@ -144,6 +177,9 @@ export class EditUserComponent implements OnInit {
             this.usersTickets = response;
             let date;
             let today = new Date;
+            /**
+             * checks ticket status according to today's date
+             */
             for (let ticket of this.usersTickets) {
               date = new Date(ticket.expirationDate);
               ticket.status = date.getTime() >= today.getTime();
@@ -154,6 +190,9 @@ export class EditUserComponent implements OnInit {
     }
   }
 
+  /**
+   * method finds all records from Role table and assign response to roles list
+   */
   findAllRoles() {
     this.roleService.findAllRoles().subscribe(response => {
       this.roles = response;
@@ -161,12 +200,19 @@ export class EditUserComponent implements OnInit {
     })
   }
 
+  /**
+   * method finds ticket with id from param and assign it to ticket field
+   * @param id
+   */
   findTicketById(id: number) {
     this.ticketService.findTicketById(id).subscribe(response => {
       this.ticket = response;
     })
   }
 
+  /**
+   * method finds all records from TicketType table and assign response to ticketTypes list
+   */
   findAllTicketTypes() {
     this.ticketTypeService.findAllTicketTypes().subscribe(
       response => {
@@ -196,28 +242,34 @@ export class EditUserComponent implements OnInit {
   }
 
 
+  /**
+   * method to add new ticket for user by staff or admin
+   *
+   */
   addTicket() {
     let today;
     let date;
-    if (this.userAuthService.isLoggedIn()) {
-
-      date = new Date();
-      date.setDate(date.getDate() + 30);
-      this.ticket.expirationDate = date;
-      today = new Date();
-      this.ticket.status = this.ticket.expirationDate.getTime() > today.getTime();
+    /**
+     * checks if user current user is logged in and if his role is STAFF or ADMIN
+     */
+    if (this.userAuthService.isLoggedIn() && ((this.currentUserRoles.includes("STAFF") || this.currentUserRoles.includes("ADMIN")))) {
 
       this.ticket.idUser = this.userTemp.idUser;
       this.ticket.idClub = 1;
       this.ticket.idNetwork = 1;
 
       this.ticketService.buyTicket(this.ticket).subscribe(response => {
+        /**
+         * set ticketName field in case ticketType would be deleted
+         */
         response.ticketName = response.membershipTicketType.name;
+        /**
+         * set expiration date adding duration of ticket type to activation date (chosen by staff or admin)
+         * set ticket status checking if expiration date is greater than today
+         */
         date = new Date(response.activationDate);
-        console.log(date)
         date.setDate(date.getDate() + 30);
         response.expirationDate = date;
-        console.log(response.expirationDate)
         today = new Date();
         response.status = response.expirationDate.getTime() > today.getTime();
         this.ticketService.updateTicket(response).subscribe(response => {

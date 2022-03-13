@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {User} from "../../model/user";
-import {UserAuthenticationService} from "../../service/data/user-authentication/user-authentication.service";
+import {UserAuthService} from "../../service/data/user-auth/user-auth.service";
 import {Router} from "@angular/router";
 import {Message, MessageService, PrimeNGConfig} from "primeng/api";
 import {Observable, Subject} from "rxjs";
@@ -34,7 +34,7 @@ export class ProfileComponent implements OnInit {
   messages!: Message[];
   usersTickets!: Ticket[];
 
-  constructor(private userAuthService: UserAuthenticationService,
+  constructor(private userAuthService: UserAuthService,
               private userService: UserService,
               private router: Router,
               private ticketService: TicketService,
@@ -50,7 +50,8 @@ export class ProfileComponent implements OnInit {
       this.router.navigate(['/login']);
     }
 
-    this.findAllUsersTickets();
+    this.findAllUsersTickets(this.currentUser);
+
 
     this.editForm = new FormGroup(
       {
@@ -88,10 +89,13 @@ export class ProfileComponent implements OnInit {
       }
     );
 
-    this.findRoles();
+    this.findCurrentUser();
   }
 
-  findRoles() {
+  /**
+   * method finds current user and pushes it's role's names to string list
+   */
+  findCurrentUser() {
     if (this.userAuthService.currentUserValue !== null) {
       this.currentUser = this.userAuthService.currentUserValue;
 
@@ -111,13 +115,16 @@ export class ProfileComponent implements OnInit {
     return this.editPasswordFrom.controls;
   }
 
-  updateUser() {
+  /**
+   * method to update user from param
+   */
+  updateUser(user: User) {
     this.submitted = true;
 
     if (this.editForm.invalid) {
       return
     } else {
-      this.userService.updateUser(this.currentUser.idUser, this.currentUser)
+      this.userService.updateUser(user.idUser, user)
         .subscribe(data => {
           this.userService.findUserById(this.currentUser.idUser).subscribe(response => {
             console.log(response);
@@ -133,6 +140,10 @@ export class ProfileComponent implements OnInit {
 
   }
 
+  /**
+   * checks if entered password is the same as current password saved in database
+   * refers to first field in change password panel
+   */
   checkPassword(): Observable<boolean> {
     const result = new Subject<boolean>();
     this.userAuthService.login(this.currentUser).subscribe(data => {
@@ -160,6 +171,9 @@ export class ProfileComponent implements OnInit {
     this.newPasswordControl = target.value;
   }
 
+  /**
+   * saves new password as user's password if it's entered correctly twice
+   */
   changePassword() {
     this.passSubmitted = true;
     this.checkPassword().subscribe(data => {
@@ -176,17 +190,19 @@ export class ProfileComponent implements OnInit {
     })
   }
 
-  findAllUsersTickets() {
-    this.ticketService.findAllUsersTickets(this.currentUser.idUser).subscribe(
+  /**
+   * finds all tickets of user from param and assigns response to usersTickets list
+   */
+  findAllUsersTickets(user: User) {
+    this.ticketService.findAllUsersTickets(user.idUser).subscribe(
       response => {
         this.usersTickets = response;
         let date;
         let today = new Date;
+        /**
+         * checks ticket status according to today's date
+         */
         for (let ticket of this.usersTickets) {
-          if (ticket.membershipTicketType === null) {
-            ticket.membershipTicketType = new TicketType();
-            ticket.membershipTicketType.name = '-';
-          }
           date = new Date(ticket.expirationDate);
           ticket.status = date.getTime() >= today.getTime();
         }

@@ -4,7 +4,7 @@
 
   <div class="p-mb-4">
     <p-fieldset legend="Moje dane" [toggleable]="true" [collapsed]="true">
-      <form [formGroup]="editForm" (submit)="updateUser()">
+      <form [formGroup]="editForm" (submit)="updateUser(currentUser)">
 
 
         <label class="p-d-block p-mb-1" for="name">Imię</label>
@@ -70,9 +70,9 @@
   <div class="p-mb-4" *ngIf="usersRoles.includes('USER')">
     <p-fieldset legend="Moje karnety" [toggleable]="true" [collapsed]="true">
 
-      <label class="p-d-block p-mb-2" *ngIf="usersTickets.length === 0">Nie posiadasz jeszcze żadnych karnetów.</label>
+      <label class="p-d-block p-mb-2" *ngIf="usersTickets.length == 0">Nie posiadasz jeszcze żadnych karnetów.</label>
 
-      <p-table [value]="usersTickets" [paginator]="true" [rows]="10" *ngIf="usersTickets.length !== 0">
+      <p-table [value]="usersTickets" [paginator]="true" [rows]="10" *ngIf="usersTickets.length != 0">
         <ng-template pTemplate="header">
           <tr>
             <th>Karnet</th>

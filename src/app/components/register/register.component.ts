@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {User} from "../../model/user";
-import {UserAuthenticationService} from "../../service/data/user-authentication/user-authentication.service";
+import {UserAuthService} from "../../service/data/user-auth/user-auth.service";
 import {Router} from "@angular/router";
 import {Message, MessageService, PrimeNGConfig} from "primeng/api";
 import {AbstractControl, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
@@ -18,19 +18,19 @@ export class RegisterComponent implements OnInit {
   registerForm!: FormGroup;
   submitted: boolean = false;
 
-  constructor(private userAuthService: UserAuthenticationService, private router: Router, private formBuilder: FormBuilder, private config: PrimeNGConfig) {
+  constructor(private userAuthService: UserAuthService,
+              private router: Router,
+              private formBuilder: FormBuilder,
+              private config: PrimeNGConfig) {
   }
 
   ngOnInit() {
+
     if (this.userAuthService.currentUserValue) {
       this.router.navigate(['/profile']);
       return;
     }
-    this.config.setTranslation({
-      "monthNames": ["Styczeń", "Luty", "Marzec", "Kwiecień", "Maj", "Czerwiec", "Lipiec", "Sierpień", "Wrzesień", "Październik", "Listopad", "Grudzień"],
-      "dayNames": ["Niedziela", "Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota"],
-      "dayNamesShort": ["Niedz", "Pon", "Wt", "Śr", "Czw", "Pt", "Sob"],
-    })
+
 
     this.registerForm = this.formBuilder.group(
       {
@@ -78,6 +78,9 @@ export class RegisterComponent implements OnInit {
     return this.registerForm.controls;
   }
 
+  /**
+   * if entered values are valid adds user to database
+   */
   onSubmit() {
     this.submitted = true;
 

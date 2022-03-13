@@ -32,9 +32,9 @@
 
 /**
  * By default, zone.js will patch all possible macroTask and DomEvents
- * user-authentication can disable parts of macroTask/DomEvents patch by setting following flags
+ * user-auth can disable parts of macroTask/DomEvents patch by setting following flags
  * because those flags need to be set before `zone.js` being loaded, and webpack
- * will put import in the top of bundle, so user-authentication need to create a separate file
+ * will put import in the top of bundle, so user-auth need to create a separate file
  * in this directory (for example: zone-flags.ts), and put the following flags
  * into that file, and then add the following code before importing zone.js.
  * import './zone-flags';

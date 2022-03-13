@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {TicketTypeService} from "../../service/data/ticket-type/ticket-type.service";
 import {Router} from "@angular/router";
 import {TicketType} from "../../model/ticket-type";
-import {UserAuthenticationService} from "../../service/data/user-authentication/user-authentication.service";
+import {UserAuthService} from "../../service/data/user-auth/user-auth.service";
 import {User} from "../../model/user";
 import {DialogModule} from 'primeng/dialog';
 import {Message, MessageService, PrimeNGConfig} from "primeng/api";
@@ -39,7 +39,7 @@ export class TicketTypeComponent implements OnInit {
   constructor(
     private ticketTypeService: TicketTypeService,
     private router: Router,
-    private userService: UserAuthenticationService,
+    private userService: UserAuthService,
     private primengConfig: PrimeNGConfig,
     private ticketService: TicketService,
     private messageService: MessageService
@@ -49,7 +49,7 @@ export class TicketTypeComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.findRoles();
+    this.findCurrentUser();
 
     this.findAllTicketTypes();
 
@@ -74,7 +74,10 @@ export class TicketTypeComponent implements OnInit {
     });
   }
 
-  findRoles() {
+  /**
+   * method finds current user and pushes it's role's names to string list
+   */
+  findCurrentUser() {
     if (this.userService.currentUserValue !== null) {
       this.currentUser = this.userService.currentUserValue;
 
@@ -90,6 +93,9 @@ export class TicketTypeComponent implements OnInit {
     return this.form.controls;
   }
 
+  /**
+   * finds all records from TicketType table and assigns it to ticketTypes list
+   */
   findAllTicketTypes() {
     this.ticketTypeService.findAllTicketTypes().subscribe(
       response => {
@@ -137,13 +143,19 @@ export class TicketTypeComponent implements OnInit {
     this.buyTicketDialog = false;
   }
 
-
+  /**
+   * finds ticket type with id from param and assigns it to ticketTypeTemp field
+   * @param id
+   */
   findTicketTypeById(id: number) {
     this.ticketTypeService.findTicketTypeById(id).subscribe(response => {
       this.ticketTypeTemp = response;
     })
   }
 
+  /**
+   * saves new ticket type to list
+   */
   addTicketType() {
     this.submitted = true;
 
@@ -160,6 +172,10 @@ export class TicketTypeComponent implements OnInit {
     );
   }
 
+  /**
+   * updates ticket type with id from param
+   * @param id
+   */
   updateTicketType(id: number) {
     this.submitted = true;
 
@@ -176,6 +192,10 @@ export class TicketTypeComponent implements OnInit {
       });
   }
 
+  /**
+   * deletes ticket type with id from param
+   * @param id
+   */
   deleteTicketTypeById(id: number) {
     this.ticketTypeService.deleteTicketTypeById(id).subscribe(response => {
       this.closeDeleteTicketTypeDialog();
@@ -185,6 +205,10 @@ export class TicketTypeComponent implements OnInit {
   }
 
 
+  /**
+   * saves new ticket record with specific type
+   * @param id
+   */
   buyTicket(id: number) {
     let activationDate;
     let expirationDate;
@@ -205,6 +229,9 @@ export class TicketTypeComponent implements OnInit {
 
       this.ticketService.findAllUsersTickets(this.currentUser.idUser).subscribe(
         response => {
+          /**
+           * if user doesn't have any tickets yet he can buy new ticket
+           */
           if (response.length === 0) {
             this.ticketService.buyTicket(this.ticket).subscribe(response => {
               response.ticketName = response.membershipTicketType.name;
@@ -214,14 +241,23 @@ export class TicketTypeComponent implements OnInit {
               })
             })
           } else {
+            /**
+             * else it needs to be checked if this user has active ticket or not
+             */
             let date;
             let today = new Date;
             for (let ticket of response) {
               date = new Date(ticket.expirationDate);
+              /**
+               * if he has he ca;t buy another one
+               */
               if (date.getTime() >= today.getTime()) {
                 this.closeBuyTicketDialog();
                 this.showErrorBuy();
                 return;
+                /**
+                 * if he hasn't he can buy ticket
+                 */
               } else {
                 this.ticketService.buyTicket(this.ticket).subscribe(response => {
                   this.closeBuyTicketDialog();

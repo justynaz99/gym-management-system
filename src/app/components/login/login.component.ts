@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
 import {Message, MessageService} from "primeng/api";
-import {UserAuthenticationService} from "../../service/data/user-authentication/user-authentication.service";
+import {UserAuthService} from "../../service/data/user-auth/user-auth.service";
 import {User} from "../../model/user";
 import {AppComponent} from "../../app.component";
 import {AbstractControl, FormControl, FormGroup, Validators} from "@angular/forms";
@@ -13,6 +13,7 @@ import {UserService} from "../../service/data/user/user.service";
   styleUrls: ['./login.component.css'],
   providers: [MessageService]
 })
+
 export class LoginComponent implements OnInit {
 
   user: User = new User();
@@ -22,8 +23,9 @@ export class LoginComponent implements OnInit {
   form!: FormGroup;
   submitted: boolean = false;
   resetPasswordEmail!: string;
+  roles: String[] = [];
 
-  constructor(private userAuthService: UserAuthenticationService,
+  constructor(private userAuthService: UserAuthService,
               private userService: UserService,
               private router: Router,
               private app: AppComponent,
@@ -35,6 +37,7 @@ export class LoginComponent implements OnInit {
       this.router.navigate(['/home']);
       return;
     }
+
 
     this.form = new FormGroup({
       username: new FormControl('',
@@ -50,10 +53,29 @@ export class LoginComponent implements OnInit {
     return this.form.controls;
   }
 
+  /**
+   * method finds current user and pushes it's role's names to string list
+   */
+  findCurrentUser() {
+    if (this.userAuthService.currentUserValue !== null) {
+      this.currentUser = this.userAuthService.currentUserValue;
+
+      for (let role of this.currentUser.roles) {
+        this.roles.push(role.name);
+      }
+    } else {
+      this.roles[0] = 'GUEST';
+    }
+  }
+
+  /**
+   * checks if credentials entered by user are valid
+   * if they are ok, set current user field and changes menu items
+   */
   login() {
     this.userAuthService.login(this.user).subscribe(data => {
       this.router.navigate(['/home']);
-      this.currentUser = this.userAuthService.currentUserValue;
+      this.findCurrentUser();
       this.app.loadMenuItems();
       this.showSuccess();
     }, err => {
@@ -61,6 +83,11 @@ export class LoginComponent implements OnInit {
     });
   }
 
+  /**
+   * sends email with link to page where user can change the password
+   * sends it to email from parameter (email named as username)
+   * @param username
+   */
   sendEmailWithResetPasswordToken(username: String) {
     this.userService.sendResetPasswordToken(username).subscribe(response => {
       this.closeResetPasswordDialog();
@@ -92,3 +119,6 @@ export class LoginComponent implements OnInit {
 
 
 }
+
+
+
